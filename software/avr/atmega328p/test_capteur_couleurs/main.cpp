@@ -13,7 +13,7 @@ INITIALISE_INTERRUPT_MANAGER();
 
 ringBufferC ringBufferValeursR, ringBufferValeursB, ringBufferValeursG;
 int flag = 0;
-uint16_t counter = 0, countR = 0, countG = 0, countB = 0, medR, medG, medB;
+uint16_t counterD = 0, countDR = 0, countDG = 0, countDB = 0, medDR, medDG, medDB;
 void interruption_timer();
 void interruption_int0();
 
@@ -22,13 +22,13 @@ int main() {
   D6::output();
   D5::output();
   D4::output();
-  D3::output();
+  D7::output();
   D2::input();
 
   uart0::init();
   uart0::change_baudrate(9600); // vitesse de connection: 9600
 
-  D3::low();
+  D7::low();
   D4::high();
   D5::high();
   D6::low();
@@ -66,7 +66,7 @@ int main() {
       else
 	uart0::printfln("? g=%d %d r=%d",medG,medB,medR);
       }
-//uart0::printfln("red = %d, blue = %d, green = %d", medR/100, medB/100, medG/100);
+uart0::printfln("red = %d, blue = %d, green = %d", medR/100, medB/100, medG/100);
     }
   }
 }
@@ -79,7 +79,7 @@ void interruption_timer()
 	{
 		countR = counter;
 		D4::high(); //DD5
-		D3::high(); //D6
+		D7::high(); //D6
 
 	}
 	else if(flag == 2)
@@ -87,7 +87,7 @@ void interruption_timer()
 
 		countG = counter;
 		D4::low();
-		D3::high();
+		D7::high();
 
 	}
 	else if(flag == 3)
@@ -95,7 +95,7 @@ void interruption_timer()
 
 		countB = counter;
 		D4::low();
-		D3::low();
+		D7::low();
 	}
 	else if(flag == 4)
 	{
@@ -113,7 +113,7 @@ void interruption_int0()
 /*Cablage: s0 = D6
            s1 = D5
            s2 = D4
-           s3 = D3
+           s3 = D7
            out = D2
 
 Valeurs: RIEN: r=14 b=11/12 g=13
