@@ -85,12 +85,12 @@ int main() {
       //uart0::printfln("red = %d, blue = %d, green = %d", medR/100, medB/100, medG/100);
 
       if(medRD/medVD == 0)
-	uart0::printfln("ROUGE g=%d b=%d r=%d",medVD,medBD,medRD);
+	uart0::printfln("ROUGE g=%d b=%d r=%d\n",medVD,medBD,medRD);
       else{
 	if(medRD/medVD == 1)
-	  uart0::printfln("JAUNE g=%d b=%d r=%d",medVD,medBD,medRD);
+	  uart0::printfln("JAUNE g=%d b=%d r=%d\n",medVD,medBD,medRD);
 	else
-	  uart0::printfln("? g=%d %d r=%d",medVD,medBD,medRD);
+	  uart0::printfln("? g=%d %d r=%d\n",medVD,medBD,medRD);
       }
       //uart0::printfln("red = %d, blue = %d, green = %d", medR/100, medB/100, medG/100);
     }
