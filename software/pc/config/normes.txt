@@ -1,0 +1,38 @@
+####################
+# FICHIER conf.ini #
+####################
+
+Ce fichier rassemble les constantes d'usine du robot, comme le temps d'un match,
+les poids de certaines stratégies (j'invente, hein)... 
+
+	Structure : 
+	-----------------------------
+	
+	[global]
+	variable1=valeur1
+	variable2=valeur2
+	...
+
+    
+
+##########################
+# FICHIER global.ini #
+##########################
+
+Ce fichier (s'il n'existe pas, il sera créé automatiquement) permet
+de se faire des modes en local pour une configuration de test.
+
+	Structure :
+	------------------------------
+	
+	[global]
+	mode=mode_choisi
+	
+	[mode1]
+	variable_a_surcharger_1 = valeur1
+	variable_a_surcharger_2 = valeur2
+	
+	[mode2]
+	variable_a_surcharger_1 = valeur12
+	variable_a_surcharger_3 = valeur3
+	...
