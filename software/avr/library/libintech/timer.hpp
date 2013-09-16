@@ -1,204 +1,120 @@
-/** 
- * Manipulation des timers en mode compteur
- * 
- * @author Philippe TILLET phil.tillet@gmail.com
- * @author Marc BLANC-PATIN marc.blancpatin@gmail.com
- * 
- */
-
-#ifndef TIMER_HPP
-#define TIMER_HPP
+#ifndef _TIMER_HPP
+#define _TIMER_HPP
 
 #include <stdint.h>
 #include <avr/io.h>
 
-#include "utils.h"
-#include "prescaler.hpp"
+#include "timer/registers.hpp"
+#include "timer/waveform.hpp"
+#include "timer/pwm.hpp"
+#include "timer/counter.hpp"
 
-template<uint8_t ID>
-struct TimerRegisters;
-
-template<>
-struct TimerRegisters < 0 > {
-
-    static uint16_t get_TCNT() {
-        return TCNT0;
-    }
-
-    static void set_TCNT(uint16_t new_tcnt) {
-        TCNT0 = new_tcnt;
-    }
-
-    static void set() {
-        sbi(TIMSK0, TOIE0);
-    }
-};
-
-template<>
-struct TimerRegisters < 1 > {
-
-    static uint16_t get_TCNT() {
-        return TCNT1;
-    }
-
-    static void set_TCNT(uint16_t new_tcnt) {
-        TCNT1 = new_tcnt;
-    }
-
-    static void set() {
-        sbi(TIMSK1, TOIE1);
-    }
-};
-
-template<>
-struct TimerRegisters < 2 > {
-
-    static uint16_t get_TCNT() {
-        return TCNT2;
-    }
-
-    static void set_TCNT(uint16_t new_tcnt) {
-        TCNT2 = new_tcnt;
-    }
-
-    static void set() {
-        sbi(TIMSK2, TOIE2);
-    }
-};
-
-#if  defined (__AVR_ATmega2560__)\
-    || defined (__AVR_ATmega2561__)\
-    || defined (__AVR_ATmega1280__)
-
-template<>
-struct TimerRegisters < 3 > {
-
-    static uint16_t get_TCNT() {
-        return TCNT3;
-    }
-
-    static void set_TCNT(uint16_t new_tcnt) {
-        TCNT3 = new_tcnt;
-    }
-
-    static void set() {
-        sbi(TIMSK3, TOIE3);
-    }
-};
-
-template<>
-struct TimerRegisters < 4 > {
-
-    static uint16_t get_TCNT() {
-        return TCNT4;
-    }
-
-    static void set_TCNT(uint16_t new_tcnt) {
-        TCNT4 = new_tcnt;
-    }
-
-    static void set() {
-        sbi(TIMSK4, TOIE4);
-    }
-};
-
-template<>
-struct TimerRegisters < 5 > {
-
-    static uint16_t get_TCNT() {
-        return TCNT5;
-    }
-
-    static void set_TCNT(uint16_t new_tcnt) {
-        TCNT5 = new_tcnt;
-    }
-
-    static void set() {
-        sbi(TIMSK5, TOIE5);
-    }
-};
-
-#endif
-
-/**
- * Classe de gestion des Timer en mode compteur
- * 
- * ID_                  Numéro du timer à utiliser
- * PRESCALER_RATIO_     Prescaler utilisé
- * 
- */
-template<uint8_t ID_, uint16_t PRESCALER_RATIO_>
-class Timer {
-public:
-    static const uint8_t ID = ID_;
-    static const uint16_t PRESCALER_RATIO = PRESCALER_RATIO_;
-
+//NOTE on a fait ce choix pour éviter les if, à expliquer!
+//TODO spécificités des Timers 16 bits (interrupt ICIE1 timer 16 bits)
+//TODO spécificités du timers 2 par rapport au timer 0 du 328p
+//TODO méthode pour gérer le passage de 16 bits à 8, 9 et 10 bits
+template<uint8_t TimerId, class TimerSize>
+class Timer
+{
 private:
-    typedef Prescaler<ID, PRESCALER_RATIO> prescaler_;
-    typedef TimerRegisters<ID_> register_;
+    typedef TimerRegisters<TimerId, TimerSize> _registers;
 
 public:
+    static const uint8_t ID = TimerId;
+    typedef TimerWaveform<_registers, TimerSize> waveform;
+    typedef TimerPwm<_registers, TimerSize> pwm;
+    typedef TimerCounter<_registers, TimerSize> counter;
 
-    /**
-     * Initialise le timer (à appeler obligatoirement pour configurer le timer)
-     * 
-     */
-    static void init() {
-        static bool is_init = false;
-        if (is_init == false) {
-            prescaler_::set();
-            register_::set();
-            is_init = true;
+    enum PrescalerValue
+    {
+#ifdef TCNT2
+        PRESCALER_DISABLE,
+        PRESCALER_1,
+        PRESCALER_8,
+        PRESCALER_32,
+        PRESCALER_64,
+        PRESCALER_128,
+        PRESCALER_256,
+        PRESCALER_1024,
+#else
+        PRESCALER_DISABLE,
+        PRESCALER_1,
+        PRESCALER_8,
+        PRESCALER_64,
+        PRESCALER_256,
+        PRESCALER_1024,
+        EXTERNAL_FALLING,
+        EXTERNAL_RISING
+#endif
+    };
+
+    enum TimerMode
+    {
+        MODE_COUNTER,
+        MODE_PWM,
+        MODE_WAVEFORM
+    };
+
+public:
+    static inline void mode(const TimerMode mode)
+    {
+        if (mode == MODE_COUNTER)
+        {
+            _registers::waveform_generation_normal_mode();
+        }
+        else if (mode == MODE_PWM)
+        {
+            _registers::waveform_generation_fast_pwm_mode_1();
+        }
+        else if (mode == MODE_WAVEFORM)
+        {
+            _registers::waveform_generation_fast_pwm_mode_2();
         }
     }
 
-    /**
-     * Retourne la valeur maximale du timer (65535 si 16bits, 255 si 8bits)
-     * Ne marche que pour les 328p et 324p
-     *
-     * @return 
-     */
-    static inline uint16_t value_max() {
-        if (ID_==1)
-	    return 65535;
-        else
-            return 255;
+    static inline void disable()
+    {
+        _registers::disable();
     }
 
-    /**
-     * Récupère la valeur courante du compteur
-     * 
-     * @return 
-     */
-    static inline uint32_t value() {
-        return register_::get_TCNT();
+    static inline void enable()
+    {
+        _registers::enable();
     }
 
-    /**
-     * Fixe la valeur du compteur
-     * 
-     * @param new_value Nouvelle valeur
-     */
-    static inline void value(uint32_t new_value) {
-        register_::set_TCNT(new_value);
+    static inline void prescaler(const PrescalerValue p)
+    {
+        _registers::prescaler(p);
     }
 
-    /**
-     * Désactive le timer
-     * 
-     */
-    static inline void disable() {
-        Prescaler<ID_, 0 > ::set();
+    static inline uint8_t prescaler()
+    {
+        return _registers::prescaler();
     }
-
-    /**
-     * Réactive le timer
-     * 
-     */
-    static inline void enable() {
-        prescaler_::set();
-    }
-
 };
 
+#ifdef TCNT0
+#include "timer/timer_0.hpp"
 #endif
+
+#ifdef TCNT1
+#include "timer/timer_1.hpp"
+#endif
+
+#ifdef TCNT2
+#include "timer/timer_2.hpp"
+#endif
+
+#ifdef TCNT3
+#include "timer/timer_3.hpp"
+#endif
+
+#ifdef TCNT4
+#include "timer/timer_4.hpp"
+#endif
+
+#ifdef TCNT5
+#include "timer/timer_5.hpp"
+#endif
+
+#endif // TIMER_HPP
