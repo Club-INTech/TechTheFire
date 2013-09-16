@@ -1,7 +1,4 @@
 #include "robot.h"
-#include <avr/eeprom.h>
-
-
 
 // Constructeur avec assignation des attributs
 Robot::Robot() : 	
@@ -10,12 +7,15 @@ Robot::Robot() :
 			,angle_origine_(0.0)
 			,etat_rot_(true)
 			,etat_tra_(true)
-			,translation(0.25,9.0,0.0)//0.75,2.5,0.0)
-			,rotation(0.8,15.0,0.0)//1.2,3.5,0.0)
+			,translation(0.25,9.0,0.0)
+			,rotation(0.8,15.0,0.0)
 {
 	TWI_init();
 	serial_t_::init();
-	TimerCounter_t::init();
+	timerMoteurs::prescaler(timerMoteurs::PRESCALER_1);	
+	timerMoteurs::counter::overflow_interrupt::enable();	
+	timerCompteur::prescaler(timerCompteur::PRESCALER_1);
+	timerCompteur::counter::overflow_interrupt::enable();
 	serial_t_::change_baudrate(9600);
     serial_t_::activer_acquittement(true);
 	
@@ -23,24 +23,6 @@ Robot::Robot() :
 	rotation.valeur_bridage   (100);
 	changer_orientation(PI);
 
-	/*
-	eeprom_write_float((float*)(EEPROM_KP_TRA), 0.75);
-	eeprom_write_float((float*)(EEPROM_KD_TRA), 2.0);
-	eeprom_write_dword((uint32_t*)(EEPROM_BRID_TRA), 60);
-	eeprom_write_float((float*)(EEPROM_KP_ROT), 0.75);
-	eeprom_write_float((float*)(EEPROM_KD_ROT), 2.0);
-	eeprom_write_dword((uint32_t*)(EEPROM_BRID_ROT), 60);
-	*/
-	
-	/*
-	// Chargement en mémoire des valeurs dans l'EEPROM
-	translation.kp(eeprom_read_float((float*)(EEPROM_KP_TRA)));
-	translation.kd(eeprom_read_float((float*)(EEPROM_KD_TRA)));
-	rotation.kp   (eeprom_read_float((float*)(EEPROM_KP_ROT)));
-	rotation.kd   (eeprom_read_float((float*)(EEPROM_KD_ROT)));
-	translation.valeur_bridage(eeprom_read_dword((uint32_t*)(EEPROM_BRID_TRA)));
-	rotation.valeur_bridage   (eeprom_read_dword((uint32_t*)(EEPROM_BRID_ROT)));
-	*/
 }
 
 void Robot::asservir()
@@ -58,8 +40,8 @@ void Robot::asservir()
 	else
 		pwmTranslation = 0;
 	
-	moteurGauche.envoyerPwm(pwmTranslation - pwmRotation);
-	moteurDroit.envoyerPwm(pwmTranslation + pwmRotation);
+	moteurGauche.envoyerPwm_b(pwmTranslation - pwmRotation);
+	moteurDroit.envoyerPwm_a(pwmTranslation + pwmRotation);
 	
 }
 
@@ -277,13 +259,6 @@ void Robot::changerVitesseTra(float kp, float kd, uint32_t brid)
 	translation.kp(kp);
 	translation.kd(kd);
 
-	/*
-	// Enregistrement dans l'EEPROM
-	eeprom_write_float((float*)(EEPROM_KP_TRA), kp);
-	eeprom_write_float((float*)(EEPROM_KD_TRA), kd);
-	eeprom_write_dword((uint32_t*)(EEPROM_BRID_TRA), brid);
-	*/
-    
 }
 void Robot::changerVitesseRot(float kp, float kd, uint32_t brid)
 {
@@ -291,12 +266,6 @@ void Robot::changerVitesseRot(float kp, float kd, uint32_t brid)
 	rotation.kp(kp);
 	rotation.kd(kd);
 
-	/*
-	// Enregistrement dans l'EEPROM
-	eeprom_write_float((float*)(EEPROM_KP_ROT), kp);
-	eeprom_write_float((float*)(EEPROM_KD_ROT), kd);
-	eeprom_write_dword((uint32_t*)(EEPROM_BRID_ROT), brid);
-	*/
 }
 ////////////////////////////// ACCESSEURS /////////////////////////////////
 void Robot::mesure_angle(int32_t new_angle)

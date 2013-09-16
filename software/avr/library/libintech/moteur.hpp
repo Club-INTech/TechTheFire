@@ -9,10 +9,9 @@
 #ifndef MOTEUR_HPP
 #define MOTEUR_HPP
 
-#include "pwm.hpp"
+#include "timer.hpp"
+#include "gpio.hpp"
 #include "safe_enum.hpp"
-#include "register.hpp"
-#include "utils.h"
 #include "serial/serial_impl.hpp"
 
 struct direction_def {
@@ -29,20 +28,31 @@ typedef safe_enum<direction_def> Direction;
  * DirectionRegister    Pin utilisé pour la sortie de la direction (cf register.hpp)
  * 
  */
-template<class PWM, class DirectionRegister>
+template<class Timer, class DirectionRegister>
 class Moteur {
-    static const uint8_t TIMER_ID = PWM::ID;
-    static const uint16_t PRESCALER_VALUE = PWM::PRESCALER_RATIO;
 
+public:
+	static const uint8_t TIMER_ID = Timer::ID;
+	
 private:
 
     void direction(Direction dir) {
         if (dir == Direction::AVANCER) {
-            DirectionRegister::clear();
+            DirectionRegister::low();
         } else if (dir == Direction::RECULER) {
-            DirectionRegister::set();
+            DirectionRegister::high();
         }
     }
+	void value(uint16_t pwm);
+
+public:
+
+    Moteur() : maxPWM_(255) {
+		Timer::mode(Timer::MODE_PWM);
+		Timer::pwm::waveform_mode(Timer::pwm::PWM_FAST);
+		DirectionRegister::output();
+    }
+
 
 private:
     int16_t maxPWM_;
@@ -50,27 +60,34 @@ private:
 
 public:
 
-    Moteur() : maxPWM_(255) {
-        PWM::init();
-		DirectionRegister::set_output();
-    }
-
     /**
      * Fixe la valeur du PWM du moteur, et prend en compte le signe pour la direction
      * 
      * @param pwm       Valeur du PWM ([-255,255] pour un timer 8 bit, [-65535,65535] pour un 16 bit)
      */
-    void envoyerPwm(int16_t pwm) {
+    void envoyerPwm_a(int16_t pwm) {
         pwm_ = pwm;
         if (pwm > 0) {
             direction(Direction::AVANCER);
-            PWM::value(min(pwm, maxPWM_)); //Bridage
-        } else {
+            Timer::pwm::pwm_a(min(pwm, maxPWM_)); //Bridage
+        }
+		else {
             direction(Direction::RECULER);
-            PWM::value(min(-pwm, maxPWM_)); //Bridage
+            Timer::pwm::pwm_a(min(-pwm, maxPWM_)); //Bridage
         }
     }
 
+    void envoyerPwm_b(int16_t pwm) {
+        pwm_ = pwm;
+        if (pwm > 0) {
+            direction(Direction::AVANCER);
+            Timer::pwm::pwm_b(min(pwm, maxPWM_)); //Bridage
+        }
+		else {
+            direction(Direction::RECULER);
+            Timer::pwm::pwm_b(min(-pwm, maxPWM_)); //Bridage
+        }
+    }
     /**
      * @return Retourne la valeur courante du PWM
      */

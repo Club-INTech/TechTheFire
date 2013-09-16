@@ -12,7 +12,7 @@
 #include <libintech/serial/serial_impl.hpp>
 #include <libintech/serial/serial_0.hpp>
 #include <libintech/timer.hpp>
-#include <libintech/pwm.hpp>
+#include <libintech/gpio.hpp>
 #include <libintech/moteur.hpp>
 #include <libintech/register.hpp>
 #include <libintech/singleton.hpp>
@@ -26,30 +26,21 @@
 #define CONVERSION_TIC_MM 0.10332//0.10360
 #define CONVERSION_TIC_RADIAN 0.0007382
 
-#define EEPROM_KP_TRA   0
-#define EEPROM_KD_TRA   4
-#define EEPROM_KP_ROT   8
-#define EEPROM_KD_ROT   12
-#define EEPROM_BRID_TRA 16
-#define EEPROM_BRID_ROT 20
-
 class Robot : public Singleton<Robot>{
 // Par défaut les attributs sont publics dans une struct
 
 
 private:
 
-    //Moteur sur le Timer 0 en FastPWM . Pont en H sur le PORTD4
-    typedef PWM<0,ModeFastPwm,1,'B'> pwmGauche;
-    Moteur< pwmGauche, AVR_PORTD<PORTD4> > moteurGauche;
+	typedef timer0 timerMoteurs;
+    //Moteur sur le Timer 0 sur la pin B. Pont en H sur le PORTD4
+    Moteur< timerMoteurs, D4 > moteurGauche;
     
-    //Moteur sur le Timer 0 en FastPWM . Pont en H sur le port B0
-    typedef PWM<0,ModeFastPwm,1,'A'> pwmDroit;
-    Moteur< pwmDroit, AVR_PORTB<PORTB0> > moteurDroit;
+    //Moteur sur le Timer 0 sur la pin A. Pont en H sur le port B0
+    Moteur< timerMoteurs, B0 > moteurDroit;
     
     //Timer 1 en mode compteur, Prescaler de 1
-    typedef Timer<1,1> TimerCounter_t;
-    TimerCounter_t compteur;
+    typedef timer1 timerCompteur;
     
     typedef Serial<0> serial_t_;
     
