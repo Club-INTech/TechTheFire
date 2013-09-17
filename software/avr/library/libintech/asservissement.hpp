@@ -8,7 +8,6 @@
 #define Asservissement_h
 
 #include <stdint.h>
-#include <libintech/utils.h>
 #include "serial/serial_0.hpp"
 
 class Asservissement {

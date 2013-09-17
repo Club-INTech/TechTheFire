@@ -1,9 +1,9 @@
 #ifndef CODEUSE_HPP 
 #define CODEUSE_HPP
 
-#include "register.hpp"
+#include "gpio.hpp"
 
-template<class PinA, class PinB, bool DeuxCanaux>
+template<class PinA, class PcintA, class PinB, class PcintB, bool DeuxCanaux>
 class Codeuse
 {
 
@@ -16,12 +16,12 @@ public:
 		_compteur(0)
 	{
 		//Mise en lecture des Pins des codeuses
-		PinA::set_input();
-		PinB::set_input();
+		PinA::input();
+		PinB::input();
 
 		// Initialisation interruptions codeurs
-		PinB::set_interrupt();
-        if (DeuxCanaux) PinA::set_interrupt();
+		PcintB::enable();
+        if (DeuxCanaux) PcintA::enable();
 
 		mb = PinB::read();
 	}

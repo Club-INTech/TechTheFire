@@ -2,7 +2,7 @@
 #define Safe_enum_hpp
 
 template<typename def, typename inner = typename def::type>
-        class safe_enum : public def {
+class safe_enum : public def {
     typedef typename def::type type;
     inner val;
 public:

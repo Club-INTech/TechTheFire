@@ -8,6 +8,7 @@
 template<>
 class PinChangeInterrupt<1>
 {
+public:
     static inline void enable()
     {
         PCICR |= PCIE1;
@@ -43,28 +44,28 @@ public:
 typedef PinChangeInterrupt<1> pci1;
 
 #ifdef PCINT8
-typedef PinChangeInterrupt1<8> pcint8;
+typedef PinChangeInterrupt1<PCINT8> pcint8;
 #endif
 #ifdef PCINT9
-typedef PinChangeInterrupt1<9> pcint9;
+typedef PinChangeInterrupt1<PCINT9> pcint9;
 #endif
 #ifdef PCINT10
-typedef PinChangeInterrupt1<10> pcint10;
+typedef PinChangeInterrupt1<PCINT10> pcint10;
 #endif
 #ifdef PCINT11
-typedef PinChangeInterrupt1<11> pcint11;
+typedef PinChangeInterrupt1<PCINT11> pcint11;
 #endif
 #ifdef PCINT12
-typedef PinChangeInterrupt1<12> pcint12;
+typedef PinChangeInterrupt1<PCINT12> pcint12;
 #endif
 #ifdef PCINT13
-typedef PinChangeInterrupt1<13> pcint13;
+typedef PinChangeInterrupt1<PCINT13> pcint13;
 #endif
 #ifdef PCINT14
-typedef PinChangeInterrupt1<14> pcint14;
+typedef PinChangeInterrupt1<PCINT14> pcint14;
 #endif
 #ifdef PCINT15
-typedef PinChangeInterrupt1<15> pcint15;
+typedef PinChangeInterrupt1<PCINT15> pcint15;
 #endif
 
 #endif // PCI_1_HPP

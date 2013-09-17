@@ -5,7 +5,11 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-void do_nothing() {}
+#define INITIALISE_INTERRUPT_MANAGER() 	\
+	void do_nothing() {}				\
+	InterruptManager::voidFunctionPointer InterruptManager::interrupts[]
+
+void do_nothing();
 //TODO Trouver une solution pour initialiser le tableau interrupts[] sinon seg fault dans les ISR
 class InterruptManager
 {
@@ -36,7 +40,5 @@ public:
         cli();
     }
 };
-
-InterruptManager::voidFunctionPointer InterruptManager::interrupts[];
 
 #endif // INTERRUPTMANAGER_HPP
