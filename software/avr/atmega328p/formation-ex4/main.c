@@ -16,9 +16,6 @@ int main(){
 
 	D5::output();
 
-	while(1){
-
-		D5::toggle();
-	}
+	while(1);
 	return 0;
 }
