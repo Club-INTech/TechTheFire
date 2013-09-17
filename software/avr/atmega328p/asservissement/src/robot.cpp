@@ -13,7 +13,6 @@ Robot::Robot() :
 	TWI_init();
 	serial_t_::init();
 	timerMoteurs::prescaler(timerMoteurs::PRESCALER_1);	
-	timerMoteurs::counter::overflow_interrupt::enable();	
 	timerCompteur::prescaler(timerCompteur::PRESCALER_1);
 	timerCompteur::counter::overflow_interrupt::enable();
 	serial_t_::change_baudrate(9600);
@@ -40,8 +39,8 @@ void Robot::asservir()
 	else
 		pwmTranslation = 0;
 	
-	moteurGauche.envoyerPwm_b(pwmTranslation - pwmRotation);
-	moteurDroit.envoyerPwm_a(pwmTranslation + pwmRotation);
+	moteurGauche.envoyerPwm(pwmTranslation - pwmRotation);
+	moteurDroit.envoyerPwm(pwmTranslation + pwmRotation);
 	
 }
 

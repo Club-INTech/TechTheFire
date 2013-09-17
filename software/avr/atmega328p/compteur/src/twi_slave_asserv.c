@@ -5,8 +5,8 @@
 #include "twi_slave_asserv.h"
 
 //déclaration des ports des codeuses, attention à modifier aussi le twi_slave.h
-Codeuse< AVR_PORTB <PORTB0>,AVR_PORTB <PORTB1>, true > codeuse1;
-Codeuse< AVR_PORTD <PORTD7>,AVR_PORTD <PORTD6>, true > codeuse2;
+Codeuse< B0, pcint0, B1, pcint1, true > codeuse1;
+Codeuse< D7, pcint23, D6, pcint22, true > codeuse2;
 
 union TWI_statusReg_t
 {

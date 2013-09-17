@@ -11,7 +11,10 @@
 
 #include <libintech/serial/serial_0_interrupt.hpp>
 #include <stdint.h>
+#include <libintech/interrupt_manager.hpp>
 #include "robot.h"
+
+INITIALISE_INTERRUPT_MANAGER();
 
 int main()
 {

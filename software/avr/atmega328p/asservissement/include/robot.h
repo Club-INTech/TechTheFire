@@ -14,7 +14,6 @@
 #include <libintech/timer.hpp>
 #include <libintech/gpio.hpp>
 #include <libintech/moteur.hpp>
-#include <libintech/register.hpp>
 #include <libintech/singleton.hpp>
 
 #define PI 3.14159265
@@ -34,10 +33,10 @@ private:
 
 	typedef timer0 timerMoteurs;
     //Moteur sur le Timer 0 sur la pin B. Pont en H sur le PORTD4
-    Moteur< timerMoteurs, D4 > moteurGauche;
+    Moteur< timerMoteurs, 'B', D4 > moteurGauche;
     
     //Moteur sur le Timer 0 sur la pin A. Pont en H sur le port B0
-    Moteur< timerMoteurs, B0 > moteurDroit;
+    Moteur< timerMoteurs, 'A', B0 > moteurDroit;
     
     //Timer 1 en mode compteur, Prescaler de 1
     typedef timer1 timerCompteur;

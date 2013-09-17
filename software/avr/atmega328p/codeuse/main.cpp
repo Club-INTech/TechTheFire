@@ -1,11 +1,11 @@
 #include <libintech/codeuse.hpp>
-#include <libintech/register.hpp>
 #include <avr/interrupt.h>
 #include <libintech/serial/serial_0_interrupt.hpp>
 #include <libintech/serial/serial_0.hpp>
+#include <libintech/gpio.hpp>
 
 
-typedef Codeuse< AVR_PORTD <PORTD2>,AVR_PORTD <PORTD3>, false > codeuse;
+typedef Codeuse< D2, pcint18, D3, pcint19, false > codeuse;
 typedef Serial<0> serialPC;
 codeuse c;
 
