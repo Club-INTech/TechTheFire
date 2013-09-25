@@ -13,16 +13,19 @@
 #include <stdint.h>
 #include <libintech/interrupt_manager.hpp>
 #include "robot.h"
+#define IGNORE_TWI_vect
+#define IGNORE_TIMER1_OVF_vect
+#include <libintech/isr.hpp>
 
 INITIALISE_INTERRUPT_MANAGER();
 
+
 int main()
 {
-	
+	sei();
     Robot & robot = Robot::Instance();
 	while(1)
 	{
-		
  		robot.communiquer_pc();
 	}
 	return 0;
@@ -30,7 +33,8 @@ int main()
 
 ISR(TIMER0_OVF_vect){}
 ISR(TIMER2_OVF_vect){}
-ISR(TIMER1_OVF_vect, ISR_NOBLOCK){
+ISR(TIMER1_OVF_vect, ISR_NOBLOCK)
+{
 	Robot & robot = Robot::Instance();
 	
 	//mise à jour des attribut stockant la distance parcourue en tic et l'angle courant en tic

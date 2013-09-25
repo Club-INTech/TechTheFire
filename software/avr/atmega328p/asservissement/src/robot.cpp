@@ -1,5 +1,4 @@
 #include "robot.h"
-
 // Constructeur avec assignation des attributs
 Robot::Robot() : 	
 			x_(0)
@@ -12,16 +11,17 @@ Robot::Robot() :
 {
 	TWI_init();
 	serial_t_::init();
-	timerMoteurs::prescaler(timerMoteurs::PRESCALER_1);	
+	sei();
+	timerCompteur::mode(timerCompteur::MODE_COUNTER);
 	timerCompteur::prescaler(timerCompteur::PRESCALER_1);
 	timerCompteur::counter::overflow_interrupt::enable();
+	D5::output();
+	D6::output();
 	serial_t_::change_baudrate(9600);
     serial_t_::activer_acquittement(true);
-	
 	translation.valeur_bridage(120);
 	rotation.valeur_bridage   (100);
 	changer_orientation(PI);
-
 }
 
 void Robot::asservir()
@@ -38,7 +38,6 @@ void Robot::asservir()
 		pwmTranslation = translation.pwm(mesure_distance_,0);
 	else
 		pwmTranslation = 0;
-	
 	moteurGauche.envoyerPwm(pwmTranslation - pwmRotation);
 	moteurDroit.envoyerPwm(pwmTranslation + pwmRotation);
 	

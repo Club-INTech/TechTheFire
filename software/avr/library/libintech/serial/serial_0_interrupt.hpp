@@ -10,6 +10,7 @@ void Serial < 0 > ::PLEASE_INCLUDE_SERIAL_INTERRUPT() {
 }
 
 #if defined (__AVR_ATmega328P__)
+#define IGNORE_USART_RX_vect
 ISR(USART_RX_vect)
 #elif defined (__AVR_ATmega640__)\
 	|| defined (__AVR_ATmega1280__)\
@@ -18,6 +19,7 @@ ISR(USART_RX_vect)
 	|| defined (__AVR_ATmega2561__)\
 	|| defined (__AVR_ATmega324P__)
 
+#define IGNORE_USART0_RX_vect
 ISR(USART0_RX_vect)
 #endif
 {
