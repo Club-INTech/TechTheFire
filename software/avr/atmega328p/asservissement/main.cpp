@@ -31,8 +31,6 @@ int main()
 	return 0;
 }
 
-ISR(TIMER0_OVF_vect){}
-ISR(TIMER2_OVF_vect){}
 ISR(TIMER1_OVF_vect, ISR_NOBLOCK)
 {
 	Robot & robot = Robot::Instance();

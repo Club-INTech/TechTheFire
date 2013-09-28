@@ -5,6 +5,15 @@
 
 #include "twi_slave_asserv.h"
 
+#define IGNORE_TWI_vect
+#define IGNORE_PCINT0_vect
+#define IGNORE_PCINT2_vect
+#define IGNORE_USART_RX_vect
+#include <libintech/isr.hpp>
+#include <libintech/gpio.hpp>
+
+INITIALISE_INTERRUPT_MANAGER();
+
 int main( void ){
 	
     _delay_ms(10);
