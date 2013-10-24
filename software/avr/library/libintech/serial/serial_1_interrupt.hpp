@@ -15,7 +15,7 @@ void Serial < 1 > ::PLEASE_INCLUDE_SERIAL_INTERRUPT() {
 	|| defined (__AVR_ATmega2560__)\
 	|| defined (__AVR_ATmega2561__)\
 	|| defined (__AVR_ATmega324P__)
-
+#define IGNORE_USART1_RX_vect
 ISR(USART1_RX_vect)
 #endif
 {
