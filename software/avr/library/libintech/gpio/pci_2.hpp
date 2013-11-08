@@ -11,7 +11,7 @@ class PinChangeInterrupt<2>
 public:
     static inline void enable()
     {
-        PCICR |= PCIE2;
+        PCICR |= (1 << PCIE2);
     }
 
     static inline void disable()
