@@ -10,7 +10,7 @@
 #include <util/delay.h>
 
 // Librairie INTech :: Timer
-#include <libavrcpp/timer.hpp>
+#include <libintech/timer.hpp>
 
 // Librairie INTech de manipulation de bits
 #include <libintech/utils.h>
@@ -112,10 +112,10 @@ class CapteurSRF
             ancienBit=bit;
                 //Enregistrement de la dernière distance calculée, mais sans l'envoyer (l'envoi se fait par la méthode value)
 
-            temps_impulsion = (Timer::value() + Timer::max_value() - origineTimer) & Timer::max_value();
+            temps_impulsion = (Timer::value() + Timer::value_max() - origineTimer) & Timer::value_max();
             
 
-            ringBufferValeurs.append( ( (Timer::value() + Timer::max_value() - origineTimer) & Timer::max_value() ) * (1700-0.0000325 * F_CPU) / 1800.);
+            ringBufferValeurs.append( ( (Timer::value() + Timer::value_max() - origineTimer) & Timer::value_max() ) * (1700-0.0000325 * F_CPU) / 1800.);
                          /*interpolation linéaire entre deux valeurs
                          mesurées: 1050/1800 à 20MHz, 1180/1800 à 16MHz*/
 

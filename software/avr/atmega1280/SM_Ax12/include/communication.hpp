@@ -27,7 +27,7 @@ class Communication
 		serial_pc::init();
 		serial_pc::change_baudrate(9600);
 		serial_ax12::init();
-		serial_ax12::change_baudrate(9600);
+    		serial_ax12::change_baudrate(9600);
 	}
 	void execute(char ordre[])
 	{
@@ -43,10 +43,14 @@ class Communication
 		}
 		else if (strcmp(ordre,"pompe") == 0)
 		{
-			ax12.goTo(90);
-			_delay_ms(750);
-			ax12.goTo(250);
-			_delay_ms(750);
+			uint8_t i;
+			for (i = 0; i< 2 ;i++) 
+			{
+				ax12.goTo(90);
+				_delay_ms(750);
+				ax12.goTo(250);
+				_delay_ms(750);
+			}
 		}
 	}
 };

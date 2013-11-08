@@ -10,10 +10,10 @@
 #define MOTEUR_HPP
 
 #include "utils.h"
-#include <libavrcpp/timer.hpp>
-#include <libavrcpp/gpio.hpp>
+#include "timer.hpp"
+#include "gpio.hpp"
 #include "safe_enum.hpp"
-#include <libavrcpp/serial/serial_impl.hpp>
+#include "serial/serial_impl.hpp"
 
 
 /**
@@ -27,7 +27,7 @@ class Moteur {
 
 public:
 	static const uint8_t TIMER_ID = Timer::ID;
-
+	
 public:
 
 	Moteur() : maxPWM_(255) {

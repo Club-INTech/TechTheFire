@@ -6,6 +6,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+#include <libintech/utils.h>
+
 #define AX_BROADCAST            0xFE        // Utilise le code 0xFE pour envoyer à tous les AX12
 
 /** EEPROM AREA **/

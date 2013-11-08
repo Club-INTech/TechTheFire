@@ -1,7 +1,7 @@
 #ifndef ULTRASON_HPP
 #define ULTRASON_HPP
 
-#include <libavrcpp/timer.hpp>
+#include <libintech/timer.hpp>
 #include <libintech/register.hpp>
 #include <libintech/ring_buffer.hpp>
 #include <libintech/algorithm.hpp>
@@ -19,8 +19,7 @@ class ultrason
     /** Fonction d'initialisation */
     static void init()
     {
-		Timer::mode(Timer::MODE_COUNTER);
-		Timer::prescaler(Timer::PRESCALER_1);
+        Timer::init();
     }
     
     /** Fonction update */

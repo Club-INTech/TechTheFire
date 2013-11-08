@@ -1,7 +1,7 @@
 #ifndef CODEUSE_HPP 
 #define CODEUSE_HPP
 
-#include <libavrcpp/gpio.hpp>
+#include "gpio.hpp"
 
 template<class PinA, class PcintA, class PinB, class PcintB, bool DeuxCanaux>
 class Codeuse
