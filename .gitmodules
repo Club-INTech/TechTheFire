@@ -1,0 +1,3 @@
+[submodule "libavrcpp"]
+	path = software/avr/library/libavrcpp
+	url = gitosis@git.club-intech.fr:libavrcpp.git

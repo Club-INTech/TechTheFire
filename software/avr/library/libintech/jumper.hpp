@@ -8,7 +8,7 @@
  */ 
 
 /// Classe Jumper
-template<class Pin>
+template<class PinPort>
 class jumper
 {
     public :
@@ -16,14 +16,14 @@ class jumper
         static void init()
         {
             // Port en input
-            Pin::set_input();
+            PinPort::input();
         }
         
         /// Retourne un 1 ou un 0 selon la valeur
         /// de la pin.
         static bool value()
         {
-            return Pin::read();
+            return PinPort::read();
         }
 };
 
