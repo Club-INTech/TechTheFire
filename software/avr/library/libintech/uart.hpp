@@ -388,4 +388,16 @@ volatile bool Uart<UartId>::acquittement;
 #include "uart/uart_0.hpp"
 #endif
 
+#ifdef UDR1
+#include "uart/uart_1.hpp"
+#endif
+
+#ifdef UDR2
+#include "uart/uart_2.hpp"
+#endif
+
+#ifdef UDR3
+#include "uart/uart_3.hpp"
+#endif
+
 #endif // UART_HPP

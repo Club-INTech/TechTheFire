@@ -61,11 +61,7 @@ inline void Uart<0>::disable_tx()
     UCSR0B &= ~(1 << TXEN0);
 }
 
-#ifdef UDR0
 typedef Uart<0> uart0;
-#else
-typedef Uart<0> uart0;
-#endif
 
 #if defined(USART0_RX_vect) && !defined(IGNORE_USART0_RX_vect)
 ISR(USART0_RX_vect,__attribute__((weak)))
@@ -81,4 +77,4 @@ ISR(USART_RX_vect,__attribute__((weak)))
 }
 #endif
 
-#endif // UART_HPP
+#endif // UART_0_HPP
