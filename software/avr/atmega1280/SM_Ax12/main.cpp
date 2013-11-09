@@ -2,6 +2,7 @@
 
 #include "communication.hpp"
 #include <libintech/interrupt_manager.hpp>
+
 INITIALISE_INTERRUPT_MANAGER();
 
 int main ()
