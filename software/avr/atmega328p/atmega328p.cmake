@@ -2,7 +2,7 @@ SET(CMAKE_C_COMPILER avr-g++)
 SET(CMAKE_CXX_COMPILER avr-g++)
 
 SET(CWARN "-Wall")
-SET(COPT "-O2")
+SET(COPT "-O2 -lm -lprintf_flt -Wl,-u,vfprintf")
 SET(CMCU "-mmcu=atmega328p")
 IF(FOR_ARDUINO)
 	ADD_DEFINITIONS(-DF_CPU=16e6) #Arduino

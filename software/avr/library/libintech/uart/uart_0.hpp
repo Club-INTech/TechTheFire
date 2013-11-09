@@ -75,7 +75,7 @@ ISR(USART0_RX_vect,__attribute__((weak)))
 #endif
 
 #if defined(USART_RX_vect) && !defined(IGNORE_USART_RX_vect)
-ISR(USART_RX_vect,attribute__((weak)))
+ISR(USART_RX_vect,__attribute__((weak)))
 {
 	    Uart<0>::store_char(UDR0);
 }

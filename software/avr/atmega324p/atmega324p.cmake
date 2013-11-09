@@ -2,7 +2,7 @@ SET(CMAKE_C_COMPILER avr-g++)
 SET(CMAKE_CXX_COMPILER avr-g++)
 
 SET(CWARN "-Wall")
-SET(COPT "-Os")
+SET(COPT "-Os -lm -lprintf_flt -Wl,-u,vfprintf")
 SET(CMCU "-fno-exceptions -mmcu=atmega324p")
 SET(CDEFS "-DF_CPU=20000000L")
 

@@ -72,6 +72,76 @@ ISR(EE_READY_vect, __attribute__((weak)))
 }
 #endif
 
+#if defined(EXT_INT0_vect) && !defined(IGNORE_EXT_INT0_vect)
+ISR(EXT_INT0_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[EXT_INT0_vect_num]();
+}
+#endif
+
+#if defined(INT0_vect) && !defined(IGNORE_INT0_vect)
+ISR(INT0_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[INT0_vect_num]();
+}
+#endif
+
+#if defined(INT1_vect) && !defined(IGNORE_INT1_vect)
+ISR(INT1_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[INT1_vect_num]();
+}
+#endif
+
+#if defined(INT2_vect) && !defined(IGNORE_INT2_vect)
+ISR(INT2_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[INT2_vect_num]();
+}
+#endif
+
+#if defined(INT3_vect) && !defined(IGNORE_INT3_vect)
+ISR(INT3_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[INT3_vect_num]();
+}
+#endif
+
+#if defined(INT4_vect) && !defined(IGNORE_INT4_vect)
+ISR(INT4_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[INT4_vect_num]();
+}
+#endif
+
+#if defined(INT5_vect) && !defined(IGNORE_INT5_vect)
+ISR(INT5_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[INT5_vect_num]();
+}
+#endif
+
+#if defined(INT6_vect) && !defined(IGNORE_INT6_vect)
+ISR(INT6_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[INT6_vect_num]();
+}
+#endif
+
+#if defined(INT7_vect) && !defined(IGNORE_INT7_vect)
+ISR(INT7_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[INT7_vect_num]();
+}
+#endif
+
+#if defined(IO_PINS_vect) && !defined(IGNORE_IO_PINS_vect)
+ISR(IO_PINS_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[IO_PINS_vect_num]();
+}
+#endif
+
 #if defined(LCD_vect) && !defined(IGNORE_LCD_vect)
 ISR(LCD_vect, __attribute__((weak)))
 {
@@ -79,10 +149,52 @@ ISR(LCD_vect, __attribute__((weak)))
 }
 #endif
 
+#if defined(LOWLEVEL_IO_PINS_vect) && !defined(IGNORE_LOWLEVEL_IO_PINS_vect)
+ISR(LOWLEVEL_IO_PINS_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[LOWLEVEL_IO_PINS_vect_num]();
+}
+#endif
+
 #if defined(OVRIT_vect) && !defined(IGNORE_OVRIT_vect)
 ISR(OVRIT_vect, __attribute__((weak)))
 {
 	InterruptManager::interrupts[OVRIT_vect_num]();
+}
+#endif
+
+#if defined(PCINT0_vect) && !defined(IGNORE_PCINT0_vect)
+ISR(PCINT0_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[PCINT0_vect_num]();
+}
+#endif
+
+#if defined(PCINT1_vect) && !defined(IGNORE_PCINT1_vect)
+ISR(PCINT1_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[PCINT1_vect_num]();
+}
+#endif
+
+#if defined(PCINT2_vect) && !defined(IGNORE_PCINT2_vect)
+ISR(PCINT2_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[PCINT2_vect_num]();
+}
+#endif
+
+#if defined(PCINT3_vect) && !defined(IGNORE_PCINT3_vect)
+ISR(PCINT3_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[PCINT3_vect_num]();
+}
+#endif
+
+#if defined(PCINT_vect) && !defined(IGNORE_PCINT_vect)
+ISR(PCINT_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[PCINT_vect_num]();
 }
 #endif
 
@@ -146,6 +258,321 @@ ISR(SPM_RDY_vect, __attribute__((weak)))
 ISR(SPM_READY_vect, __attribute__((weak)))
 {
 	InterruptManager::interrupts[SPM_READY_vect_num]();
+}
+#endif
+
+#if defined(TIM0_COMPA_vect) && !defined(IGNORE_TIM0_COMPA_vect)
+ISR(TIM0_COMPA_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIM0_COMPA_vect_num]();
+}
+#endif
+
+#if defined(TIM0_COMPB_vect) && !defined(IGNORE_TIM0_COMPB_vect)
+ISR(TIM0_COMPB_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIM0_COMPB_vect_num]();
+}
+#endif
+
+#if defined(TIM0_OVF_vect) && !defined(IGNORE_TIM0_OVF_vect)
+ISR(TIM0_OVF_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIM0_OVF_vect_num]();
+}
+#endif
+
+#if defined(TIM1_CAPT_vect) && !defined(IGNORE_TIM1_CAPT_vect)
+ISR(TIM1_CAPT_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIM1_CAPT_vect_num]();
+}
+#endif
+
+#if defined(TIM1_COMPA_vect) && !defined(IGNORE_TIM1_COMPA_vect)
+ISR(TIM1_COMPA_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIM1_COMPA_vect_num]();
+}
+#endif
+
+#if defined(TIM1_COMPB_vect) && !defined(IGNORE_TIM1_COMPB_vect)
+ISR(TIM1_COMPB_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIM1_COMPB_vect_num]();
+}
+#endif
+
+#if defined(TIM1_OVF_vect) && !defined(IGNORE_TIM1_OVF_vect)
+ISR(TIM1_OVF_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIM1_OVF_vect_num]();
+}
+#endif
+
+#if defined(TIMER0_CAPT_vect) && !defined(IGNORE_TIMER0_CAPT_vect)
+ISR(TIMER0_CAPT_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER0_CAPT_vect_num]();
+}
+#endif
+
+#if defined(TIMER0_COMPA_vect) && !defined(IGNORE_TIMER0_COMPA_vect)
+ISR(TIMER0_COMPA_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER0_COMPA_vect_num]();
+}
+#endif
+
+#if defined(TIMER0_COMPB_vect) && !defined(IGNORE_TIMER0_COMPB_vect)
+ISR(TIMER0_COMPB_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER0_COMPB_vect_num]();
+}
+#endif
+
+#if defined(TIMER0_COMP_A_vect) && !defined(IGNORE_TIMER0_COMP_A_vect)
+ISR(TIMER0_COMP_A_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER0_COMP_A_vect_num]();
+}
+#endif
+
+#if defined(TIMER0_COMP_vect) && !defined(IGNORE_TIMER0_COMP_vect)
+ISR(TIMER0_COMP_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER0_COMP_vect_num]();
+}
+#endif
+
+#if defined(TIMER0_OVF0_vect) && !defined(IGNORE_TIMER0_OVF0_vect)
+ISR(TIMER0_OVF0_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER0_OVF0_vect_num]();
+}
+#endif
+
+#if defined(TIMER0_OVF_vect) && !defined(IGNORE_TIMER0_OVF_vect)
+ISR(TIMER0_OVF_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER0_OVF_vect_num]();
+}
+#endif
+
+#if defined(TIMER1_CAPT1_vect) && !defined(IGNORE_TIMER1_CAPT1_vect)
+ISR(TIMER1_CAPT1_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER1_CAPT1_vect_num]();
+}
+#endif
+
+#if defined(TIMER1_CAPT_vect) && !defined(IGNORE_TIMER1_CAPT_vect)
+ISR(TIMER1_CAPT_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER1_CAPT_vect_num]();
+}
+#endif
+
+#if defined(TIMER1_CMPA_vect) && !defined(IGNORE_TIMER1_CMPA_vect)
+ISR(TIMER1_CMPA_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER1_CMPA_vect_num]();
+}
+#endif
+
+#if defined(TIMER1_CMPB_vect) && !defined(IGNORE_TIMER1_CMPB_vect)
+ISR(TIMER1_CMPB_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER1_CMPB_vect_num]();
+}
+#endif
+
+#if defined(TIMER1_COMP1_vect) && !defined(IGNORE_TIMER1_COMP1_vect)
+ISR(TIMER1_COMP1_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER1_COMP1_vect_num]();
+}
+#endif
+
+#if defined(TIMER1_COMPA_vect) && !defined(IGNORE_TIMER1_COMPA_vect)
+ISR(TIMER1_COMPA_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER1_COMPA_vect_num]();
+}
+#endif
+
+#if defined(TIMER1_COMPB_vect) && !defined(IGNORE_TIMER1_COMPB_vect)
+ISR(TIMER1_COMPB_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER1_COMPB_vect_num]();
+}
+#endif
+
+#if defined(TIMER1_COMPC_vect) && !defined(IGNORE_TIMER1_COMPC_vect)
+ISR(TIMER1_COMPC_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER1_COMPC_vect_num]();
+}
+#endif
+
+#if defined(TIMER1_COMPD_vect) && !defined(IGNORE_TIMER1_COMPD_vect)
+ISR(TIMER1_COMPD_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER1_COMPD_vect_num]();
+}
+#endif
+
+#if defined(TIMER1_COMP_vect) && !defined(IGNORE_TIMER1_COMP_vect)
+ISR(TIMER1_COMP_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER1_COMP_vect_num]();
+}
+#endif
+
+#if defined(TIMER1_OVF1_vect) && !defined(IGNORE_TIMER1_OVF1_vect)
+ISR(TIMER1_OVF1_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER1_OVF1_vect_num]();
+}
+#endif
+
+#if defined(TIMER1_OVF_vect) && !defined(IGNORE_TIMER1_OVF_vect)
+ISR(TIMER1_OVF_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER1_OVF_vect_num]();
+}
+#endif
+
+#if defined(TIMER2_COMPA_vect) && !defined(IGNORE_TIMER2_COMPA_vect)
+ISR(TIMER2_COMPA_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER2_COMPA_vect_num]();
+}
+#endif
+
+#if defined(TIMER2_COMPB_vect) && !defined(IGNORE_TIMER2_COMPB_vect)
+ISR(TIMER2_COMPB_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER2_COMPB_vect_num]();
+}
+#endif
+
+#if defined(TIMER2_COMP_vect) && !defined(IGNORE_TIMER2_COMP_vect)
+ISR(TIMER2_COMP_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER2_COMP_vect_num]();
+}
+#endif
+
+#if defined(TIMER2_OVF_vect) && !defined(IGNORE_TIMER2_OVF_vect)
+ISR(TIMER2_OVF_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER2_OVF_vect_num]();
+}
+#endif
+
+#if defined(TIMER3_CAPT_vect) && !defined(IGNORE_TIMER3_CAPT_vect)
+ISR(TIMER3_CAPT_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER3_CAPT_vect_num]();
+}
+#endif
+
+#if defined(TIMER3_COMPA_vect) && !defined(IGNORE_TIMER3_COMPA_vect)
+ISR(TIMER3_COMPA_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER3_COMPA_vect_num]();
+}
+#endif
+
+#if defined(TIMER3_COMPB_vect) && !defined(IGNORE_TIMER3_COMPB_vect)
+ISR(TIMER3_COMPB_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER3_COMPB_vect_num]();
+}
+#endif
+
+#if defined(TIMER3_COMPC_vect) && !defined(IGNORE_TIMER3_COMPC_vect)
+ISR(TIMER3_COMPC_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER3_COMPC_vect_num]();
+}
+#endif
+
+#if defined(TIMER3_OVF_vect) && !defined(IGNORE_TIMER3_OVF_vect)
+ISR(TIMER3_OVF_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER3_OVF_vect_num]();
+}
+#endif
+
+#if defined(TIMER4_CAPT_vect) && !defined(IGNORE_TIMER4_CAPT_vect)
+ISR(TIMER4_CAPT_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER4_CAPT_vect_num]();
+}
+#endif
+
+#if defined(TIMER4_COMPA_vect) && !defined(IGNORE_TIMER4_COMPA_vect)
+ISR(TIMER4_COMPA_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER4_COMPA_vect_num]();
+}
+#endif
+
+#if defined(TIMER4_COMPB_vect) && !defined(IGNORE_TIMER4_COMPB_vect)
+ISR(TIMER4_COMPB_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER4_COMPB_vect_num]();
+}
+#endif
+
+#if defined(TIMER4_COMPC_vect) && !defined(IGNORE_TIMER4_COMPC_vect)
+ISR(TIMER4_COMPC_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER4_COMPC_vect_num]();
+}
+#endif
+
+#if defined(TIMER4_OVF_vect) && !defined(IGNORE_TIMER4_OVF_vect)
+ISR(TIMER4_OVF_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER4_OVF_vect_num]();
+}
+#endif
+
+#if defined(TIMER5_CAPT_vect) && !defined(IGNORE_TIMER5_CAPT_vect)
+ISR(TIMER5_CAPT_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER5_CAPT_vect_num]();
+}
+#endif
+
+#if defined(TIMER5_COMPA_vect) && !defined(IGNORE_TIMER5_COMPA_vect)
+ISR(TIMER5_COMPA_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER5_COMPA_vect_num]();
+}
+#endif
+
+#if defined(TIMER5_COMPB_vect) && !defined(IGNORE_TIMER5_COMPB_vect)
+ISR(TIMER5_COMPB_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER5_COMPB_vect_num]();
+}
+#endif
+
+#if defined(TIMER5_COMPC_vect) && !defined(IGNORE_TIMER5_COMPC_vect)
+ISR(TIMER5_COMPC_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER5_COMPC_vect_num]();
+}
+#endif
+
+#if defined(TIMER5_OVF_vect) && !defined(IGNORE_TIMER5_OVF_vect)
+ISR(TIMER5_OVF_vect, __attribute__((weak)))
+{
+	InterruptManager::interrupts[TIMER5_OVF_vect_num]();
 }
 #endif
 
@@ -237,13 +664,6 @@ ISR(UART_UDRE_vect, __attribute__((weak)))
 ISR(USART0_RXC_vect, __attribute__((weak)))
 {
 	InterruptManager::interrupts[USART0_RXC_vect_num]();
-}
-#endif
-
-#if defined(USART0_RX_vect) && !defined(IGNORE_USART0_RX_vect)
-ISR(USART0_RX_vect, __attribute__((weak)))
-{
-	InterruptManager::interrupts[USART0_RX_vect_num]();
 }
 #endif
 
@@ -349,13 +769,6 @@ ISR(USART3_UDRE_vect, __attribute__((weak)))
 ISR(USART_RXC_vect, __attribute__((weak)))
 {
 	InterruptManager::interrupts[USART_RXC_vect_num]();
-}
-#endif
-
-#if defined(USART_RX_vect) && !defined(IGNORE_USART_RX_vect)
-ISR(USART_RX_vect, __attribute__((weak)))
-{
-	InterruptManager::interrupts[USART_RX_vect_num]();
 }
 #endif
 

@@ -2,7 +2,6 @@
 #define _GPIO_HPP
 
 #include <avr/io.h>
-#include "interrupt_manager.hpp"
 //TODO Define du mode debug pour toute la lib (mise à jour des registres userfriendly)
 /*
  *-vérification du pointeur de fonction dans les ISR
@@ -126,122 +125,6 @@ class Int;
 
 #ifdef INT7
 #include "gpio/int_7.hpp"
-#endif
-
-/*
- *ISR
- */
-
-#if defined(EXT_INT0_vect) && !defined(IGNORE_EXT_INT0_vect)
-ISR(EXT_INT0_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[EXT_INT0_vect_num]();
-}
-#endif
-
-#if defined(INT0_vect) && !defined(IGNORE_INT0_vect)
-ISR(INT0_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[INT0_vect_num]();
-}
-#endif
-
-#if defined(INT1_vect) && !defined(IGNORE_INT1_vect)
-ISR(INT1_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[INT1_vect_num]();
-}
-#endif
-
-#if defined(INT2_vect) && !defined(IGNORE_INT2_vect)
-ISR(INT2_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[INT2_vect_num]();
-}
-#endif
-
-#if defined(INT3_vect) && !defined(IGNORE_INT3_vect)
-ISR(INT3_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[INT3_vect_num]();
-}
-#endif
-
-#if defined(INT4_vect) && !defined(IGNORE_INT4_vect)
-ISR(INT4_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[INT4_vect_num]();
-}
-#endif
-
-#if defined(INT5_vect) && !defined(IGNORE_INT5_vect)
-ISR(INT5_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[INT5_vect_num]();
-}
-#endif
-
-#if defined(INT6_vect) && !defined(IGNORE_INT6_vect)
-ISR(INT6_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[INT6_vect_num]();
-}
-#endif
-
-#if defined(INT7_vect) && !defined(IGNORE_INT7_vect)
-ISR(INT7_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[INT7_vect_num]();
-}
-#endif
-
-#if defined(IO_PINS_vect) && !defined(IGNORE_IO_PINS_vect)
-ISR(IO_PINS_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[IO_PINS_vect_num]();
-}
-#endif
-
-#if defined(LOWLEVEL_IO_PINS_vect) && !defined(IGNORE_LOWLEVEL_IO_PINS_vect)
-ISR(LOWLEVEL_IO_PINS_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[LOWLEVEL_IO_PINS_vect_num]();
-}
-#endif
-
-#if defined(PCINT0_vect) && !defined(IGNORE_PCINT0_vect)
-ISR(PCINT0_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[PCINT0_vect_num]();
-}
-#endif
-
-#if defined(PCINT1_vect) && !defined(IGNORE_PCINT1_vect)
-ISR(PCINT1_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[PCINT1_vect_num]();
-}
-#endif
-
-#if defined(PCINT2_vect) && !defined(IGNORE_PCINT2_vect)
-ISR(PCINT2_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[PCINT2_vect_num]();
-}
-#endif
-
-#if defined(PCINT3_vect) && !defined(IGNORE_PCINT3_vect)
-ISR(PCINT3_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[PCINT3_vect_num]();
-}
-#endif
-
-#if defined(PCINT_vect) && !defined(IGNORE_PCINT_vect)
-ISR(PCINT_vect, __attribute__((weak)))
-{
-        InterruptManager::interrupts[PCINT_vect_num]();
-}
 #endif
 
 #endif // GPIO_HPP

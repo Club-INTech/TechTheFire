@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #define rx_buffer__SIZE 32
 
@@ -272,6 +273,28 @@ public:
     {
         write(val, precision);
         send_ln();
+    }
+
+    static inline void printf(const char *format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        char buffer[64];
+        vsnprintf(buffer, 64, format, args);
+        write(buffer);
+        va_end(args);
+    }
+
+    __attribute__((format(printf, 1, 0)))
+    static inline void printfln(const char *format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        char buffer[64];
+        vsnprintf(buffer, 64, format, args);
+        write(buffer);
+        write("\r\n");
+        va_end(args);
     }
 
     /**
