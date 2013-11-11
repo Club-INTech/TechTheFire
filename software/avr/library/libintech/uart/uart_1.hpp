@@ -56,11 +56,4 @@ inline void Serial<1>::disable_tx() {
 
 typedef Uart<1> uart1;
 
-#if defined(USART1_RX_vect) && !defined(IGNORE_USART1_RX_vect)
-ISR(USART1_RX_vect,__attribute__((weak)))
-{
-	    Uart<1>::store_char(UDR1);
-}
-#endif
-
 #endif // UART_1_HPP

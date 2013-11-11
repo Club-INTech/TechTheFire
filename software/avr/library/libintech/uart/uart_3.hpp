@@ -57,11 +57,4 @@ inline void Uart<3>::disable_tx() {
 
 typedef Uart<3> uart3;
 
-#if defined(USART3_RX_vect) && !defined(IGNORE_USART3_RX_vect)
-ISR(USART3_RX_vect,__attribute__((weak)))
-{
-	    Uart<3>::store_char(UDR3);
-}
-#endif
-
 #endif // UART_3_HPP_

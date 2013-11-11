@@ -57,11 +57,4 @@ inline void Uart<2>::disable_tx() {
 
 typedef Uart<2> uart2;
 
-#if defined(USART2_RX_vect) && !defined(IGNORE_USART2_RX_vect)
-ISR(USART2_RX_vect,__attribute__((weak)))
-{
-	    Uart<2>::store_char(UDR2);
-}
-#endif
-
 #endif // UART_2_HPP_
