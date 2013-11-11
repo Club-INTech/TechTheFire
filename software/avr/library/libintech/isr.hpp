@@ -1,6 +1,7 @@
-
 #include <avr/interrupt.h>
+#include <avr/io.h>
 #include "interrupt_manager.hpp"
+#include "uart.hpp"
 
 #if defined(ADC_vect) && !defined(IGNORE_ADC_vect)
 ISR(ADC_vect)
