@@ -33,24 +33,24 @@ inline void Uart<1>::change_baudrate(uint32_t new_baudrate) {
 }
 
 template<>
-inline void Serial<1>::enable_rx() {
+inline void Uart<1>::enable_rx() {
 	UCSR1B |= (1 << RXCIE1);
 	UCSR1B |= (1 << RXEN1);
 }
 
 template<>
-inline void Serial<1>::disable_rx() {
+inline void Uart<1>::disable_rx() {
 	UCSR1B &= ~(1 << RXCIE1);
 	UCSR1B &= ~(1 << RXEN1);
 }
 
 template<>
-inline void Serial<1>::enable_tx() {
+inline void Uart<1>::enable_tx() {
 	UCSR1B |= (1 << TXEN1);
 }
 
 template<>
-inline void Serial<1>::disable_tx() {
+inline void Uart<1>::disable_tx() {
 	UCSR1B &= ~(1 << TXEN1);
 }
 
