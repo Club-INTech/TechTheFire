@@ -1,6 +1,5 @@
-#include <libintech/serial/serial_0_interrupt.hpp>
-#include <libintech/serial/serial_0.hpp>
 #include <libintech/utils.h>
+#include <libintech/uart.hpp>
 #include <util/delay.h>
 #include <avr/io.h>
 #include <stdint.h>
@@ -8,8 +7,8 @@
 int main() 
 {
     //Initialisation série
-    Serial<0>::init();
-    Serial<0>::change_baudrate(9600);
+    uart0::init();
+    uart0::change_baudrate(9600);
     sei();
     
     // ------------------
@@ -18,7 +17,7 @@ int main()
     
     // Envoie une chaine
     char string[10] = "char*";
-    Serial<0>::print(string);
+    uart0::print(string);
         
     _delay_ms(500);
 

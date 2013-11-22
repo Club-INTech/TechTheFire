@@ -1,21 +1,22 @@
 #include <stdint.h>
 #include <libintech/gpio.hpp>
-#include <util/delay.h>
-#include <libintech/serial/serial_0_interrupt.hpp>
-#include <libintech/serial/serial_0.hpp>
+#include <libintech/uart.hpp>
+#include <libintech/isr.hpp>
+
+INITIALISE_INTERRUPT_MANAGER();
 
 int main()
 {	
-	Serial<0>::init();
-	Serial<0>::change_baudrate(9600);
+	uart0::init();
+	uart0::change_baudrate(9600);
 			
 	while (1)
 	{
 		char a[8] ;
-		Serial<0>::read(a);
+		uart0::read(a);
 		if (strcmp(a, "?") == 0)
 		{
-			Serial<0>::print("Hello world !");
+			uart0::printfln("Hello world !");
 
 		}
 

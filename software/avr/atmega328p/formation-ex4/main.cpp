@@ -1,7 +1,5 @@
 #include <stdint.h>
 #include <util/delay.h>
-#include <libintech/serial/serial_0_interrupt.hpp>
-#include <libintech/serial/serial_0.hpp>
 #include <libintech/timer.hpp>
 #include <libintech/gpio.hpp>
 

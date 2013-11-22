@@ -2,6 +2,7 @@
 #define _UART_1_HPP_
 
 #include <stdint.h>
+#include <avr/interrupt.h>
 
 #define INIT_BAUDRATE_1 9600
 

@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <avr/io.h>
 
 #define rx_buffer__SIZE 32
 
