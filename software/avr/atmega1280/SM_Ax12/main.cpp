@@ -1,7 +1,7 @@
 #include <stdint.h>
-
 #include "communication.hpp"
 #include <libintech/interrupt_manager.hpp>
+#include <libintech/isr.hpp>
 
 INITIALISE_INTERRUPT_MANAGER();
 

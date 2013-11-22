@@ -29,7 +29,7 @@ class Communication
 	{
 		if (strcmp(ordre,"?") == 0)
 		{
-			serial_pc::printfln("%d", 3);
+			serial_pc::printfln("3");
 		}
 		else if (strcmp(ordre,"angle") == 0)
 		{
@@ -39,7 +39,6 @@ class Communication
 		}
 		else if (strcmp(ordre,"pompe") == 0)
 		{
-			uint8_t i;
 			ax12.goTo(90);
 			_delay_ms(750);
 			ax12.goTo(250);
