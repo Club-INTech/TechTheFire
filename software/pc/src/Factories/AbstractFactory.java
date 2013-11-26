@@ -14,7 +14,7 @@ public interface AbstractFactory
 	
 	// Takes the ClassID to instanciate this class
 	public Object MakeFromID(int ClassID);
-	
+		
 	// Verify the avariability of provided class
 	public boolean canMake(String ClassName);
 	public boolean canMake(int ClassID);
