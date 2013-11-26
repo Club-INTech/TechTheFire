@@ -12,7 +12,7 @@ public class Feu extends Elements_de_jeu {
 	Orientation orientation = Orientation.UNDETERMINED ;
 	Colour colour = Colour.UNDETERMINED ;
 	boolean onFireplace = false ;
-	boolean stored  = false ;
+	boolean taken  = false ;
 	Vector position ;
 	
 	public void define_id(int a)	//Cette méthode appelée pour chaque feu fixe ses paramètres initiaux
@@ -43,92 +43,88 @@ public class Feu extends Elements_de_jeu {
 		switch (a)
 		{
 		case (1) :
-			{
 			this.position.set_x(600);
 			this.position.set_y(2100);
-			}
+			break;
 		case (2) :
-			{
 			this.position.set_x(800);
 			this.position.set_y(3000);
-			}
+			break;
 		case(3) :
-			{
 			this.orientation = Orientation.XPLUS;
 			this.colour = Colour.RED ;
 			this.position.set_x(1100);
 			this.position.set_y(2600);
-			}
+			break;
 		case(4) :
-			{
 			this.colour = Colour.YELLOW;
-			}
+			break;
 		case(5) :
-			{
 			this.colour = Colour.RED ;
-			}
+			break;
 		case(6) :
-			{
 			this.colour = Colour.YELLOW;
-			}
+			break;
 		case(7) :
-			{
 			this.orientation = Orientation.YPLUS;
 			this.colour = Colour.RED;
 			this.position.set_x(1600);
 			this.position.set_y(2100);
-			}
+			break;
 		case(8) :
-			{
 			this.orientation = Orientation.XPLUS;
 			this.colour = Colour.RED;
 			this.position.set_x(2000);
 			this.position.set_y(1700);
-			}
+			break;
 		case(9) :
-			{
 			this.orientation= Orientation.XPLUS;
 			this.colour= Colour.YELLOW;
 			this.position.set_x(2000);
 			this.position.set_y(1300);
-			}
+			break;
 		case(10) :
-			{
 			this.orientation=Orientation.YPLUS;
 			this.colour= Colour.RED;
 			this.position.set_x(1600);
 			this.position.set_y(900);
-			}
+			break;
 		case(11) :
-			{
 			this.colour=Colour.RED;
-			}
+			break;
 		case(12) :
-			{
 			this.colour=Colour.YELLOW;
-			}
+			break;
 		case(13) :
-			{
 			this.colour = Colour.RED;
-			}
+			break;
 		case(14) :
-			{
 			this.orientation = Orientation.XPLUS;
 			this.colour = Colour.YELLOW;
 			this.position.set_x(1100);
 			this.position.set_y(400);
-			}
+			break;
 		case(15) :
-			{
 			this.position.set_x(800);
 			this.position.set_y(0);
-			}
+			break;
 		case(16) :
-			{
 			this.position.set_x(600);
 			this.position.set_y(900);
-			}
+			break;
+		default :
+				 ;
 		}
 	}	
+	public void pickFire()
+	{
+		this.taken = true;
+		nbStoredFires ++;
+	}
 	
+	public void ejectFire()
+	{
+		this.onFireplace = true;
+		nbStoredFires --;
+	}
 }
