@@ -11,10 +11,13 @@ public class Feu extends Elements_de_jeu {
 	int height=0 ; //0=sol, chaque unité supplémentaire représente un feu en-dessous	
 	Orientation orientation = Orientation.UNDETERMINED ;
 	Colour colour = Colour.UNDETERMINED ;
-	boolean onFireplace = false ;
-	boolean taken  = false ;
-	Vector position ;
+	boolean onFireplace = false ;	// what is ?
+	boolean taken  = false ;	// IDEM
+	Vec2 position ;
 	
+
+	// TODO : Comment this ID to explain what is the matter of this function.
+	// Like the param a, what is it, and build a documentation of which ID coressponds to what.
 	public void define_id(int a)	//Cette méthode appelée pour chaque feu fixe ses paramètres initiaux
 	{
 		this.id = a;
@@ -22,16 +25,16 @@ public class Feu extends Elements_de_jeu {
 		{
 			this.orientation = Orientation.GROUND ;
 			this.height = (a-3);
-			this.position.set_x(1100);
-			this.position.set_y(2100);
+			this.position.x = 1100;
+			this.position.y = 2100;
 		}
 		
 		if ( a==11 || a==12 || a==13)
 		{
 			this.orientation = Orientation.GROUND ;
 			this.height = (a-10);
-			this.position.set_x(1100);
-			this.position.set_y(900);
+			this.position.x = 1100;
+			this.position.y = 900;
 		}
 		
 		if (a==1 || a==2 || a==15 ||a==16)
@@ -43,75 +46,76 @@ public class Feu extends Elements_de_jeu {
 		switch (a)
 		{
 		case (1) :
-			this.position.set_x(600);
-			this.position.set_y(2100);
-			break;
+			this.position.x = 600;
+			this.position.y = 2100;
+		break;
 		case (2) :
-			this.position.set_x(800);
-			this.position.set_y(3000);
-			break;
+			this.position.x = 800;
+			this.position.y = 3000;
+		break;
 		case(3) :
 			this.orientation = Orientation.XPLUS;
 			this.colour = Colour.RED ;
-			this.position.set_x(1100);
-			this.position.set_y(2600);
-			break;
+			this.position.x = 1100;
+			this.position.y = 2600;
+		break;
 		case(4) :
 			this.colour = Colour.YELLOW;
-			break;
+		break;
 		case(5) :
 			this.colour = Colour.RED ;
-			break;
+		break;
 		case(6) :
 			this.colour = Colour.YELLOW;
-			break;
+		break;
 		case(7) :
 			this.orientation = Orientation.YPLUS;
 			this.colour = Colour.RED;
-			this.position.set_x(1600);
-			this.position.set_y(2100);
-			break;
+			this.position.x = 1600;
+			this.position.y = 2100;
+		break;
 		case(8) :
 			this.orientation = Orientation.XPLUS;
 			this.colour = Colour.RED;
-			this.position.set_x(2000);
-			this.position.set_y(1700);
-			break;
+			this.position.x = 2000;
+			this.position.y = 1700;
+		break;
 		case(9) :
 			this.orientation= Orientation.XPLUS;
 			this.colour= Colour.YELLOW;
-			this.position.set_x(2000);
-			this.position.set_y(1300);
-			break;
+			this.position.x = 2000;
+			this.position.y = 1300;
+		break;
 		case(10) :
 			this.orientation=Orientation.YPLUS;
 			this.colour= Colour.RED;
-			this.position.set_x(1600);
-			this.position.set_y(900);
-			break;
+			this.position.x = 1600;
+			this.position.y = 900;
+		break;
 		case(11) :
 			this.colour=Colour.RED;
 			break;
 		case(12) :
 			this.colour=Colour.YELLOW;
-			break;
+		break;
 		case(13) :
 			this.colour = Colour.RED;
-			break;
+		break;
 		case(14) :
 			this.orientation = Orientation.XPLUS;
 			this.colour = Colour.YELLOW;
-			this.position.set_x(1100);
-			this.position.set_y(400);
-			break;
+			this.position.x = 1100;
+			this.position.y = 400;
+		break;
 		case(15) :
-			this.position.set_x(800);
-			this.position.set_y(0);
-			break;
+			this.position.x = 800;
+			this.position.y = 0;
+		break;
 		case(16) :
-			this.position.set_x(600);
-			this.position.set_y(900);
-			break;
+			this.position.x = 600;
+			this.position.y = 900;
+		break;
+
 		default :
 				 ;
 		}
