@@ -9,15 +9,18 @@
 
 public interface AbstractFactory 
 {
-	public:
-		// Takes a string and parse it to instanciate the coressponding class
-		Object MakeFromString(String ObjDescription);
+	// Takes a string and parse it to instanciate the coressponding class
+	public Object MakeFromString(String ClassName);
 	
-		// Takes the ClassID to instanciate this class
-		Object MakeFromString(int ClassID);
+	// Takes the ClassID to instanciate this class
+	public Object MakeFromID(int ClassID);
 	
-	private:
+	// Verify the avariability of provided class
+	public boolean canMake(String ClassName);
+	public boolean canMake(int ClassID);
+	
+	
 		
-		// Map of known supported types
-		
+	// Map of supported types
+	private	Hashtable knownTypes;
 }
