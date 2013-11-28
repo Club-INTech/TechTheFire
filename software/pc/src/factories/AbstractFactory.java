@@ -5,7 +5,7 @@
  * This interface should be implemented by all factories throughout the robot.
  * Author : Martial
  */
-package Factories;
+package factories;
 
 public interface AbstractFactory 
 {
