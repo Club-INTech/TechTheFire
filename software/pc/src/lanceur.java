@@ -2,12 +2,13 @@
 public class lanceur {
 
 	public static void main(String[] args) {
-		Container container = Container.initialiser();
-		Log log = (Log)container.get_service("Log");
+		SerialManager serialManager = new SerialManager();
 		
-		log.debug("Test");
-		log.warning("Test");
-		log.critical("Test");
+		serialManager.checkSerial();
+		serialManager.createSerial();
+		String i = serialManager.serieAsservissement.communiquer("?", 1);
+		
+		System.out.println(i);
 		
 	}
 
