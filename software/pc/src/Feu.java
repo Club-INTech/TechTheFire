@@ -1,6 +1,8 @@
+import SmartMath.Vec2;
+
 
 public class Feu extends Elements_de_jeu {
-	public Feu(int id, int height, Orientation orientation, Colour colour, Position position)
+	public Feu(int id, int height, Orientation orientation, Colour colour, Vec2 position)
 	{
 		this.id = id;
 		this.height = height;
