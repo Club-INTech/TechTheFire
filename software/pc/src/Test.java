@@ -1,4 +1,4 @@
-import robot.SerialManager;
+
 /**
  * Classe à modifier pour que chacun fasse ses tests sans faire chier tout le monde!
  * Bien évidement, ce n'est pas à committer
@@ -8,12 +8,5 @@ import robot.SerialManager;
 public class Test {
 	public static void test()
 	{
-		SerialManager serialManager = new SerialManager();
-		
-		serialManager.checkSerial();
-		serialManager.createSerial();
-		System.out.println(serialManager.serieAsservissement.communiquer("?", 1));
-		
-		serialManager.serieAsservissement.close();
 	}
 }
