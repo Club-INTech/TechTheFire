@@ -1,7 +1,7 @@
 package table;
 
 import robot.Orientation;
-import SmartMath.Vec2;
+import smartMath.Vec2;
 
 public class Feu extends Elements_de_jeu {
 
