@@ -18,3 +18,4 @@ obj/
 project.properties
 hardware/*/*.b\#*
 hardware/*/*.s\#*
+/software/pc/src/Test.java
