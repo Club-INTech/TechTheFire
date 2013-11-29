@@ -5,7 +5,7 @@
  * This interface should be implemented by all factories throughout the robot.
  * Author : Martial
  */
-package Factories;
+package factories;
 
 public interface AbstractFactory 
 {
@@ -19,8 +19,6 @@ public interface AbstractFactory
 	public boolean canMake(String ClassName);
 	public boolean canMake(int ClassID);
 	
-	
-		
 	// Map of supported types
 	//private Hashtable<Integer, String> knownTypes; // Cannot enforce this mechanism in an interface.
 }
