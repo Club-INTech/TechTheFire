@@ -6,6 +6,7 @@
  * This example is a singleton, because most factories are in real world 
  * applications.
  * Author : Martial
+
  */
 
 /*
@@ -16,8 +17,12 @@ package Factories;
 
 import java.util.Hashtable;
 
+
 public class ExempleFactory implements AbstractFactory
 {
+	// List of class that this factory can instantiate.
+	// It converts a CLassID integer to a String containing the class name.
+	// This mechanism is strongly recommended
 	private Hashtable<Integer, String> knownTypes;
 	
 	// ========================
@@ -64,6 +69,13 @@ public class ExempleFactory implements AbstractFactory
 			return MakeTrompet();
 		else if (ObjDescription == "Mamoth")
 			return MakeMamoth();
+		else 
+		{
+			// Here, do log an error in log files, providing ObjDescription and 
+			// a dump of knownTypes
+			return null;
+		}
+			
 		
 	}
 
@@ -82,23 +94,33 @@ public class ExempleFactory implements AbstractFactory
 	// ========================
 	// Building matters :
 	// ========================
+
+	// Theses class descriptions are just here to avoid Type error
+	// You can use any existing type without defining it here
+	public class Pizza {}
+	public class Trompet {}
+	public class Mamoth {}
+	
 	
 	// Constructors of known types
     private Pizza MakePizza()
     {
     	// Delicious pizza delivered directly to INTech
+		return null;
     }
     
 
     private Trompet MakeTrompet()
     {
     	// Remplace ronald troll when INTech's amplifier is HS
+		return null;
     }
     
 
     private Mamoth MakeMamoth()
     {
     	// Particularly well known target for ping pong balls 
+		return null;
     }
     
     

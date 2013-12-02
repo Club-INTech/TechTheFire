@@ -1,7 +1,9 @@
 
-public class lanceur {
+public class lanceur 
+{
 
-	public static void main(String[] args) {
+	public static void main(String[] args) 
+	{
 		Container container = Container.initialiser();
 		Log log = (Log)container.get_service("Log");
 		
