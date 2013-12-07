@@ -18,3 +18,5 @@ obj/
 project.properties
 hardware/*/*.b\#*
 hardware/*/*.s\#*
+*.class
+*/*.class
