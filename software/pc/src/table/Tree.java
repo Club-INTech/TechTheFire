@@ -7,7 +7,10 @@ public class Tree extends Game_Element {
 	private int tree_id; //depuis le haut vers le bas, de 0 à 3
 	private float radius = 150 ;
 	Fruit arrayFruit[] = new Fruit[6];
-	
+
+	// combien gauche()
+	// combien droit()
+
 	public Tree (Vec2 position, int id, Vec2 pos0, Vec2 pos1, Vec2 pos2, Vec2 pos3, Vec2 pos4, Vec2 pos5)
 	{
 		super(position);
