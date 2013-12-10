@@ -1,6 +1,10 @@
-package robot;
+package robot.cartes;
 
-import smartMath.Vec2;
+import java.util.Hashtable;
+
+import robot.serial.Serial;
+import utils.*;
+import container.Service;
 
 /**
  *  Service de déplacements bas niveau. Méthodes non bloquantes.
@@ -8,15 +12,14 @@ import smartMath.Vec2;
  * @author PF
  */
 
-public class Deplacements {
+public class Deplacements implements Service {
 
-	private int PWMmoteurGauche = 0;
-	private int PWMmoteurDroit = 0;
-	private int erreur_rotation = 0;
-	private int erreur_translation = 0;
-	private int derivee_erreur_rotation = 0;
-	private int derivee_erreur_translation = 0;
-	
+	// Dépendances
+	private Log log;
+	private Serial serie;
+
+	private Hashtable<String, Integer> infos_stoppage_enMouvement;
+		
 	private long debut_timer_blocage;
 	
     private boolean enCoursDeBlocage = false;
@@ -24,9 +27,19 @@ public class Deplacements {
     /**
 	 * Constructeur
 	 */
-	public Deplacements()
+	public Deplacements(Service log, Service serie)
 	{
+		this.log = (Log)log;
+		this.serie = (Serial)serie;
 		
+		infos_stoppage_enMouvement = new Hashtable<String, Integer>();
+		infos_stoppage_enMouvement.put("PWMmoteurGauche", 0);
+		infos_stoppage_enMouvement.put("PWMmoteurDroit", 0);
+		infos_stoppage_enMouvement.put("erreur_rotation", 0);
+		infos_stoppage_enMouvement.put("erreur_translation", 0);
+		infos_stoppage_enMouvement.put("derivee_erreur_rotation", 0);
+		infos_stoppage_enMouvement.put("derivee_erreur_translation", 0);
+
 	}
 
 	/**
@@ -49,7 +62,7 @@ public class Deplacements {
 			{
 				if(System.currentTimeMillis() - debut_timer_blocage > 500)
 				{
-					// log warning: le robot a dû s'arrêter suite à un patinage.
+					log.warning("le robot a dû s'arrêter suite à un patinage.", this);
 					stopper();
 					blocage = true;
 				}
@@ -85,32 +98,31 @@ public class Deplacements {
 	}
 	
 	/** 
-	 * TODO
 	 * Fait avancer le robot. Méthode non bloquante
 	 * @param distance
 	 */
 	public void avancer(int distance)
 	{
-		
+		String chaines[] = {"d", Integer.toString(distance)};
+		serie.communiquer(chaines, 0);
 	}
 
 	/** 
-	 * TODO
 	 * Fait tourner le robot. Méthode non bloquante
 	 * @param angle
 	 */
 	public void tourner(int angle)
 	{
-		
+		String chaines[] = {"t", Integer.toString(angle)};
+		serie.communiquer(chaines, 0);		
 	}
 	
 	/**
-	 * TODO
 	 * Arrête le robot
 	 */
 	public void stopper()
 	{
-		
+		serie.communiquer("stop", 0);
 	}
 	
 	/**
@@ -119,7 +131,8 @@ public class Deplacements {
 	 */
 	public void set_x(int x)
 	{
-		
+		String chaines[] = {"cx", Integer.toString(x)};
+		serie.communiquer(chaines, 0);
 	}
 
 	/**
@@ -128,7 +141,8 @@ public class Deplacements {
 	 */
 	public void set_y(int y)
 	{
-		
+		String chaines[] = {"cy", Integer.toString(y)};
+		serie.communiquer(chaines, 0);	
 	}
 	
 	/**
@@ -137,7 +151,8 @@ public class Deplacements {
 	 */
 	public void set_orientation(int orientation)
 	{
-		
+		String chaines[] = {"co", Integer.toString(orientation)};
+		serie.communiquer(chaines, 0);
 	}
 	
 	/**
@@ -145,7 +160,7 @@ public class Deplacements {
 	 */
 	public void activer_asservissement_translation()
 	{
-		
+		serie.communiquer("ct1", 0);
 	}
 
 	/**
@@ -153,7 +168,7 @@ public class Deplacements {
 	 */
 	public void desactiver_asservissement_rotation()
 	{
-		
+		serie.communiquer("cr1", 0);
 	}
 
 	/**
@@ -161,7 +176,7 @@ public class Deplacements {
 	 */
 	public void desactiver_asservissement_translation()
 	{
-		
+		serie.communiquer("ct0", 0);
 	}
 
 	/**
@@ -169,7 +184,7 @@ public class Deplacements {
 	 */
 	public void activer_asservissement_rotation()
 	{
-		
+		serie.communiquer("cr0", 0);
 	}
 
 	/**
@@ -178,7 +193,25 @@ public class Deplacements {
 	 */
 	public void set_vitesse_translation(int pwm_max)
 	{
+		double kp, kd;
+		if(pwm_max > 120)
+		{
+			kp = 0.8;
+			kd = 22.0;
+		}
+		else if(pwm_max > 55)
+		{
+			kp = 0.8;
+			kd = 16.0;
+		}
+		else
+		{
+			kp = 0.6;
+			kd = 10.0;
+		}
 		
+		String chaines[] = {"ctv", Double.toString(kp), Double.toString(kd), Integer.toString(pwm_max)};
+		serie.communiquer(chaines, 0);			
 	}
 
 	/**
@@ -187,24 +220,64 @@ public class Deplacements {
 	 */
 	public void set_vitesse_rotation(int pwm_max)
 	{
+		double kp, kd;
+		if(pwm_max > 155)
+		{
+			kp = 1.0;
+			kd = 23.0;
+		}
+		else if(pwm_max > 90)
+		{
+			kp = 1.0;
+			kd = 19.0;
+		}
+		else
+		{
+			kp = 0.8;
+			kd = 15.0;
+		}
 		
+		String chaines[] = {"crv", Double.toString(kp), Double.toString(kd), Integer.toString(pwm_max)};
+		serie.communiquer(chaines, 0);
 	}
 
 	/**
 	 * Met à jour PWMmoteurGauche, PWMmoteurDroit, erreur_rotation, erreur_translation, derivee_erreur_rotation, derivee_erreur_translation
 	 */
-	public void maj_infos_stoppage_enMouvement()
+	public Hashtable<String, Integer> maj_infos_stoppage_enMouvement()
 	{
+		String[] infos_string = serie.communiquer("?info", 4);
+		int[] infos_int = new int[4];
+
+		for(int i = 0; i < 4; i++)
+			infos_int[i] = Integer.parseInt(infos_string[i]);
 		
+		int deriv_erreur_rot = infos_int[2] - infos_stoppage_enMouvement.get("erreur_rotation");
+		int deriv_erreur_tra = infos_int[3] - infos_stoppage_enMouvement.get("erreur_translation");
+		
+        infos_stoppage_enMouvement.put("PWMmoteurGauche", infos_int[0]);
+        infos_stoppage_enMouvement.put("PWMmoteurDroit", infos_int[1]);
+        infos_stoppage_enMouvement.put("erreur_rotation", infos_int[2]);
+        infos_stoppage_enMouvement.put("erreur_translation", infos_int[3]);
+        infos_stoppage_enMouvement.put("derivee_erreur_rotation", deriv_erreur_rot);
+        infos_stoppage_enMouvement.put("derivee_erreur_translation", deriv_erreur_tra);
+
+	return infos_stoppage_enMouvement;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Renvoie x, y et orientation du robot
+	 * @return un tableau de 3 cases: [x, y, orientation]
 	 */
-	public Vec2 get_infos_x_y_orientation()
+	public int[] get_infos_x_y_orientation()
 	{
-		return new Vec2(0,0);
+		String[] infos_string = serie.communiquer("?xyo", 3);
+		int[] infos_int = new int[3];
+
+		for(int i = 0; i < 3; i++)
+			infos_int[i] = Integer.parseInt(infos_string[i]);
+
+		return infos_int;
 	}
 
 	/**
@@ -212,7 +285,7 @@ public class Deplacements {
 	 */
 	public void arret_final()
 	{
-		
+		serie.close();
 	}
 	
 }

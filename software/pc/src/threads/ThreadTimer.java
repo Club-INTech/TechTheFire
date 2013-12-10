@@ -2,9 +2,9 @@ package threads;
 
 import container.Service;
 
-public class ThreadPosition extends AbstractThread {
+public class ThreadTimer extends AbstractThread {
 
-	ThreadPosition(Service config, Service log)
+	ThreadTimer(Service config, Service log)
 	{
 		super(config, log);
 	}
