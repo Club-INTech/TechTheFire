@@ -58,7 +58,10 @@ class Communication
 		{
 			this->rateauHaut ();
 		}
-		
+		else if ( strcmp ( ordre , "rbb" ) == 0 )			//rbb = rateauBasBas
+		{
+			this->rateauBasBas ();
+		}
 	}
 
 //actions du bac		
@@ -69,7 +72,7 @@ class Communication
 	}
 	void bacHaut ()
 	{
-		bac.goTo (100);
+		bac.goTo (120);
 	}
 
 //actions du rateau
@@ -82,9 +85,13 @@ class Communication
 	{
 		rateau.goTo (150);
 	}
+	void rateauBasBas ()
+	{
+		rateau.goTo (30);		
+	}	
 	void rateauHaut ()
 	{
-		rateau.goTo (90);
+		rateau.goTo (110);
 	}
 	 
 	
