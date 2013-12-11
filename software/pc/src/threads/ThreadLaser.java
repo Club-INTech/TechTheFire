@@ -4,6 +4,12 @@ import robot.cartes.Laser;
 import table.Table;
 import container.Service;
 
+/**
+ * Thread de gestion de la balise laser
+ * @author pf
+ *
+ */
+
 public class ThreadLaser extends AbstractThread {
 
 	private Laser laser;

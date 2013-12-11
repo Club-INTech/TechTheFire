@@ -7,6 +7,12 @@ import utils.Log;
 import utils.Read_Ini;
 import container.Service;
 
+/**
+ * Classe qui gère la balise laser
+ * @author pf
+ *
+ */
+
 public class Laser implements Service {
 
 	// Dépendances
