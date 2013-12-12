@@ -22,4 +22,9 @@ public class Fruit extends Game_Element {
 		this.good = good;
 	}
 
+	public Fruit clone()
+	{
+		return new Fruit(position, fruit_id, taken, good);
+	}
+	
 }

@@ -14,4 +14,9 @@ public class Torch extends Game_Element {
 		this.mobile = mobile;
 		this.radius = rad;
 	}
+	
+	public Torch clone()
+	{
+		return new Torch(position, torch_id, mobile, radius);
+	}
 }

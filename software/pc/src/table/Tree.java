@@ -33,7 +33,10 @@ public class Tree extends Game_Element {
 	// TODO cloner l'array
 	public Tree clone()
 	{
-		return new Tree(position, tree_id, radius, arrayFruit);
+		Fruit[] cloned_arrayFruit = new Fruit[6];
+		for(int i = 0; i < 6; i++)		
+			cloned_arrayFruit[i] = arrayFruit[i].clone();
+		return new Tree(position, tree_id, radius, cloned_arrayFruit);
 	}
 	
 }
