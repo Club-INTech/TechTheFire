@@ -5,8 +5,8 @@ import smartMath.Vec2;
 public class Tree extends Game_Element {
 
 	private int tree_id; //depuis le haut vers le bas, de 0 Ã  3;
-	// 0 et 1 : c™tŽ droit
-	// 2 et 3 : c™tŽ gauche
+	// 0 et 1 : cï¿½tï¿½ droit
+	// 2 et 3 : cï¿½tï¿½ gauche
 	private float radius = 150 ;
 	private boolean taken = false;
 	Fruit arrayFruit[] = new Fruit[6];
@@ -61,11 +61,16 @@ public class Tree extends Game_Element {
 	{
 		int var = 0;
 		int i = 0;
-		while (i < 3 && this.arrayFruit[i].isGood()) {
-			if (this.arrayFruit[i].isTaken() == false) {
-				var++;
+		if (!(this.taken))
+		{
+			while (i < 3 && this.arrayFruit[i].isGood()) 
+			{
+				if (this.arrayFruit[i].isTaken() == false) 
+				{
+					var++;
+				}
+				i++;
 			}
-			i++;
 		}
 		return var;
 	}
@@ -74,18 +79,28 @@ public class Tree extends Game_Element {
 	{
 		int var = 0;
 		int i = 3;
-		while (i < 6 && this.arrayFruit[i].isGood()) {
-			if (this.arrayFruit[i].isTaken() == false) {
-				var++;
+		if (!(this.taken))
+		{
+			while (i < 6 && this.arrayFruit[i].isGood()) 
+			{
+				if (this.arrayFruit[i].isTaken() == false) 
+				{
+					var++;
+				}
+				i++;
 			}
-			i++;
 		}
 		return var;
 	}
 	
+	public int nbrTotal ()
+	{
+		return (nbrLeft()+nbrRight());
+	}
+	
 	public void pickFruit(int id)
 	{
-		this.arrayFruit[id].getTaken();
+		this.arrayFruit[id].setTaken();
 	}
 	
 	public boolean isTaken()
@@ -93,7 +108,7 @@ public class Tree extends Game_Element {
 		return this.taken;
 	}
 	
-	public void getTaken()
+	public void setTaken()
 	{
 		this.taken = true;
 	}

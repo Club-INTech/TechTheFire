@@ -41,7 +41,7 @@ public class Fruit {
 		return this.good;
 	}
 	
-	public void getTaken() {
+	public void setTaken() {
 		this.taken = true;
 	}
 }
