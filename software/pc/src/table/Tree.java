@@ -30,7 +30,6 @@ public class Tree extends Game_Element {
 		this.arrayFruit = arrayFruit;
 	}
 
-	// TODO cloner l'array
 	public Tree clone()
 	{
 		Fruit[] cloned_arrayFruit = new Fruit[6];
