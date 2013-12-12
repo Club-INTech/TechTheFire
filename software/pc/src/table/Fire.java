@@ -12,6 +12,18 @@ public class Fire extends Game_Element {
 	private boolean onFireplace = false ;	// Booléen qui dit si le feu est sur un foyer ou non
 	private boolean taken  = false ;	// Booléen indiquant si le feu a été pris
 	
+	public Fire(Vec2 position, int fire_id, int height,
+			Orientation orientation, Colour colour, boolean onFireplace,
+			boolean taken) {
+		super(position);
+		this.fire_id = fire_id;
+		this.height = height;
+		this.orientation = orientation;
+		this.colour = colour;
+		this.onFireplace = onFireplace;
+		this.taken = taken;
+	}
+
 	public Fire(Vec2 position, int id, int height, Orientation orientation, Colour couleur)
 	{
 		super(position);
@@ -30,4 +42,10 @@ public class Fire extends Game_Element {
 	{
 		this.onFireplace = true;
 	}
+	
+	public Fire clone()
+	{
+		return new Fire(position, fire_id, height, orientation, colour, onFireplace, taken);
+	}
+	
 }

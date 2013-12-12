@@ -20,8 +20,20 @@ public class Tree extends Game_Element {
 		this.arrayFruit[2] = new Fruit(pos2, 2);
 		this.arrayFruit[3] = new Fruit(pos3, 3);
 		this.arrayFruit[4] = new Fruit(pos4, 4);
-		this.arrayFruit[5] = new Fruit(pos5, 5);
-		
+		this.arrayFruit[5] = new Fruit(pos5, 5);	
+	}
+	
+	public Tree(Vec2 position, int tree_id, float radius, Fruit[] arrayFruit) {
+		super(position);
+		this.tree_id = tree_id;
+		this.radius = radius;
+		this.arrayFruit = arrayFruit;
+	}
+
+	// TODO cloner l'array
+	public Tree clone()
+	{
+		return new Tree(position, tree_id, radius, arrayFruit);
 	}
 	
 }

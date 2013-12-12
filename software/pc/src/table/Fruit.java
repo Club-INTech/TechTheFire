@@ -14,5 +14,12 @@ public class Fruit extends Game_Element {
 		this.fruit_id=ID;
 		
 	}
+	
+	public Fruit(Vec2 position, int ID, boolean taken, boolean good)
+	{
+		this(position, ID);
+		this.taken = taken;
+		this.good = good;
+	}
 
 }
