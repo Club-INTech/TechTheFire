@@ -26,6 +26,10 @@ public class Tree extends Game_Element {
 		this.arrayFruit[3] = new Fruit(3);
 		this.arrayFruit[4] = new Fruit(4);
 		this.arrayFruit[5] = new Fruit(5);	
+		// Convention par Guy (spammez moi si je me trompe) :
+		// 0-2 : partie gauche de l'arbre
+		// 3-5 : partie droite de l'arbre
+		// De plus, 0 et 3 sont les fruits les plus proches du robot.
 	}
 	
 	/**
@@ -50,4 +54,37 @@ public class Tree extends Game_Element {
 		return new Tree(position.clone(), tree_id, radius, cloned_arrayFruit);
 	}
 	
+	public int nbrLeft ()
+	{
+		int var = 0;
+		int i = 0;
+		while (i < 3 && this.arrayFruit[i].isGood()) {
+			if (this.arrayFruit[i].isTaken() == false) {
+				var++;
+			}
+			i++;
+		}
+		return var;
+	}
+	
+	public int nbrRight ()
+	{
+		int var = 0;
+		int i = 3;
+		while (i < 6 && this.arrayFruit[i].isGood()) {
+			if (this.arrayFruit[i].isTaken() == false) {
+				var++;
+			}
+			i++;
+		}
+		return var;
+	}
+	
+	public void getTaken()
+	{
+		for (int i = 0; i<6; i++)
+		{
+			this.arrayFruit[i].getTaken();
+		}
+	}
 }
