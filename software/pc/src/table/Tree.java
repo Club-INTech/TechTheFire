@@ -67,4 +67,24 @@ public class Tree extends Game_Element {
 		return var;
 	}
 	
+	public int nbrRight ()
+	{
+		int var = 0;
+		int i = 3;
+		while (i < 6 && this.arrayFruit[i].isGood()) {
+			if (this.arrayFruit[i].isTaken() == false) {
+				var++;
+			}
+			i++;
+		}
+		return var;
+	}
+	
+	public void getTaken()
+	{
+		for (int i = 0; i<6; i++)
+		{
+			this.arrayFruit[i].getTaken();
+		}
+	}
 }

@@ -40,4 +40,8 @@ public class Fruit {
 	public boolean isGood() {
 		return this.good;
 	}
+	
+	public void getTaken() {
+		this.taken = true;
+	}
 }
