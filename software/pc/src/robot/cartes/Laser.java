@@ -23,12 +23,12 @@ public class Laser implements Service {
 
 	private Balise[] balises;
 	
-	public Laser(Service config, Service log, Service serie, Service robotvrai)
+	public Laser(Read_Ini config, Log log, Serial serie, RobotVrai robotvrai)
 	{
-		this.config = (Read_Ini) config;
-		this.log = (Log) log;
-		this.serie = (Serial) serie;
-		this.robotvrai = (RobotVrai) robotvrai;
+		this.config = config;
+		this.log = log;
+		this.serie = serie;
+		this.robotvrai = robotvrai;
 		
 		balises = new Balise[2];
 		balises[0] = new Balise(0, false);
