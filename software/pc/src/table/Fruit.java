@@ -2,7 +2,7 @@ package table;
 
 public class Fruit {
 
-	private int fruit_id; // face à l'arbre, le fruit 0 est celui juste à droite, et on tourne dans le sens trigonométrique
+	private int fruit_id;
 	private boolean taken = false;
 	private boolean good = true;
 	
@@ -33,4 +33,11 @@ public class Fruit {
 		return new Fruit(fruit_id, taken, good);
 	}
 	
+	public boolean isTaken() {
+		return this.taken;
+	}
+	
+	public boolean isGood() {
+		return this.good;
+	}
 }
