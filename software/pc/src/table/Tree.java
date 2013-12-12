@@ -11,6 +11,11 @@ public class Tree extends Game_Element {
 	// combien gauche()
 	// combien droit()
 
+	/**
+	 * Constructeur public
+	 * @param position
+	 * @param id
+	 */
 	public Tree (Vec2 position, int id)
 	{
 		super(position);
@@ -23,7 +28,14 @@ public class Tree extends Game_Element {
 		this.arrayFruit[5] = new Fruit(5);	
 	}
 	
-	public Tree(Vec2 position, int tree_id, float radius, Fruit[] arrayFruit) {
+	/**
+	 * Constructeur utilisé par clone()
+	 * @param position
+	 * @param tree_id
+	 * @param radius
+	 * @param arrayFruit
+	 */
+	private Tree(Vec2 position, int tree_id, float radius, Fruit[] arrayFruit) {
 		super(position);
 		this.tree_id = tree_id;
 		this.radius = radius;

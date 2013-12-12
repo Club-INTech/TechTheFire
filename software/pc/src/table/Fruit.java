@@ -6,12 +6,22 @@ public class Fruit {
 	private boolean taken = false;
 	private boolean good = true;
 	
+	/**
+	 * Constructeur public
+	 * @param ID
+	 */
 	public Fruit (int ID)
 	{
 		this.fruit_id=ID;
 	}
 	
-	public Fruit(int ID, boolean taken, boolean good)
+	/**
+	 * Constructeur appelé par clone()
+	 * @param ID
+	 * @param taken
+	 * @param good
+	 */
+	private Fruit(int ID, boolean taken, boolean good)
 	{
 		this(ID);
 		this.taken = taken;

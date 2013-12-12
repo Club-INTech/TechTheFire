@@ -6,6 +6,11 @@ public class Fireplace extends Game_Element {
 	private float radius;
 	private int placed_fires;
 	
+	/**
+	 * Constructeur public
+	 * @param position
+	 * @param rad
+	 */
 	public Fireplace (Vec2 position, float rad)
 	{
 		super(position);
@@ -13,7 +18,13 @@ public class Fireplace extends Game_Element {
 		placed_fires = 0;
 	}
 
-	public Fireplace (Vec2 position, float rad, int placed_fires)
+	/**
+	 * Constructeur appelé par clone()
+	 * @param position
+	 * @param rad
+	 * @param placed_fires
+	 */
+	private Fireplace (Vec2 position, float rad, int placed_fires)
 	{
 		this(position, rad);
 		this.placed_fires = placed_fires;
