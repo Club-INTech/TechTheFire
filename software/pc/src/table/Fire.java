@@ -50,7 +50,7 @@ public class Fire extends Game_Element {
 		this.orientation = orientation;
 		this.colour = couleur;		
 	}
-
+	
 	public void pickFire()
 	{
 		this.taken = true;

@@ -20,3 +20,4 @@ hardware/*/*.b\#*
 hardware/*/*.s\#*
 *.class
 */*.class
+/nbproject/private/
