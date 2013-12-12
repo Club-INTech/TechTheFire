@@ -36,7 +36,7 @@ public class Tree extends Game_Element {
 		Fruit[] cloned_arrayFruit = new Fruit[6];
 		for(int i = 0; i < 6; i++)		
 			cloned_arrayFruit[i] = arrayFruit[i].clone();
-		return new Tree(position, tree_id, radius, cloned_arrayFruit);
+		return new Tree(position.clone(), tree_id, radius, cloned_arrayFruit);
 	}
 	
 }

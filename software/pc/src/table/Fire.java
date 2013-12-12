@@ -45,7 +45,7 @@ public class Fire extends Game_Element {
 	
 	public Fire clone()
 	{
-		return new Fire(position, fire_id, height, orientation, colour, onFireplace, taken);
+		return new Fire(position.clone(), fire_id, height, orientation, colour, onFireplace, taken);
 	}
 	
 }

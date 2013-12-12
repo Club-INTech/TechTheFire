@@ -21,7 +21,7 @@ public class Fireplace extends Game_Element {
 
 	public Fireplace clone()
 	{
-		return new Fireplace(position, radius, placed_fires);
+		return new Fireplace(position.clone(), radius, placed_fires);
 	}
 	
 	public int getPlaced_fires()

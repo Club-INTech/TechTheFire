@@ -24,7 +24,7 @@ public class Fruit extends Game_Element {
 
 	public Fruit clone()
 	{
-		return new Fruit(position, fruit_id, taken, good);
+		return new Fruit(position.clone(), fruit_id, taken, good);
 	}
 	
 }
