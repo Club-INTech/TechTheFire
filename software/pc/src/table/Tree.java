@@ -4,8 +4,11 @@ import smartMath.Vec2;
 
 public class Tree extends Game_Element {
 
-	private int tree_id; //depuis le haut vers le bas, de 0 Ã  3
+	private int tree_id; //depuis le haut vers le bas, de 0 Ã  3;
+	// 0 et 1 : c™t droit
+	// 2 et 3 : c™t gauche
 	private float radius = 150 ;
+	private boolean taken = false;
 	Fruit arrayFruit[] = new Fruit[6];
 
 	// combien gauche()
@@ -80,11 +83,18 @@ public class Tree extends Game_Element {
 		return var;
 	}
 	
+	public void pickFruit(int id)
+	{
+		this.arrayFruit[id].getTaken();
+	}
+	
+	public boolean isTaken()
+	{
+		return this.taken;
+	}
+	
 	public void getTaken()
 	{
-		for (int i = 0; i<6; i++)
-		{
-			this.arrayFruit[i].getTaken();
-		}
+		this.taken = true;
 	}
 }
