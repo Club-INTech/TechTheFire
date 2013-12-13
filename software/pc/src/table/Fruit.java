@@ -1,6 +1,6 @@
 package table;
 
-public class Fruit {
+class Fruit {
 
 	private int fruit_id;
 	private boolean taken = false;

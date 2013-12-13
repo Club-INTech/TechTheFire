@@ -7,7 +7,7 @@ import smartMath.Vec2;
  * @author pf
  *
  */
-public class Torch extends Game_Element {
+class Torch extends Game_Element {
 	
 	private int torch_id; // 0 et 1 sont les mobiles, les autres sont numérotées de haut en bas
 	private Fire[] fires;

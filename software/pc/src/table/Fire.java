@@ -3,7 +3,7 @@ package table;
 import robot.Orientation;
 import smartMath.Vec2;
 
-public class Fire extends Game_Element {
+class Fire extends Game_Element {
 
 	private int fire_id ;//numérotation : par x décroissants et à x égaux par y décroissants (en gros de haut en bas, de gauche à droite dans le règlement)
 	private int height ; //0=sol, chaque unité supplémentaire représente un feu en-dessous	

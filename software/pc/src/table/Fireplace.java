@@ -2,7 +2,7 @@ package table;
 
 import smartMath.Vec2;
 
-public class Fireplace extends Game_Element {
+class Fireplace extends Game_Element {
 	private float radius;
 	private int placed_fires;
 	

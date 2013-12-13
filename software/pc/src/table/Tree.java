@@ -2,7 +2,7 @@ package table;
 
 import smartMath.Vec2;
 
-public class Tree {
+class Tree {
 
 	private int tree_id; //depuis le haut vers le bas, de 0 à 3;
 	// 0 et 1 : c�t� droit
