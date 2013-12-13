@@ -1,7 +1,5 @@
 package table;
 
-import smartMath.Vec2;
-
 class Tree {
 
 	private int tree_id; //depuis le haut vers le bas, de 0 à 3;
