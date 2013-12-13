@@ -11,7 +11,7 @@ import utils.Read_Ini;
  *
  */
 
-public class HookFeu extends Hook {
+class HookFeu extends Hook {
 
 	private Capteur capteur;
 	
