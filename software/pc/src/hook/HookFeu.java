@@ -1,7 +1,7 @@
 package hook;
 
+import robot.Robot;
 import robot.cartes.Capteur;
-import smartMath.Vec2;
 import utils.Log;
 import utils.Read_Ini;
 
@@ -21,7 +21,7 @@ class HookFeu extends Hook {
 		this.capteur = capteur;
 	}
 	
-	public void evaluate(Vec2 positionRobot)
+	public void evaluate(Robot robot)
 	{
 		if(capteur.isThereFire())
 			declencher();
