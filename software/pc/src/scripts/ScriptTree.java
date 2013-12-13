@@ -104,24 +104,27 @@ class ScriptTree extends Script{
 		
 		// on déploie les bras 
 		robot.baisser_rateaux();
-		// on avance
+		// on avance et on rebaisse les rateaux au min
 		robot.avancer(-200);
+		robot.baisser_rateaux_bas();
 		// on remonte les bras à mi-hauteur en fonction de la position du fruit pourri, tout en reculant
 		for (int i= 3 ;i>0;i--)
 		{
 			if (Fruitsgauche==i)
+			{
 				robot.remonter_rateau(false);
+			}
 			else if(Fruitsdroite ==i)				//Fruitsdroite et Fruitsgauche sont toujours !=
+			{
 				robot.remonter_rateau(true);
+			}
 			robot.avancer(60);
 		}
-		
 	}
 
 	@Override
 	protected void termine() {
-		// TODO Auto-generated method stub
-		
+		robot.remonter_rateaux();	
 	}
 
 }
