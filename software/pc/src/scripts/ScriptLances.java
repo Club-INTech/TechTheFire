@@ -44,7 +44,7 @@ public class ScriptLances extends Script {
 	}
 
 	@Override
-	public int score() {
+	public int score(int id_version) {
 		// combien on gagne? demander à la table
 		return 0;
 	}
