@@ -4,6 +4,10 @@ import robot.RobotChrono;
 import smartMath.Vec2;
 import table.Table;
 import container.Service;
+import hook.Callback;
+import hook.Executable;
+import hook.Hook;
+import hook.methodes.LeverRateau;
 
 import java.util.ArrayList;
 
@@ -108,18 +112,17 @@ class ScriptTree extends Script{
 		robot.avancer(-200);
 		robot.baisser_rateaux_bas();
 		// on remonte les bras à mi-hauteur en fonction de la position du fruit pourri, tout en reculant
-		for (int i= 3 ;i>0;i--)
-		{
-			if (Fruitsgauche==i)
-			{
-				robot.remonter_rateau(false);
-			}
-			else if(Fruitsdroite ==i)				//Fruitsdroite et Fruitsgauche sont toujours !=
-			{
-				robot.remonter_rateau(true);
-			}
-			robot.avancer(60);
-		}
+		
+		Hook[] hooks = new Hook[2];
+		Executable remonteDroit = new LeverRateau(robot, true);
+		hooks[0] = hookgenerator.hook_position(new Vec2(0,0));
+		hooks[0].ajouter_callback(new Callback(remonteDroit, true));
+
+		Executable remonteGauche = new LeverRateau(robot, false);
+		hooks[1] = hookgenerator.hook_position(new Vec2(0,0));
+		hooks[1].ajouter_callback(new Callback(remonteGauche, true));
+		
+		robot.avancer(60, hooks);
 	}
 
 	@Override
