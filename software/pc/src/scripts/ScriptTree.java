@@ -21,7 +21,7 @@ public class ScriptTree extends Script{
 		ArrayList<Integer> versionsList = new ArrayList<Integer>();
 		for (i=0; i<=3; i++)
 		{
-			if (((table.getATree())[i].isTaken()) == false)
+			if (table.isTreeTaken(i) == false)
 				{
 					versionsList.add(i);
 				}
@@ -67,11 +67,11 @@ public class ScriptTree extends Script{
 		int res = 0;
 		if (id_version <= 1)
 		{
-			res = table.getATree()[0].nbrTotal() + table.getATree()[1].nbrTotal() ;
+			res = table.nbrTotal(0) + table.nbrTotal(1);
 		}
 		else
 		{
-			res = table.getATree()[2].nbrTotal() + table.getATree()[3].nbrTotal() ;
+			res = table.nbrTotal(2) + table.nbrTotal(3);
 		}
 		return res;
 	}
