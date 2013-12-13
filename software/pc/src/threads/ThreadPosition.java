@@ -1,25 +1,26 @@
 package threads;
 
 import robot.RobotVrai;
-import container.Service;
+import utils.Log;
+import utils.Read_Ini;
 
 /**
  * Thread qui demande en continu au robot de mettre à jour ses coordonnées
  * @author pf
  *
  */
-public class ThreadPosition extends AbstractThread {
+class ThreadPosition extends AbstractThread {
 
 	private RobotVrai robotvrai;
 	private ThreadTimer threadTimer;
 	
 	public boolean robot_pret = false;
 	
-	ThreadPosition(Service config, Service log, Service robotvrai, Service threadTimer)
+	ThreadPosition(Read_Ini config, Log log, RobotVrai robotvrai, ThreadTimer threadTimer)
 	{
 		super(config, log);
-		this.robotvrai = (RobotVrai) robotvrai;
-		this.threadTimer = (ThreadTimer) threadTimer;
+		this.robotvrai = robotvrai;
+		this.threadTimer = threadTimer;
 	}
 	
 	public void run()
@@ -39,7 +40,8 @@ public class ThreadPosition extends AbstractThread {
 			{
 				log.warning(e.toString(), this);
 			}
-		} while(threadTimer.get_fin_match());
+			sleep(100);
+		} while(threadTimer.fin_match);
 
 		log.debug("Arrêt du thread de position", this);
 	

@@ -1,7 +1,12 @@
 package table;
 import smartMath.Vec2;
 
-public class ObstacleBalise extends Obstacle {
+/**
+ * Obstacles détectés par balise. On connaît leur vitesse.
+ * @author pf
+ *
+ */
+class ObstacleBalise extends ObstacleCirculaire {
 
 	private Vec2 speed;
 	
@@ -9,5 +14,10 @@ public class ObstacleBalise extends Obstacle {
 	{
 		super(position,rad);
 		this.speed = spe;
+	}
+	
+	public ObstacleBalise clone()
+	{
+		return new ObstacleBalise(position.clone(), radius, speed);
 	}
 }

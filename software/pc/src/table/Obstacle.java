@@ -1,16 +1,20 @@
 package table;
 import smartMath.Vec2;
 
-public abstract class Obstacle {
+/**
+ * Super classe des obstacles. Les obstacles fixes en sont (foyer, ...)
+ * @author pf
+ *
+ */
+abstract class Obstacle {
 
 	protected Vec2 position;
-	protected float radius;
 	
-	public Obstacle (Vec2 position, float rad)
+	public Obstacle (Vec2 position)
 	{
 		this.position = position;
-		this.radius = rad;
-		
 	}
+	
+	public abstract Obstacle clone();
 	
 }

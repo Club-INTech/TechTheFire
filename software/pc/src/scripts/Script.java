@@ -11,6 +11,9 @@ import utils.Log;
 import utils.Read_Ini;
 import container.Service;
 
+import java.util.ArrayList;
+
+import exception.MouvementImpossibleException;
 /**
  * Classe abstraite dont hériteront les différents scripts. S'occupe le robotvrai et robotchrono de manière à ce que ce soit transparent pour les différents scripts
  * @author pf
@@ -33,15 +36,15 @@ public abstract class Script implements Service {
 	private RobotVrai robotvrai;
 	private RobotChrono robotchrono;
 	
-	public Script(Service pathfinding, Service threadtimer, Service robotvrai, Service robotchrono, Service hookgenerator, Service table, Service config, Service log) {
-		this.pathfinding = (Pathfinding) pathfinding;
-		Script.threadtimer = (ThreadTimer) threadtimer;
-		this.robotvrai = (RobotVrai) robotvrai;
-		this.robotchrono = (RobotChrono) robotchrono;
-		Script.hookgenerator = (HookGenerator) hookgenerator;
-		this.table = (Table) table;
-		Script.config = (Read_Ini) config;
-		Script.log = (Log) log;
+	public Script(Pathfinding pathfinding, ThreadTimer threadtimer, RobotVrai robotvrai, RobotChrono robotchrono, HookGenerator hookgenerator, Table table, Read_Ini config, Log log) {
+		this.pathfinding = pathfinding;
+		Script.threadtimer = threadtimer;
+		this.robotvrai = robotvrai;
+		this.robotchrono = robotchrono;
+		Script.hookgenerator = hookgenerator;
+		this.table = table;
+		Script.config = config;
+		Script.log = log;
 	}
 		
 	/**
@@ -69,7 +72,7 @@ public abstract class Script implements Service {
 	 * Calcule le temps d'exécution de ce script (grâce à robotChrono)
 	 * @return le temps d'exécution
 	 */
-	public float calcule(int id_version)
+	public long calcule(int id_version)
 	{
 		robot = robotchrono;
 		robotchrono.reset_compteur();
@@ -101,11 +104,21 @@ public abstract class Script implements Service {
 		return robotchrono;
 	}
 	
+	public void setRobotChrono(RobotChrono robotchrono)
+	{
+		this.robotchrono = robotchrono;
+	}
+
+	public void setTable(Table table)
+	{
+		this.table = table;
+	}
+	
 	/**
 	 * Renvoie le tableau des versions d'un script
 	 * @return le tableau des versions possibles
 	 */
-	public abstract int[] version();
+	public abstract ArrayList<Integer> version();
 
 	/**
 	 * Retourne la position d'entrée associée à la version id
@@ -118,7 +131,7 @@ public abstract class Script implements Service {
 	 * Renvoie le score que peut fournir un script
 	 * @return le score
 	 */
-	public abstract int score();
+	public abstract int score(int id_version);
 	
 	/**
  	 * Donne le poids du script, utilisé pour calculer sa note
@@ -129,18 +142,11 @@ public abstract class Script implements Service {
 	/**
 	 * Exécute le script
 	 */
-	abstract protected void execute(int id_version);
+	abstract protected void execute(int id_version) throws MouvementImpossibleException;
 
 	/**
 	 * Méthode toujours appelée à la fin du script (via un finally). Repli des actionneurs.
 	 */
 	abstract protected void termine();
 
-	/**
-	 * Méthode qui modifie la table donnée comme elle serait modifiée si le script s'achevait correctement
-	 * @param table
-	 * @return table modifiée
-	 */
-	abstract public Table futureTable(Table table);
-		
 }

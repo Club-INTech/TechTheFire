@@ -2,15 +2,24 @@ package table;
 
 import smartMath.Vec2;
 
-public class ObstacleProximite extends Obstacle {
+/**
+ * Obstacles détectés par capteurs de proximité (ultrasons et infrarouges)
+ * @author pf
+ *
+ */
+class ObstacleProximite extends ObstacleCirculaire {
 
-	private int death_date;
+	public long death_date;
 	
-	public ObstacleProximite (Vec2 position, float rad, int death_date)
+	public ObstacleProximite (Vec2 position, float rad, long death_date)
 	{
 		super(position,rad);
 		this.death_date = death_date;
 	}
 	
+	public ObstacleProximite clone()
+	{
+		return new ObstacleProximite(position.clone(), radius, death_date);
+	}
 	
 }

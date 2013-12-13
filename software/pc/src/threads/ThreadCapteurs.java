@@ -4,7 +4,8 @@ import robot.RobotVrai;
 import robot.cartes.Capteur;
 import smartMath.Vec2;
 import table.Table;
-import container.Service;
+import utils.Log;
+import utils.Read_Ini;
 
 /**
  * Thread qui ajoute en continu les obstacles détectés par les capteurs
@@ -12,33 +13,49 @@ import container.Service;
  *
  */
 
-public class ThreadCapteurs extends AbstractThread {
+class ThreadCapteurs extends AbstractThread {
 
 	private RobotVrai robotvrai;
 	private Capteur capteur;
 	private Table table;
 	private ThreadTimer threadTimer;
 	
-	ThreadCapteurs(Service config, Service log, Service robotvrai, Service threadTimer, Service table, Service capteur)
+	// Valeurs par défaut s'il y a un problème de config
+	private double tempo = 0;
+	private int horizon_capteurs = 700;
+	private int rayon_robot_adverse = 230;
+	private int largeur_robot = 300;
+	private int table_x = 3000;
+	private int table_y = 2000;
+	private int capteurs_frequence = 5;
+	
+	ThreadCapteurs(Read_Ini config, Log log, RobotVrai robotvrai, ThreadTimer threadTimer, Table table, Capteur capteur)
 	{
 		super(config, log);
-		this.robotvrai = (RobotVrai) robotvrai;
-		this.threadTimer = (ThreadTimer) threadTimer;
-		this.table = (Table) table;
-		this.capteur = (Capteur) capteur;
+		this.robotvrai = robotvrai;
+		this.threadTimer = threadTimer;
+		this.table = table;
+		this.capteur = capteur;
 	}
 	
 	public void run()
 	{
 		int date_dernier_ajout = 0;
 		boolean marche_arriere = false;
-		double tempo = Double.parseDouble(config.config.getProperty("capteurs_temporisation_obstacles"));
-		int horizon_capteurs = Integer.parseInt(config.config.getProperty("horizon_capteurs"));
-		int rayon_robot_adverse = Integer.parseInt(config.config.getProperty("rayon_robot_adverse"));
-		int largeur_robot = Integer.parseInt(config.config.getProperty("largeur_robot"));
-		int table_x = Integer.parseInt(config.config.getProperty("table_x"));
-		int table_y = Integer.parseInt(config.config.getProperty("table_y"));
-		int capteurs_frequence = Integer.parseInt(config.config.getProperty("capteurs_frequence"));
+		try
+		{
+			tempo = Double.parseDouble(config.get("capteurs_temporisation_obstacles"));
+			horizon_capteurs = Integer.parseInt(config.get("horizon_capteurs"));
+			rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
+			largeur_robot = Integer.parseInt(config.get("largeur_robot"));
+			table_x = Integer.parseInt(config.get("table_x"));
+			table_y = Integer.parseInt(config.get("table_y"));
+			capteurs_frequence = Integer.parseInt(config.get("capteurs_frequence"));
+		}
+		catch(Exception e)
+		{
+			log.critical(e, this);
+		}
 		
 		log.debug("Lancement du thread de capteurs", this);
 	
@@ -50,7 +67,7 @@ public class ThreadCapteurs extends AbstractThread {
 			}
 		
 		log.debug("Activation des capteurs", this);
-		while(!threadTimer.get_fin_match())
+		while(!threadTimer.fin_match)
 		{
 			if(stop_threads)
 			{
@@ -77,14 +94,7 @@ public class ThreadCapteurs extends AbstractThread {
 						date_dernier_ajout = (int)System.currentTimeMillis();
 				
 			}
-			try
-			{
-			Thread.sleep((long)1/capteurs_frequence);
-			}
-			catch(Exception e)
-			{
-				log.critical("Erreur sleep: "+e.toString(), this);
-			}
+			sleep((long)1/capteurs_frequence);
 			
 		}
         log.debug("Fin du thread de capteurs", this);

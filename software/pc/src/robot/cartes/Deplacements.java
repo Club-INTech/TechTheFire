@@ -27,10 +27,10 @@ public class Deplacements implements Service {
     /**
 	 * Constructeur
 	 */
-	public Deplacements(Service log, Service serie)
+	public Deplacements(Log log, Serial serie)
 	{
-		this.log = (Log)log;
-		this.serie = (Serial)serie;
+		this.log = log;
+		this.serie = serie;
 		
 		infos_stoppage_enMouvement = new Hashtable<String, Integer>();
 		infos_stoppage_enMouvement.put("PWMmoteurGauche", 0);
@@ -39,7 +39,6 @@ public class Deplacements implements Service {
 		infos_stoppage_enMouvement.put("erreur_translation", 0);
 		infos_stoppage_enMouvement.put("derivee_erreur_rotation", 0);
 		infos_stoppage_enMouvement.put("derivee_erreur_translation", 0);
-
 	}
 
 	/**
@@ -50,8 +49,13 @@ public class Deplacements implements Service {
 	 * @param derivee_erreur_translation
 	 * @return
 	 */
-	public boolean gestion_blocage(int PWMmoteurGauche, int PWMmoteurDroit, int derivee_erreur_rotation, int derivee_erreur_translation)
+	public boolean gestion_blocage(Hashtable<String, Integer> infos)
 	{
+		int PWMmoteurGauche = infos.get("PWMmoteurGauche");
+		int PWMmoteurDroit = infos.get("PWMmoteurDroit");
+		int derivee_erreur_rotation = infos.get("derivee_erreur_rotation");
+		int derivee_erreur_translation = infos.get("derivee_erreur_translation");
+		
 		boolean blocage = false;
 		boolean moteur_force = Math.abs(PWMmoteurGauche) > 40 || Math.abs(PWMmoteurDroit) > 40;
 		boolean bouge_pas = derivee_erreur_rotation == 0 && derivee_erreur_translation == 0;
@@ -88,8 +92,13 @@ public class Deplacements implements Service {
 	 * @param derivee_erreur_translation
 	 * @return
 	 */
-	public boolean update_enMouvement(int erreur_rotation, int erreur_translation, int derivee_erreur_rotation, int derivee_erreur_translation)
+	public boolean update_enMouvement(Hashtable<String, Integer> infos)
 	{
+		int erreur_rotation = infos.get("erreur_rotation");
+		int erreur_translation = infos.get("erreur_translation");
+		int derivee_erreur_rotation = infos.get("derivee_erreur_rotation");
+		int derivee_erreur_translation = infos.get("derivee_erreur_translation");
+		
 		boolean rotation_stoppe = Math.abs(erreur_rotation) < 105;
 		boolean translation_stoppe = Math.abs(erreur_translation) < 100;
 		boolean bouge_pas = Math.abs(derivee_erreur_rotation) < 100 && Math.abs(derivee_erreur_translation) < 100;
@@ -101,9 +110,9 @@ public class Deplacements implements Service {
 	 * Fait avancer le robot. Méthode non bloquante
 	 * @param distance
 	 */
-	public void avancer(int distance)
+	public void avancer(float distance)
 	{
-		String chaines[] = {"d", Integer.toString(distance)};
+		String chaines[] = {"d", Float.toString(distance)};
 		serie.communiquer(chaines, 0);
 	}
 
@@ -111,9 +120,9 @@ public class Deplacements implements Service {
 	 * Fait tourner le robot. Méthode non bloquante
 	 * @param angle
 	 */
-	public void tourner(int angle)
+	public void tourner(float angle)
 	{
-		String chaines[] = {"t", Integer.toString(angle)};
+		String chaines[] = {"t", Float.toString(angle)};
 		serie.communiquer(chaines, 0);		
 	}
 	
@@ -164,9 +173,9 @@ public class Deplacements implements Service {
 	}
 
 	/**
-	 * Désactive l'asservissement en rotation du robot
+	 * Active l'asservissement en rotation du robot
 	 */
-	public void desactiver_asservissement_rotation()
+	public void activer_asservissement_rotation()
 	{
 		serie.communiquer("cr1", 0);
 	}
@@ -180,9 +189,9 @@ public class Deplacements implements Service {
 	}
 
 	/**
-	 * Active l'asservissement en rotation du robot
+	 * Désactive l'asservissement en rotation du robot
 	 */
-	public void activer_asservissement_rotation()
+	public void desactiver_asservissement_rotation()
 	{
 		serie.communiquer("cr0", 0);
 	}
@@ -269,15 +278,15 @@ public class Deplacements implements Service {
 	 * Renvoie x, y et orientation du robot
 	 * @return un tableau de 3 cases: [x, y, orientation]
 	 */
-	public int[] get_infos_x_y_orientation()
+	public float[] get_infos_x_y_orientation()
 	{
 		String[] infos_string = serie.communiquer("?xyo", 3);
-		int[] infos_int = new int[3];
-
+		float[] infos_float = new float[3];
+		
 		for(int i = 0; i < 3; i++)
-			infos_int[i] = Integer.parseInt(infos_string[i]);
+			infos_float[i] = Float.parseFloat(infos_string[i]);
 
-		return infos_int;
+		return infos_float;
 	}
 
 	/**

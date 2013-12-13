@@ -1,138 +1,297 @@
 package table;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import robot.Orientation;
 import smartMath.Vec2;
+import strategie.MemoryManagerProduct;
 import container.Service;
-import factories.FactoryProduct;
 import utils.*;
 
-public class Table implements Service, FactoryProduct {
+public class Table implements Service, MemoryManagerProduct {
 
-	private Fire arrayFire[] = new Fire[16];
+	// On met cette variable en static afin que, dans deux instances dupliquées, elle ne redonne pas les mêmes nombres
+	private static int indice = 1;
+
 	private Tree arrayTree[] = new Tree[4];
-	private Fireplace arrayFireplace[]= new Fireplace[3];
-	private Torch arrayTorch[] = new Torch[10] ;
-		
+	private Torch arrayTorch[] = new Torch[2];
+	private Fire arrayFire[] = new Fire[10];
+
+	private ArrayList<Obstacle> listObstacles = new ArrayList<Obstacle>();
+
+	private int hashFire;
+	private int hashTree;
+	private int hashTorch;
+	private int hashObstacles;
+
+	// Dépendances
 	private Log log;
 	private Read_Ini config;
 	
-	public Table(Service log, Service config)
+	public Table(Log log, Read_Ini config)
 	{
-		this.log = (Log) log;
-		this.config = (Read_Ini) config;
-		
+		this.log = log;
+		this.config = config;
+	}
+	
+	public void initialise()
+	{
+		// Initialisation des feux
 		arrayFire[0] = new Fire(new Vec2(1485,1200), 0, 0, Orientation.XPLUS, Colour.YELLOW);
 		arrayFire[1] = new Fire(new Vec2(1100,900), 1, 0, Orientation.YPLUS, Colour.YELLOW);
 		arrayFire[2] = new Fire(new Vec2(600,1400), 2, 0, Orientation.XPLUS, Colour.YELLOW);
-		arrayFire[3] = new Fire(new Vec2(600,900), 3, 1, Orientation.GROUND, Colour.YELLOW);
-		arrayFire[4] = new Fire(new Vec2(600,900), 4, 2, Orientation.GROUND, Colour.RED);
-		arrayFire[5] = new Fire(new Vec2(600,900), 5, 3, Orientation.GROUND, Colour.YELLOW);
-		arrayFire[6] = new Fire(new Vec2(600,400), 6, 0, Orientation.XPLUS, Colour.RED);
-		arrayFire[7] = new Fire(new Vec2(200,15), 7, 0, Orientation.YPLUS, Colour.YELLOW);
-		arrayFire[8] = new Fire(new Vec2(-200,15), 8, 0, Orientation.YPLUS, Colour.RED);
-		arrayFire[9] = new Fire(new Vec2(-600,1400), 9, 0, Orientation.XPLUS, Colour.RED);
-		arrayFire[10] = new Fire(new Vec2(-600,900), 10, 1, Orientation.GROUND, Colour.RED);
-		arrayFire[11] = new Fire(new Vec2(-600,900), 11, 2, Orientation.GROUND, Colour.YELLOW);
-		arrayFire[12] = new Fire(new Vec2(-600,900), 12, 3, Orientation.GROUND, Colour.RED);
-		arrayFire[13] = new Fire(new Vec2(-600,400), 13, 0, Orientation.XPLUS, Colour.RED);
-		arrayFire[14] = new Fire(new Vec2(-1100,900), 14, 0, Orientation.YPLUS, Colour.RED);
-		arrayFire[15] = new Fire(new Vec2(-1485,1200), 15, 0, Orientation.XPLUS, Colour.YELLOW);
-		//on passe à l'initialisation des arbres
-		arrayTree[0] = new Tree(new Vec2(1500,700), 0, new Vec2(1396,640),new Vec2(1500,580),new Vec2(1604,640),
-								new Vec2(1604,760),new Vec2(1500,820),new Vec2(1396,760));
-		arrayTree[1] = new Tree(new Vec2(800,0), 1, new Vec2(740,104),new Vec2(680,0),new Vec2(740,-104),
-								new Vec2(860,-104),new Vec2(920,0),new Vec2(860,104));
-		arrayTree[2] = new Tree(new Vec2(-800,0), 2, new Vec2(-860,104),new Vec2(-920,0),new Vec2(-860,-104),
-								new Vec2(-740,-104),new Vec2(-680,0),new Vec2(-740,104));
-		arrayTree[3] = new Tree(new Vec2(-1500,700), 3, new Vec2(-1396,760),new Vec2(-1500,820),new Vec2(-1604,760),
-								new Vec2(1604,640),new Vec2(1380,0),new Vec2(1396,640));
-		//initialisation des foyers
-		arrayFireplace[0] = new Fireplace(new Vec2(1500,0), 250) ;
-		arrayFireplace[1] = new Fireplace(new Vec2(0,950), 150) ;
-		arrayFireplace[2] = new Fireplace(new Vec2(-1500,0), 250) ;
-		//initialisation des torches
-		arrayTorch[0] = new Torch(new Vec2(600,900), 0, true, 80) ; //0 et 1 sont les torches mobiles
-		arrayTorch[1] = new Torch(new Vec2(-600,900), 1, true, 80) ;  //de 2 à 9, chaque torche est un des piliers des torches fixes
-		arrayTorch[2] = new Torch(new Vec2(1489,1258), 2, false, 11) ;
-		arrayTorch[3] = new Torch(new Vec2(1489,1142), 3, false, 11) ;
-		arrayTorch[4] = new Torch(new Vec2(258,11), 4, false, 11) ;
-		arrayTorch[5] = new Torch(new Vec2(142,11), 5, false, 11) ;
-		arrayTorch[6] = new Torch(new Vec2(-142,11), 6, false, 11) ;
-		arrayTorch[7] = new Torch(new Vec2(-258,11), 7, false, 11) ;
-		arrayTorch[8] = new Torch(new Vec2(-1489,1258), 8, false, 11) ;
-		arrayTorch[9] = new Torch(new Vec2(-1489,1142), 9, false, 11) ;
+		arrayFire[3] = new Fire(new Vec2(600,400), 6, 0, Orientation.XPLUS, Colour.RED);
+		arrayFire[4] = new Fire(new Vec2(200,15), 7, 0, Orientation.YPLUS, Colour.YELLOW);
+		arrayFire[5] = new Fire(new Vec2(-200,15), 8, 0, Orientation.YPLUS, Colour.RED);
+		arrayFire[6] = new Fire(new Vec2(-600,1400), 9, 0, Orientation.XPLUS, Colour.RED);
+		arrayFire[7] = new Fire(new Vec2(-600,400), 13, 0, Orientation.XPLUS, Colour.RED);
+		arrayFire[8] = new Fire(new Vec2(-1100,900), 14, 0, Orientation.YPLUS, Colour.RED);
+		arrayFire[9] = new Fire(new Vec2(-1485,1200), 15, 0, Orientation.XPLUS, Colour.YELLOW);
+
+		// Initialisation des arbres
+		arrayTree[0] = new Tree(0);
+		arrayTree[1] = new Tree(1);
+		arrayTree[2] = new Tree(2);
+		arrayTree[3] = new Tree(3);
+
+		// Initialisation des torches
+		Fire feu0 = new Fire(new Vec2(600,900), 3, 1, Orientation.GROUND, Colour.YELLOW);
+		Fire feu1 = new Fire(new Vec2(600,900), 4, 2, Orientation.GROUND, Colour.RED);
+		Fire feu2 = new Fire(new Vec2(600,900), 5, 3, Orientation.GROUND, Colour.YELLOW);
+		arrayTorch[0] = new Torch(new Vec2(600,900), 0, feu0, feu1, feu2);
+
+		Fire feu3 = new Fire(new Vec2(-600,900), 10, 1, Orientation.GROUND, Colour.RED);
+		Fire feu4 = new Fire(new Vec2(-600,900), 11, 2, Orientation.GROUND, Colour.YELLOW);
+		Fire feu5 = new Fire(new Vec2(-600,900), 12, 3, Orientation.GROUND, Colour.RED);
+		arrayTorch[1] = new Torch(new Vec2(-600,900), 1, feu3, feu4, feu5); 
+
+		// Ajout des torches mobiles
+		listObstacles.add(new ObstacleCirculaire(new Vec2(600,900), 80));
+		listObstacles.add(new ObstacleCirculaire(new Vec2(-600,900), 80));
+		
+		// Ajout des foyers
+		listObstacles.add(new ObstacleCirculaire(new Vec2(1500,0), 250));
+		listObstacles.add(new ObstacleCirculaire(new Vec2(0,950), 150));
+		listObstacles.add(new ObstacleCirculaire(new Vec2(-1500,0), 250));
+
+		// TODO bacs obstacles
+		listObstacles.add(new ObstacleRectangulaire(new Vec2(400,1700), 700, 300));
+		listObstacles.add(new ObstacleRectangulaire(new Vec2(-1100,1700), 700, 300));
+
+		// Ajout des arbres
+		listObstacles.add(new ObstacleCirculaire(new Vec2(1500,700), 150));
+		listObstacles.add(new ObstacleCirculaire(new Vec2(800,0), 150));
+		listObstacles.add(new ObstacleCirculaire(new Vec2(-800,0), 150));
+		listObstacles.add(new ObstacleCirculaire(new Vec2(-1500,700), 150));
+
+		hashFire = 0;
+		hashTree = 0;
+		hashTorch = 0;
+		hashObstacles = 0;
 	}
 	
-	// TODO
+	/*
+	 * Gestions des obstacles
+	 */
+	
 	public void creer_obstacle(Vec2 position)
 	{
-		int rayon_robot_adverse = Integer.parseInt(config.config.getProperty("rayon_robot_adverse"));
-	}
-
-	
-	// TODO Guy
-	// Feux
-		// récupérer feu (id) : void
-		// feu le plus proche (void) : feu
-		// poser feu (id) : void
-	
-	// Arbre
-		// récupérer arbre (id) : void
-		// combien gauche (id) : int
-		// combien droit (id) : int
-		// points d'entrée (void) : int[] ([id, id] ou [id] si un seul)
-			// syntaxe tableau: int entryPoints[] = new int[2]; (ou 1!)
-	
-	// Torche
-		// torche la plus proche (Vec2) : torche (distance euclidienne)
-	
-	// Feux
-	
-	public void getFire (int id)
-	{
-		arrayFire[id].pickFire();
-	}
-
-
-/*	public Fire nearestFire ()
-	{
-		int min = 0;
-		for (int i = 0; i < 10, i++)
-		{
-			if (arrayFire[i] < arrayTree[min])
-			{
-				min = i;
-			}
+		int rayon_robot_adverse = 0;
+		long duree = 0;
+		try {
+			rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
+			duree = Integer.parseInt(config.get("duree_peremption_obstacles"));
 		}
-		return arrayTable[min];
+		catch(Exception e)
+		{
+			this.log.critical(e, this);
+		}
+		
+		Obstacle obstacle = new ObstacleProximite(position, rayon_robot_adverse, System.currentTimeMillis()+duree);
+		listObstacles.add(obstacle);
+		hashObstacles = indice++;
 	}
-*/
 
 	/**
-	 * Utilisé par la factory
+	 * Appel fait lors de l'anticipation, supprime les obstacles périmés à une date future
+	 * @param date
 	 */
-	public FactoryProduct Clone() {
-		Table cloned_table = new Table(log, config);
-		cloned_table.initialise(arrayFire, arrayTree, arrayFireplace, arrayTorch);
+	public void supprimer_obstacles_perimes(long date)
+	{
+		Iterator<Obstacle> iterator = listObstacles.iterator();
+		while ( iterator.hasNext() )
+		{
+		    Obstacle obstacle = iterator.next();
+		    if (obstacle instanceof ObstacleProximite && ((ObstacleProximite) obstacle).death_date <= date)
+		    {
+		        iterator.remove();
+				hashObstacles = indice++;
+		    }
+		}	
+	}
+	
+	/**
+	 * Appel fait par le thread timer, supprime les obstacles périmés
+	 */
+	public void supprimer_obstacles_perimes()
+	{
+		supprimer_obstacles_perimes(System.currentTimeMillis());
+	}
+
+	/**
+	 * Renvoie si un obstacle est à une distance inférieur à "distance" du point "centre_detection"
+	 * @param centre_detection
+	 * @param distance
+	 * @return
+	 */
+	public boolean obstaclePresent(Vec2 centre_detection, int distance)
+	{
+		Iterator<Obstacle> iterator = listObstacles.iterator();
+		while ( iterator.hasNext() )
+		{
+		    Obstacle obstacle = iterator.next();
+		    if (obstacle.position.SquaredDistance(centre_detection) < distance*distance)
+		    	return true;
+		}	
+		
+		return false;
+	}
+	
+	// Feux
+	
+	public void pickFire (int id)
+	{
+		arrayFire[id].pickFire();
+		hashFire = indice++;
+	}
+
+
+	public int nearestFire (Vec2 position)
+	{
+		int min = 0;
+		for (int i = 0; i < 16; i++)
+			if (arrayFire[i].getPosition().SquaredDistance(position) < arrayFire[min].getPosition().SquaredDistance(position))
+				min = i;
+		return min;
+	}
+	
+	public void putFire (int id)
+	{
+		arrayFire[id].ejectFire();
+		hashFire = indice++;
+	}
+	
+	// Arbres
+	
+	public void pickTree (int id)
+	{
+
+		arrayTree[id].setTaken();
+		hashTree = indice++;
+	}
+	
+	public int nbrLeft (int id)
+	{
+		return arrayTree[id].nbrLeft();
+	}
+	
+	public int nbrRight (int id)
+	{
+		return arrayTree[id].nbrRight();
+	}
+	
+	public int nbrTotal(int tree_id)
+	{
+		return arrayTree[tree_id].nbrTotal();
+	}
+	
+	public boolean isTreeTaken(int tree_id)
+	{
+		return arrayTree[tree_id].isTaken();
+	}
+	
+	public int[] entryPoint(boolean rightSide)
+	{
+		int c;
+		if (rightSide) {
+			c = 2;
+		} else {
+			c = 0;
+		}
+		if (arrayTree[c].isTaken()) {
+			int[] tab = {c+1};
+			return tab;
+		} else {
+			if (arrayTree[c+1].isTaken()) {
+				int[] tab = {c};
+				return tab;
+			} else {
+				int[] tab = {c,c+1};
+				return tab;
+			}
+		}
+	}
+	
+	//Torches
+	
+	public int nearestTorch (Vec2 position)
+	{
+		if(arrayTorch[0].getPosition().SquaredDistance(position) < arrayTorch[1].getPosition().SquaredDistance(position))
+			return 0;
+		else
+			return 1;
+	}
+			
+	public MemoryManagerProduct clone(MemoryManagerProduct cloned_table) {
+		((Table)cloned_table).initialise(arrayFire, arrayTree, arrayTorch, listObstacles, hashFire, hashTree, hashTorch, hashObstacles);
 		return cloned_table;
+	}
+	
+	public MemoryManagerProduct clone()
+	{
+		Table cloned_table = new Table(log, config);
+		return clone(cloned_table);
 	}
 
 	// TODO changera probablement à l'avenir
 	/**
 	 * Méthode d'initialisation d'une table, utilisé par clone()
 	 */
-	public void initialise(Fire arrayFire[], Tree arrayTree[], Fireplace arrayFireplace[], Torch arrayTorch[])
+	public void initialise(Fire arrayFire[], Tree arrayTree[], Torch arrayTorch[], ArrayList<Obstacle> listObstacles, int hashFire, int hashTree, int hashTorch, int hashObstacles)
 	{
-		this.arrayFire = arrayFire;
-		this.arrayTree = arrayTree;
-		this.arrayFireplace = arrayFireplace;
-		this.arrayTorch = arrayTorch;
+		if(this.hashFire != hashFire)
+		{
+			for(int i = 0; i < 10; i++)		
+				this.arrayFire[i] = arrayFire[i].clone();
+			this.hashFire = hashFire;
+		}
+
+		if(this.hashTree != hashTree)
+		{
+			for(int i = 0; i < 4; i++)		
+				this.arrayTree[i] = arrayTree[i].clone();
+			this.hashTree = hashTree;
+		}
+
+		if(this.hashTorch != hashTorch)
+		{
+			for(int i = 0; i < 10; i++)		
+				this.arrayTorch[i] = arrayTorch[i].clone();
+			this.hashTorch = hashTorch;
+		}
+
+		if(this.hashObstacles != hashObstacles)
+		{
+			for(Obstacle item: listObstacles)
+				this.listObstacles.add(item.clone());
+			this.hashObstacles = hashObstacles;
+		}
 	}
 
-	@Override
-	public String TypeName() {
+	public String getNom() {
 		return "Table";
 	}
-	
+
 }
 

@@ -30,7 +30,7 @@ public class SerialManager
 	//Pour chaque carte, on connait a l'avance son nom, son ping et son baudrate
 	private SpecificationCard carteAsservissement = new SpecificationCard("serieAsservissement", 0, 9600);
 	private SpecificationCard carteCapteursActionneurs = new SpecificationCard("serieCapteursActionneurs", 3, 9600);
-	private SpecificationCard carteLaser = new SpecificationCard("serieLaser", 4, 38400);
+	private SpecificationCard carteLaser = new SpecificationCard("serieLaser", 4, 9600); // TODO 38400);
 
 	//On stock les cartes dans une liste
 	private Hashtable<String, SpecificationCard> cards = new Hashtable<String, SpecificationCard>();
@@ -45,9 +45,9 @@ public class SerialManager
 	/**
 	 * Recuperation de toutes les cartes dans cards et des baudrates dans baudrate
 	 */
-	public SerialManager(Service log) throws SerialManagerException
+	public SerialManager(Log log) throws SerialManagerException
 	{
-		this.log = (Log) log;
+		this.log = log;
 
 		cards.put(this.carteAsservissement.name, this.carteAsservissement);
 		cards.put(this.carteCapteursActionneurs.name, this.carteCapteursActionneurs);

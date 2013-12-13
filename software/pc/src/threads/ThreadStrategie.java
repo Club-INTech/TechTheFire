@@ -3,11 +3,11 @@ package threads;
 import pathfinding.Pathfinding;
 import robot.RobotChrono;
 import robot.RobotVrai;
-import scripts.Script;
-import strategie.CoupleNoteScripts;
+import strategie.NoteScriptVersion;
 import strategie.Strategie;
 import table.Table;
-import container.Service;
+import utils.Log;
+import utils.Read_Ini;
 
 /**
  * Thread qui calculera en continu la stratégie à adopter
@@ -24,31 +24,42 @@ public class ThreadStrategie extends AbstractThread {
 	private RobotChrono robotchrono;
 	private Pathfinding pathfinding;
 
-	private Script scriptEnCours;
+	private Table futureTable;
+	private RobotChrono futurRobotChrono;
 	
-	ThreadStrategie(Service config, Service log, Service strategie, Service table, Service robotvrai, Service robotchrono, Service pathfinding)
+	ThreadStrategie(Read_Ini config, Log log, Strategie strategie, Table table, RobotVrai robotvrai, RobotChrono robotchrono, Pathfinding pathfinding)
 	{
 		super(config, log);
-		this.strategie = (Strategie) strategie;
-		this.table = (Table) table;
-		this.robotvrai = (RobotVrai) robotvrai;
-		this.robotchrono = (RobotChrono) robotchrono;
-		this.pathfinding = (Pathfinding) pathfinding;
+		this.strategie = strategie;
+		this.table = table;
+		this.robotvrai = robotvrai;
+		this.robotchrono = robotchrono;
+		this.pathfinding = pathfinding;
 	}
-
 	
 	public void run()
 	{
 		while(!stop_threads)
 		{
+			robotchrono.initialiserRobotChrono(robotvrai);
 			// Evaluation d'une stratégie de secours si ce script bug (en premier car plus urgent)
 			Table tableBlocage = table;
 			tableBlocage.creer_obstacle(robotvrai.getPosition()/*+distance*/);
-			CoupleNoteScripts meilleurErreur = strategie.evaluation(table, robotchrono, pathfinding, 2);
+			NoteScriptVersion meilleurErreur = strategie.evaluation(System.currentTimeMillis(), table, robotchrono, pathfinding, 2);
+
+			strategie.prochainScriptEnnemi = meilleurErreur.script;
 			
 			// Evaluation du prochain coup en supposant que celui-ci se passe sans problème
-			Table futureTable = scriptEnCours.futureTable(table);
-			CoupleNoteScripts meilleurProchain = strategie.evaluation(futureTable, robotchrono, pathfinding, 2);
+
+			synchronized(strategie.scriptEnCours)
+			{
+//				futureTable = strategie.scriptEnCours.futureTable(table, strategie.versionScriptEnCours);
+//				futurRobotChrono = strategie.scriptEnCours.futurRobotChrono(robotchrono, strategie.versionScriptEnCours);
+			}
+
+			NoteScriptVersion meilleurProchain = strategie.evaluation(System.currentTimeMillis(), futureTable, futurRobotChrono, pathfinding, 2);
+			
+			strategie.prochainScript = meilleurProchain.script;
 		}
 	}
 	

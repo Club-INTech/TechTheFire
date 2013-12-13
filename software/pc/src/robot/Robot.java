@@ -1,16 +1,11 @@
 package robot;
 
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.ArrayList;
 
-import pathfinding.Pathfinding;
-import robot.cartes.Actionneurs;
-import robot.cartes.Capteur;
-import robot.cartes.Deplacements;
+import hook.Hook;
 import smartMath.Vec2;
 import container.Service;
-import hook.HookGenerator;
-import table.Table;
+import exception.MouvementImpossibleException;
 import utils.Log;
 import utils.Read_Ini;
 
@@ -21,21 +16,41 @@ import utils.Read_Ini;
 
 public abstract class Robot implements Service {
 	
+	/*
+	 * DÉPLACEMENT HAUT NIVEAU
+	 */
+	
 	public abstract void stopper();
-	public abstract void correction_angle(float angle);
-	public abstract void tourner();
-	public abstract void suit_chemin();
+	public abstract void correction_angle(float angle); // peut-être à placer en private
+	public abstract void tourner(float angle, Hook[] hooks, int nombre_tentatives, boolean sans_lever_exception);
+	public abstract void avancer(int distance, Hook[] hooks, int nbTentatives, boolean retenterSiBlocage, boolean sansLeverException)
+				throws MouvementImpossibleException;
+	public abstract void suit_chemin(ArrayList<Vec2> chemin, Hook[] hooks, boolean marche_arriere_auto, boolean symetrie_effectuee)
+				throws MouvementImpossibleException;
 	public abstract void set_vitesse_translation(String vitesse);
 	public abstract void set_vitesse_rotation(String vitesse);
+	public abstract void va_au_point(Vec2 point, Hook[] hooks, boolean trajectoire_courbe, int nombre_tentatives, boolean retenter_si_blocage, boolean symetrie_effectuee, boolean sans_lever_exception)
+				throws MouvementImpossibleException;
+
+	/*
+	 * Méthodes d'initialisation
+	 */
+	
 	public abstract void setPosition(Vec2 position);
 	public abstract void setOrientation(float orientation);
+	public abstract void recaler();
+	public abstract void initialiser_actionneurs();
 	
-	protected Pathfinding pathfinding;
-	protected Capteur capteur;
-	protected Actionneurs actionneurs;
-	protected Deplacements deplacements;
-	protected HookGenerator hookgenerator;
-	protected Table table;
+	/*
+	 * ACTIONNEURS
+	 */
+	
+	public abstract void tirerBalles(boolean rightSide);
+	public abstract void baisser_rateaux();
+	public abstract void baisser_rateaux_bas();
+	public abstract void remonter_rateau(boolean right);
+	public abstract void remonter_rateaux();
+	// Dépendances
 	protected Read_Ini config;
 	protected Log log;
 
@@ -45,27 +60,12 @@ public abstract class Robot implements Service {
 	protected Vec2 position = new Vec2(0, 0);
 	protected float orientation = 0;
 	
-	public Robot(Service pathfinding, Service capteur, Service actionneurs, Service deplacements, Service hookgenerator, Service table, Service config, Service log)
-	{
-		this.pathfinding = (Pathfinding) pathfinding;
-		this.capteur = (Capteur) capteur;
-		this.actionneurs = (Actionneurs) actionneurs;
-		this.deplacements = (Deplacements) deplacements;
-		this.hookgenerator = (HookGenerator) hookgenerator;
-		this.table = (Table) table;
-		this.config = (Read_Ini) config;
-		this.log = (Log) log;
-	}
-
-	public void avancer(int distance, int nbTentatives,
-			boolean retenterSiBlocage, boolean sansLeverException) {
-		// TODO Auto-generated method stub
-		
-	}
+	protected int nombre_lances = 8;
 	
-	public void va_au_point(Vec2 point) {
-		// TODO Auto-generated method stub
-		
+	public Robot(Read_Ini config, Log log)
+	{
+		this.config = config;
+		this.log = log;
 	}
 	
 	protected int conventions_vitesse_translation(String vitesse)
@@ -104,6 +104,101 @@ public abstract class Robot implements Service {
 
 	public double getOrientation() {
 		return orientation;
+	}
+
+	public void va_au_point(Vec2 point, Hook[] hooks, int nbTentatives, boolean retenterSiBlocage, boolean sansLeverException) throws MouvementImpossibleException
+	{
+		va_au_point(point, hooks, false, 2, retenterSiBlocage, sansLeverException, false);
+	}
+
+	public void va_au_point(Vec2 point) throws MouvementImpossibleException
+	{
+		va_au_point(point, null, false, 2, true, false, false);
+	}
+
+	public void suit_chemin(ArrayList<Vec2> chemin, boolean marche_arriere_auto, boolean symetrie_effectuee) throws MouvementImpossibleException
+	{
+		suit_chemin(chemin, null, marche_arriere_auto, symetrie_effectuee);
+	}
+
+	public void suit_chemin(ArrayList<Vec2> chemin, Hook[] hooks) throws MouvementImpossibleException
+	{
+		suit_chemin(chemin, hooks, true, false);
+	}
+
+	public void suit_chemin(ArrayList<Vec2> chemin, Hook[] hooks, boolean marche_arriere_auto) throws MouvementImpossibleException
+	{
+		suit_chemin(chemin, hooks, marche_arriere_auto, false);
+	}
+
+	public void suit_chemin(ArrayList<Vec2> chemin, boolean marche_arriere_auto) throws MouvementImpossibleException
+	{
+		suit_chemin(chemin, null, marche_arriere_auto, false);
+	}
+
+	public void suit_chemin(ArrayList<Vec2> chemin) throws MouvementImpossibleException
+	{
+		suit_chemin(chemin, null, true, false);		
+	}
+
+	public void tourner(float angle, int nombre_tentatives, boolean sans_lever_exception) throws MouvementImpossibleException
+	{
+		tourner(angle, null, nombre_tentatives, sans_lever_exception);
+	}
+
+	public void tourner(float angle, Hook[] hooks, boolean sans_lever_exception) throws MouvementImpossibleException
+	{
+		tourner(angle, null, 2, sans_lever_exception);
+	}
+
+	public void tourner(float angle, Hook[] hooks, int nombre_tentatives) throws MouvementImpossibleException
+	{
+		tourner(angle, hooks, nombre_tentatives, false);				
+	}
+
+	public void tourner(float angle, boolean sans_lever_exception) throws MouvementImpossibleException
+	{
+		tourner(angle, null, 2, sans_lever_exception);
+	}
+
+	public void tourner(float angle, int nombre_tentatives) throws MouvementImpossibleException
+	{
+		tourner(angle, null, nombre_tentatives, false);		
+	}
+
+	public void tourner(float angle, Hook[] hooks) throws MouvementImpossibleException
+	{
+		tourner(angle, hooks, 2, false);
+	}
+
+	public void tourner(float angle) throws MouvementImpossibleException
+	{
+		tourner(angle, null, 2, false);
+	}
+
+	public void avancer(int distance, int nbTentatives, boolean retenterSiBlocage, boolean sansLeverException) throws MouvementImpossibleException
+	{
+		this.avancer(distance, null, nbTentatives, retenterSiBlocage, sansLeverException);
+	}
+
+	public void avancer(int distance, int nbTentatives, boolean retenterSiBlocage) throws MouvementImpossibleException
+	{
+		this.avancer(distance, null, nbTentatives, retenterSiBlocage, false);
+	}
+	
+	public void avancer(int distance, int nbTentatives) throws MouvementImpossibleException
+	{
+		this.avancer(distance, null, nbTentatives, true, false);
+	}
+
+	public void avancer(int distance, Hook[] hooks) throws MouvementImpossibleException
+	{
+		this.avancer(distance, hooks, 2, true, false);
+	}
+
+	public void avancer(int distance) throws MouvementImpossibleException
+	{
+		this.avancer(distance, null, 2, true, false);
 	}
 
 }

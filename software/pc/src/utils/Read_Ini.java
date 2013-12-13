@@ -15,7 +15,7 @@ public class Read_Ini implements Service {
 	private String name_local_file = "local.ini";
 	private String name_config_file = "config.ini";
 	private String path;
-	public Properties config = new Properties();
+	private Properties config = new Properties();
 	private Properties local = new Properties();
 	
     Enumeration<?> e = local.propertyNames();
@@ -53,4 +53,16 @@ public class Read_Ini implements Service {
 			throw new ConfigException("Erreur ouverture de local.ini");
 		}	
 	}
+	
+	public String get(String nom) throws ConfigException
+	{
+		String out = null;
+		out = config.getProperty(nom);
+		if(out == null)
+		{
+			throw new ConfigException("Erreur config: "+nom+" introuvable.");
+		}
+		return out;
+	}
+	
 }
