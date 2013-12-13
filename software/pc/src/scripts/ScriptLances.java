@@ -15,7 +15,7 @@ import container.Service;
 
 // TODO Guy
 
-public class ScriptLances extends Script {
+class ScriptLances extends Script {
 	
 
 	/*
