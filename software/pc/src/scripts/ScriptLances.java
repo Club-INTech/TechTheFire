@@ -6,6 +6,7 @@ import robot.RobotChrono;
 import smartMath.Vec2;
 import table.Table;
 import container.Service;
+import exception.MouvementImpossibleException;
 
 /**
  * Script pour les lances
@@ -59,7 +60,8 @@ class ScriptLances extends Script {
 	}
 
 	@Override
-	protected void execute(int id_version) {
+	protected void execute(int id_version) throws MouvementImpossibleException
+	{
 		// ajuster l'orientation du robot (objet robot)
 		robot.tourner(0);
 		// tirer (objet robot)

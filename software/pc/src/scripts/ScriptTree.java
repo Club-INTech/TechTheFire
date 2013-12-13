@@ -4,8 +4,12 @@ import robot.RobotChrono;
 import smartMath.Vec2;
 import table.Table;
 import container.Service;
+
 import java.util.ArrayList;
-public class ScriptTree extends Script{
+
+import exception.MouvementImpossibleException;
+
+class ScriptTree extends Script{
 
 	public ScriptTree(Service pathfinding, Service threadtimer,
 			Service robotvrai, Service robotchrono, Service hookgenerator,
@@ -83,7 +87,8 @@ public class ScriptTree extends Script{
 	}
 
 	@Override
-	protected void execute(int id_version) {
+	protected void execute(int id_version) throws MouvementImpossibleException
+	{
 		
 		
 	}
