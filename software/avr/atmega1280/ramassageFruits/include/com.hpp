@@ -80,7 +80,6 @@ class Communication
 		{
 			this->rateauBasBasg ();
 		}
-		
 	}
 
 //actions du bac		

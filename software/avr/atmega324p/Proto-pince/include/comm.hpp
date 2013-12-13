@@ -13,13 +13,15 @@ class Communication
 	typedef uart1 serial_ax12;
 	typedef AX<serial_ax12> Ax12;
 	Ax12 pince;						//ax12 de la pince
+	Ax12 roger;
 	
 	public:
 
 //constructeur
 
 	Communication():
-		pince (0,1,1023)
+		pince (0,1,1023),
+		roger (4,1,1023)
 	{
 		serial_pc::init();
 		serial_pc::change_baudrate (9600);
@@ -62,7 +64,7 @@ class Communication
 	}
 	void fermer ()
 	{
-		pince.goTo (240);
+		pince.goTo (230);
 	}
 	 
 	
