@@ -12,7 +12,7 @@ import container.Service;
  *
  */
 
-public class ThreadLaser extends AbstractThread {
+class ThreadLaser extends AbstractThread {
 
 	private Laser laser;
 	private Table table;
