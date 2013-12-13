@@ -2,7 +2,7 @@ package table;
 
 import smartMath.Vec2;
 
-public class Tree extends Game_Element {
+public class Tree {
 
 	private int tree_id; //depuis le haut vers le bas, de 0 à 3;
 	// 0 et 1 : c�t� droit
@@ -19,9 +19,8 @@ public class Tree extends Game_Element {
 	 * @param position
 	 * @param id
 	 */
-	public Tree (Vec2 position, int id)
+	public Tree (int id)
 	{
-		super(position);
 		this.tree_id = id;
 		this.arrayFruit[0] = new Fruit(0);
 		this.arrayFruit[1] = new Fruit(1);
@@ -42,8 +41,7 @@ public class Tree extends Game_Element {
 	 * @param radius
 	 * @param arrayFruit
 	 */
-	private Tree(Vec2 position, int tree_id, float radius, Fruit[] arrayFruit) {
-		super(position);
+	private Tree(int tree_id, float radius, Fruit[] arrayFruit) {
 		this.tree_id = tree_id;
 		this.radius = radius;
 		this.arrayFruit = arrayFruit;
@@ -54,7 +52,7 @@ public class Tree extends Game_Element {
 		Fruit[] cloned_arrayFruit = new Fruit[6];
 		for(int i = 0; i < 6; i++)		
 			cloned_arrayFruit[i] = arrayFruit[i].clone();
-		return new Tree(position.clone(), tree_id, radius, cloned_arrayFruit);
+		return new Tree(tree_id, radius, cloned_arrayFruit);
 	}
 	
 	public int nbrLeft ()
