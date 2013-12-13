@@ -77,15 +77,16 @@ public class ScriptLances extends Script {
 	@Override
 	public Table futureTable(Table table, int id_version)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		// La table n'est pas modifiée
+		return table;
 	}
 
 	@Override
 	public RobotChrono futurRobotChrono(RobotChrono robotchrono, int id_version)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		// TODO modification nombre de lances
+		robotchrono.tourner(0);
+		return robotchrono;
 	}
 
 	@Override
