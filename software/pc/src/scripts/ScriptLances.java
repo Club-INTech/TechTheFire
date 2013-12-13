@@ -1,11 +1,17 @@
 package scripts;
 
+import hook.HookGenerator;
+
 import java.util.ArrayList;
 
+import pathfinding.Pathfinding;
 import robot.RobotChrono;
+import robot.RobotVrai;
 import smartMath.Vec2;
 import table.Table;
-import container.Service;
+import threads.ThreadTimer;
+import utils.Log;
+import utils.Read_Ini;
 import exception.MouvementImpossibleException;
 
 /**
@@ -19,18 +25,19 @@ import exception.MouvementImpossibleException;
 class ScriptLances extends Script {
 	
 
+	public ScriptLances(Pathfinding pathfinding, ThreadTimer threadtimer,
+			RobotVrai robotvrai, RobotChrono robotchrono,
+			HookGenerator hookgenerator, Table table, Read_Ini config, Log log)
+	{
+		super(pathfinding, threadtimer, robotvrai, robotchrono, hookgenerator, table,
+				config, log);
+	}
+
 	/*
 	 * Le script lance 4 balles sur le côté droit
 	 * Le script donne un point d'entrée
 	 */
 	
-	public ScriptLances(Service pathfinding, Service threadtimer,
-			Service robotvrai, Service robotchrono, Service hookgenerator,
-			Service table, Service config, Service log) {
-		super(pathfinding, threadtimer, robotvrai, robotchrono, hookgenerator, table,
-				config, log);
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public ArrayList<Integer> version() {

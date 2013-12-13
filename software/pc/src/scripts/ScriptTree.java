@@ -1,27 +1,32 @@
 package scripts;
 
 import robot.RobotChrono;
+import robot.RobotVrai;
 import smartMath.Vec2;
 import table.Table;
-import container.Service;
+import threads.ThreadTimer;
+import utils.Log;
+import utils.Read_Ini;
 import hook.Callback;
 import hook.Executable;
 import hook.Hook;
+import hook.HookGenerator;
 import hook.methodes.LeverRateau;
 
 import java.util.ArrayList;
 
+import pathfinding.Pathfinding;
 import exception.MouvementImpossibleException;
-import robot.Robot;
 class ScriptTree extends Script{
 
-	public ScriptTree(Service pathfinding, Service threadtimer,
-			Service robotvrai, Service robotchrono, Service hookgenerator,
-			Service table, Service config, Service log) {
+		
+
+	public ScriptTree(Pathfinding pathfinding, ThreadTimer threadtimer,
+			RobotVrai robotvrai, RobotChrono robotchrono,
+			HookGenerator hookgenerator, Table table, Read_Ini config, Log log)
+	{
 		super(pathfinding, threadtimer, robotvrai, robotchrono, hookgenerator, table,
 				config, log);
-		
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
