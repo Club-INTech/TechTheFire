@@ -34,6 +34,10 @@ public class ScriptTree extends Script{
 	  de récupération des points d'entrée possibles est inutile pour les arbres */
 	public Vec2 point_entree(int id_version) {
 		Vec2 entree = new Vec2();
+
+		// Hardcoder les positions
+		
+		/*
 		if (id_version == 0) 
 		{
 			entree.x = (table.getATree()[0].getPosition().x)-(150+335); //les constantes sont respectivement le rayon de l'arbre, la taille nécessaire à allonger le rateau sans toucher la cime par rapport à la position du centre de la bat-mobile.
@@ -54,6 +58,7 @@ public class ScriptTree extends Script{
 			entree.x = (table.getATree()[3].getPosition().x)+(150+335);
 			entree.y = (table.getATree()[3].getPosition().y);
 		}
+		*/
 		return entree;
 	}
 
