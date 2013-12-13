@@ -1,5 +1,7 @@
 package scripts;
 
+import java.util.ArrayList;
+
 import robot.RobotChrono;
 import smartMath.Vec2;
 import table.Table;
@@ -30,7 +32,7 @@ public class ScriptLances extends Script {
 	}
 
 	@Override
-	public int[] version() {
+	public ArrayList<Integer> version() {
 		/*
 		 * De 0 à 2 versions possibles
 		 */
@@ -71,24 +73,8 @@ public class ScriptLances extends Script {
 	}
 	
 	/*
-	 * On verra celles-là plus tard
+	 * On verra celle-là plus tard
 	 */
-
-	@Override
-	public Table futureTable(Table table, int id_version)
-	{
-		// La table n'est pas modifiée
-		return table;
-	}
-
-	@Override
-	public RobotChrono futurRobotChrono(RobotChrono robotchrono, int id_version)
-	{
-		// TODO modification nombre de lances
-		robotchrono.tourner(0);
-		return robotchrono;
-	}
-
 	@Override
 	public float getDuree() {
 		// TODO Auto-generated method stub

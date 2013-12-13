@@ -90,28 +90,6 @@ public class ScriptTree extends Script{
 	}
 
 	@Override
-	public Table futureTable(Table table, int id_version) {
-		Table newTable = table;
-		if (id_version <= 1)
-		{
-			newTable.pickTree(0);
-			newTable.pickTree(1);
-		}
-		else
-		{
-			newTable.pickTree(2);
-			newTable.pickTree(3);
-		}
-		return newTable;
-	}
-
-	@Override
-	public RobotChrono futurRobotChrono(RobotChrono robotchrono) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public float getDuree() {
 		// TODO Auto-generated method stub
 		return 0;
