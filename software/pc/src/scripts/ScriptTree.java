@@ -94,10 +94,4 @@ public class ScriptTree extends Script{
 		
 	}
 
-	@Override
-	public float getDuree() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 }

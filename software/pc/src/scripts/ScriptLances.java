@@ -72,16 +72,4 @@ public class ScriptLances extends Script {
 		// vide
 	}
 	
-	/*
-	 * On verra celle-là plus tard
-	 */
-	@Override
-	public float getDuree() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-
-	
-	
 }
