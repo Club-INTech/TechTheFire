@@ -2,7 +2,7 @@ package table;
 
 class Fruit {
 
-	private int fruit_id;
+	private final int fruit_id;
 	private boolean taken = false;
 	private boolean good = true;
 	
@@ -15,33 +15,26 @@ class Fruit {
 		this.fruit_id=ID;
 	}
 	
-	/**
-	 * Constructeur appelé par clone()
-	 * @param ID
-	 * @param taken
-	 * @param good
-	 */
-	private Fruit(int ID, boolean taken, boolean good)
+	public void clone(Fruit fruit)
 	{
-		this(ID);
-		this.taken = taken;
-		this.good = good;
-	}
-
-	public Fruit clone()
-	{
-		return new Fruit(fruit_id, taken, good);
+		fruit.taken = taken;
+		fruit.good = good;
 	}
 	
 	public boolean isTaken() {
-		return this.taken;
+		return taken;
 	}
 	
 	public boolean isGood() {
-		return this.good;
+		return good;
 	}
 	
 	public void setTaken() {
-		this.taken = true;
+		taken = true;
+	}
+	
+	public int getID()
+	{
+		return fruit_id;
 	}
 }

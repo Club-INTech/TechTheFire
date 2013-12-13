@@ -2,10 +2,9 @@ package table;
 
 class Tree {
 
-	private int tree_id; //depuis le haut vers le bas, de 0 à 3;
+	private final int tree_id; //depuis le haut vers le bas, de 0 à 3;
 	// 0 et 1 : c�t� droit
 	// 2 et 3 : c�t� gauche
-	private float radius = 150 ;
 	private boolean taken = false;
 	Fruit arrayFruit[] = new Fruit[6];
 
@@ -31,26 +30,18 @@ class Tree {
 		// 3-5 : partie droite de l'arbre
 		// De plus, 0 et 3 sont les fruits les plus proches du robot.
 	}
-	
-	/**
-	 * Constructeur utilisé par clone()
-	 * @param position
-	 * @param tree_id
-	 * @param radius
-	 * @param arrayFruit
-	 */
-	private Tree(int tree_id, float radius, Fruit[] arrayFruit) {
-		this.tree_id = tree_id;
-		this.radius = radius;
-		this.arrayFruit = arrayFruit;
-	}
 
-	public Tree clone()
+	public void clone(Tree tree)
 	{
+		// Si l'arbre est pris, on ne prend même pas la peine de copier ses fruits
+		tree.taken = taken;
+
+		if(taken)
+			return;
+		
 		Fruit[] cloned_arrayFruit = new Fruit[6];
 		for(int i = 0; i < 6; i++)		
-			cloned_arrayFruit[i] = arrayFruit[i].clone();
-		return new Tree(tree_id, radius, cloned_arrayFruit);
+			arrayFruit[i].clone(cloned_arrayFruit[i]);
 	}
 	
 	public int nbrLeft ()
