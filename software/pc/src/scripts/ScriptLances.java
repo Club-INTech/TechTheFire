@@ -6,8 +6,6 @@ import java.util.ArrayList;
 
 import pathfinding.Pathfinding;
 import robot.Robot;
-import robot.RobotChrono;
-import robot.RobotVrai;
 import smartMath.Vec2;
 import table.Table;
 import threads.ThreadTimer;
@@ -38,7 +36,7 @@ class ScriptLances extends Script {
 	
 
 	@Override
-	public ArrayList<Integer> version(Robot robot, Table table) {
+	public ArrayList<Integer> version(final Robot robot, final Table table) {
 		/*
 		 * De 0 à 2 versions possibles
 		 */
@@ -46,19 +44,19 @@ class ScriptLances extends Script {
 	}
 
 	@Override
-	public Vec2 point_entree(int id, Robot robot, Table table) {
+	public Vec2 point_entree(int id, final Robot robot, final Table table) {
 		// A modifier, la position devant le mammouth
 		return new Vec2(0,0);
 	}
 
 	@Override
-	public int score(int id_version, Robot robot, Table table) {
+	public int score(int id_version, final Robot robot, final Table table) {
 		// combien on gagne? demander à la table
 		return 0;
 	}
 
 	@Override
-	public int poids(Robot robot, Table table) {
+	public int poids(final Robot robot, final Table table) {
 		// On s'en fout pour le moment
 		// TODO Auto-generated method stub
 		return 0;

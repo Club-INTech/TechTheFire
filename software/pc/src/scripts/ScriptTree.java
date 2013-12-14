@@ -1,8 +1,6 @@
 package scripts;
 
 import robot.Robot;
-import robot.RobotChrono;
-import robot.RobotVrai;
 import smartMath.Vec2;
 import table.Table;
 import threads.ThreadTimer;
@@ -27,7 +25,7 @@ class ScriptTree extends Script{
 	}
 
 	@Override
-	public ArrayList<Integer> version(Robot robot, Table table) {
+	public ArrayList<Integer> version(final Robot robot, final Table table) {
 		int i;
 		ArrayList<Integer> versionsList = new ArrayList<Integer>();
 		for (i=0; i<=3; i++)
@@ -42,7 +40,7 @@ class ScriptTree extends Script{
 
 	@Override
 
-	public Vec2 point_entree(int id_version, Robot robot, Table table) {
+	public Vec2 point_entree(int id_version, final Robot robot, final Table table) {
 		Vec2 entree = new Vec2();
 
 		if (id_version == 0)
@@ -69,7 +67,7 @@ class ScriptTree extends Script{
 	}
 
 	@Override
-	public int score(int id_version, Robot robot, Table table) {
+	public int score(int id_version, final Robot robot, final Table table) {
 		int res = 0;
 		if (id_version <= 1)
 		{
@@ -83,7 +81,7 @@ class ScriptTree extends Script{
 	}
 
 	@Override
-	public int poids(Robot robot, Table table) {
+	public int poids(final Robot robot, final Table table) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
