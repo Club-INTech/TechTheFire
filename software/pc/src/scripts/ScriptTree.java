@@ -113,14 +113,16 @@ class ScriptTree extends Script{
 		robot.baisser_rateaux_bas();
 		// on remonte les bras à mi-hauteur en fonction de la position du fruit pourri, tout en reculant
 		
-		Hook[] hooks = new Hook[2];
+		ArrayList<Hook> hooks = new ArrayList<Hook>();
 		Executable remonteDroit = new LeverRateau(robot, true);
-		hooks[0] = hookgenerator.hook_position(new Vec2(0,0));
-		hooks[0].ajouter_callback(new Callback(remonteDroit, true));
+		Hook hook = hookgenerator.hook_position(new Vec2(0,0));
+		hook.ajouter_callback(new Callback(remonteDroit, true));		
+		hooks.add(hook);
 
 		Executable remonteGauche = new LeverRateau(robot, false);
-		hooks[1] = hookgenerator.hook_position(new Vec2(0,0));
-		hooks[1].ajouter_callback(new Callback(remonteGauche, true));
+		hook = hookgenerator.hook_position(new Vec2(0,0));
+		hook.ajouter_callback(new Callback(remonteGauche, true));
+		hooks.add(hook);
 		
 		robot.avancer(60, hooks);
 	}
