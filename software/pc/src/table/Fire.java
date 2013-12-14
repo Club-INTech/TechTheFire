@@ -6,8 +6,8 @@ import smartMath.Vec2;
 class Fire extends Game_Element {
 
 	private int height ; //0=sol, chaque unité supplémentaire représente un feu en-dessous	
-	private final Orientation orientation;
-	private final Colour colour;
+//	private final Orientation orientation;
+//	private final Colour colour;
 	private boolean onFireplace = false ;	// Booléen qui dit si le feu est sur un foyer ou non
 	private boolean taken  = false ;	// Booléen indiquant si le feu a été pris
 
@@ -23,8 +23,8 @@ class Fire extends Game_Element {
 	{
 		super(position);
 		this.height = height;
-		this.orientation = orientation;
-		this.colour = couleur;		
+//		this.orientation = orientation;
+//		this.colour = couleur;		
 	}
 	
 	public void pickFire()
