@@ -2,7 +2,12 @@ package table;
 
 class Fruit {
 
-	private boolean good = true;
+	private boolean good;
+	
+	public Fruit(boolean good)
+	{
+		this.good = good;
+	}
 	
 	public void clone(Fruit fruit)
 	{

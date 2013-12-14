@@ -7,7 +7,7 @@ class Tree {
 	// 0 et 1 : c�t� droit
 	// 2 et 3 : c�t� gauche
 	private boolean taken = false;
-	Fruit arrayFruit[] = new Fruit[6];
+	private final Fruit arrayFruit[] = new Fruit[6];
 
 	// combien gauche()
 	// combien droit()
@@ -18,12 +18,12 @@ class Tree {
 	 */
 	public Tree ()
 	{
-		this.arrayFruit[0] = new Fruit();
-		this.arrayFruit[1] = new Fruit();
-		this.arrayFruit[2] = new Fruit();
-		this.arrayFruit[3] = new Fruit();
-		this.arrayFruit[4] = new Fruit();
-		this.arrayFruit[5] = new Fruit();	
+		this.arrayFruit[0] = new Fruit(true);
+		this.arrayFruit[1] = new Fruit(true);
+		this.arrayFruit[2] = new Fruit(true);
+		this.arrayFruit[3] = new Fruit(true);
+		this.arrayFruit[4] = new Fruit(true);
+		this.arrayFruit[5] = new Fruit(true);
 		// Convention par Guy (spammez moi si je me trompe) :
 		// 0-2 : partie gauche de l'arbre
 		// 3-5 : partie droite de l'arbre
@@ -34,12 +34,6 @@ class Tree {
 	{
 		// Si l'arbre est pris, on ne prend même pas la peine de copier ses fruits
 		tree.taken = taken;
-
-		if(taken)
-			return;
-				
-		for(int i = 0; i < 6; i++)
-			arrayFruit[i].clone(tree.arrayFruit[i]);
 	}
 	
 	public int nbrLeft ()
