@@ -313,6 +313,11 @@ class AX
 			writeDataB(AX_GOAL_SPEED_L, 2, vitesse);
 		}
 
+		void asserv()
+		{
+			writeData(AX_TORQUE_ENABLE, 1, 1);
+		}
+
 		/// Désasservissement d'un AX12 branché.
 		void unasserv()
 		{
@@ -387,9 +392,9 @@ class AX
 		// Retourne si l'AX-12 est en déplacement vers sa consigne
 		bool isMoving()
 		{
-			uint8_t mov;
+			uint8_t mov[1];
 			readData(AX_MOVING, 1, mov);
-			if (mov==0)
+			if (mov[0]==0)
 				return false;
 			else
 				return true;
