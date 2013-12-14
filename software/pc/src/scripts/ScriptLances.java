@@ -5,7 +5,8 @@ import hook.HookGenerator;
 import java.util.ArrayList;
 
 import pathfinding.Pathfinding;
-import robot.Robot;
+import robot.RobotChrono;
+import robot.RobotVrai;
 import smartMath.Vec2;
 import table.Table;
 import threads.ThreadTimer;
@@ -24,9 +25,12 @@ import exception.MouvementImpossibleException;
 class ScriptLances extends Script {
 	
 
-	public ScriptLances(Pathfinding pathfinding, ThreadTimer threadtimer, HookGenerator hookgenerator, Read_Ini config, Log log)
+	public ScriptLances(Pathfinding pathfinding, ThreadTimer threadtimer,
+			RobotVrai robotvrai, RobotChrono robotchrono,
+			HookGenerator hookgenerator, Table table, Read_Ini config, Log log)
 	{
-		super(pathfinding, threadtimer, hookgenerator, config, log);
+		super(pathfinding, threadtimer, robotvrai, robotchrono, hookgenerator, table,
+				config, log);
 	}
 
 	/*
@@ -36,7 +40,7 @@ class ScriptLances extends Script {
 	
 
 	@Override
-	public ArrayList<Integer> version(final Robot robot, final Table table) {
+	public ArrayList<Integer> version() {
 		/*
 		 * De 0 à 2 versions possibles
 		 */
@@ -44,26 +48,26 @@ class ScriptLances extends Script {
 	}
 
 	@Override
-	public Vec2 point_entree(int id, final Robot robot, final Table table) {
+	public Vec2 point_entree(int id) {
 		// A modifier, la position devant le mammouth
 		return new Vec2(0,0);
 	}
 
 	@Override
-	public int score(int id_version, final Robot robot, final Table table) {
+	public int score(int id_version) {
 		// combien on gagne? demander à la table
 		return 0;
 	}
 
 	@Override
-	public int poids(final Robot robot, final Table table) {
+	public int poids() {
 		// On s'en fout pour le moment
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
+	protected void execute(int id_version) throws MouvementImpossibleException
 	{
 		// ajuster l'orientation du robot (objet robot)
 		robot.tourner(0);
@@ -73,7 +77,7 @@ class ScriptLances extends Script {
 	}
 
 	@Override
-	protected void termine(Robot robot, Table table) {
+	protected void termine() {
 		// vide
 	}
 	

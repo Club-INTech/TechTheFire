@@ -18,8 +18,9 @@ class ThreadLaser extends AbstractThread {
 	private Table table;
 	private ThreadTimer threadtimer;
 	
-	public ThreadLaser(Laser laser, Table table, ThreadTimer threadtimer)
+	public ThreadLaser(Read_Ini config, Log log, Laser laser, Table table, ThreadTimer threadtimer)
 	{
+		super(config, log);
 		this.laser = laser;
 		this.table = table;
 		this.threadtimer = threadtimer;
