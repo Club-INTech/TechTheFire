@@ -2,7 +2,8 @@ package table;
 
 class Tree {
 
-	private final int tree_id; //depuis le haut vers le bas, de 0 à 3;
+	// Indice dans arrayTree:
+	//depuis le haut vers le bas, de 0 à 3;
 	// 0 et 1 : c�t� droit
 	// 2 et 3 : c�t� gauche
 	private boolean taken = false;
@@ -14,17 +15,15 @@ class Tree {
 	/**
 	 * Constructeur public
 	 * @param position
-	 * @param id
 	 */
-	public Tree (int id)
+	public Tree ()
 	{
-		this.tree_id = id;
-		this.arrayFruit[0] = new Fruit(0);
-		this.arrayFruit[1] = new Fruit(1);
-		this.arrayFruit[2] = new Fruit(2);
-		this.arrayFruit[3] = new Fruit(3);
-		this.arrayFruit[4] = new Fruit(4);
-		this.arrayFruit[5] = new Fruit(5);	
+		this.arrayFruit[0] = new Fruit();
+		this.arrayFruit[1] = new Fruit();
+		this.arrayFruit[2] = new Fruit();
+		this.arrayFruit[3] = new Fruit();
+		this.arrayFruit[4] = new Fruit();
+		this.arrayFruit[5] = new Fruit();	
 		// Convention par Guy (spammez moi si je me trompe) :
 		// 0-2 : partie gauche de l'arbre
 		// 3-5 : partie droite de l'arbre
@@ -38,10 +37,9 @@ class Tree {
 
 		if(taken)
 			return;
-		
-		Fruit[] cloned_arrayFruit = new Fruit[6];
-		for(int i = 0; i < 6; i++)		
-			arrayFruit[i].clone(cloned_arrayFruit[i]);
+				
+		for(int i = 0; i < 6; i++)
+			arrayFruit[i].clone(tree.arrayFruit[i]);
 	}
 	
 	public int nbrLeft ()
@@ -52,10 +50,7 @@ class Tree {
 		{
 			while (i < 3 && this.arrayFruit[i].isGood()) 
 			{
-				if (this.arrayFruit[i].isTaken() == false) 
-				{
-					var++;
-				}
+				var++;
 				i++;
 			}
 		}
@@ -70,10 +65,7 @@ class Tree {
 		{
 			while (i < 6 && this.arrayFruit[i].isGood()) 
 			{
-				if (this.arrayFruit[i].isTaken() == false) 
-				{
-					var++;
-				}
+				var++;
 				i++;
 			}
 		}
@@ -84,12 +76,7 @@ class Tree {
 	{
 		return (nbrLeft()+nbrRight());
 	}
-	
-	public void pickFruit(int id)
-	{
-		this.arrayFruit[id].setTaken();
-	}
-	
+		
 	public boolean isTaken()
 	{
 		return this.taken;

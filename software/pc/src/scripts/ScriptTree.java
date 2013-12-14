@@ -76,11 +76,11 @@ class ScriptTree extends Script{
 		int res = 0;
 		if (id_version <= 1)
 		{
-			res = table.nbrTotal(0) + table.nbrTotal(1);
+			res = table.nbrTotalTree(0) + table.nbrTotalTree(1);
 		}
 		else
 		{
-			res = table.nbrTotal(2) + table.nbrTotal(3);
+			res = table.nbrTotalTree(2) + table.nbrTotalTree(3);
 		}
 		return res;
 	}
@@ -94,8 +94,8 @@ class ScriptTree extends Script{
 	@Override
 	protected void execute(int id_version) throws MouvementImpossibleException
 	{
-		int Fruitsgauche = table.nbrLeft(id_version) ;
-		int Fruitsdroite = table.nbrRight(id_version);
+		int Fruitsgauche = table.nbrLeftTree(id_version) ;
+		int Fruitsdroite = table.nbrRightTree(id_version);
 		
 		// Orientation du robot, le rateau étant à l'arrière
 		if (id_version == 0)
