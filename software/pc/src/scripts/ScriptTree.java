@@ -1,5 +1,6 @@
 package scripts;
 
+import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotVrai;
 import smartMath.Vec2;
@@ -17,20 +18,16 @@ import java.util.ArrayList;
 
 import pathfinding.Pathfinding;
 import exception.MouvementImpossibleException;
+
 class ScriptTree extends Script{
 
-		
-
-	public ScriptTree(Pathfinding pathfinding, ThreadTimer threadtimer,
-			RobotVrai robotvrai, RobotChrono robotchrono,
-			HookGenerator hookgenerator, Table table, Read_Ini config, Log log)
+	public ScriptTree(Pathfinding pathfinding, ThreadTimer threadtimer, HookGenerator hookgenerator, Read_Ini config, Log log)
 	{
-		super(pathfinding, threadtimer, robotvrai, robotchrono, hookgenerator, table,
-				config, log);
+		super(pathfinding, threadtimer, hookgenerator, config, log);
 	}
 
 	@Override
-	public ArrayList<Integer> version() {
+	public ArrayList<Integer> version(Robot robot, Table table) {
 		int i;
 		ArrayList<Integer> versionsList = new ArrayList<Integer>();
 		for (i=0; i<=3; i++)
@@ -45,7 +42,7 @@ class ScriptTree extends Script{
 
 	@Override
 
-	public Vec2 point_entree(int id_version) {
+	public Vec2 point_entree(int id_version, Robot robot, Table table) {
 		Vec2 entree = new Vec2();
 
 		if (id_version == 0)
@@ -72,7 +69,7 @@ class ScriptTree extends Script{
 	}
 
 	@Override
-	public int score(int id_version) {
+	public int score(int id_version, Robot robot, Table table) {
 		int res = 0;
 		if (id_version <= 1)
 		{
@@ -86,13 +83,13 @@ class ScriptTree extends Script{
 	}
 
 	@Override
-	public int poids() {
+	public int poids(Robot robot, Table table) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	protected void execute(int id_version) throws MouvementImpossibleException
+	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
 	{
 		int Fruitsgauche = table.nbrLeftTree(id_version) ;
 		int Fruitsdroite = table.nbrRightTree(id_version);
@@ -131,7 +128,7 @@ class ScriptTree extends Script{
 	}
 
 	@Override
-	protected void termine() {
+	protected void termine(Robot robot, Table table) {
 		robot.remonter_rateaux();	
 	}
 
