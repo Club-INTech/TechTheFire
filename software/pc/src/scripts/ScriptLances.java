@@ -37,15 +37,26 @@ class ScriptLances extends Script {
 
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table) {
-		/*
-		 * De 0 Ã  2 versions possibles
-		 */
-		return null;
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		// En fait, si j'ai bien compris, les versions reprŽsentent en fait
+		// le nombre de lances pouvant tre lancŽes, dans la limite de 4.
+		// J'ai bon ?
+		int n;
+		if (robot.getNbrLances()>=4) {
+			n = 4;
+		} else {
+			n = robot.getNbrLances();
+		}
+		for (int i = 0; i < n+1; i++) {
+			versionList.add(i);
+		}
+		return versionList;
 	}
 
 	@Override
 	public Vec2 point_entree(int id, final Robot robot, final Table table) {
 		// A modifier, la position devant le mammouth
+		// Note ˆ moi-mme : demander ˆ NgonŽ ou Alexandre pour la distance
 		return new Vec2(0,0);
 	}
 
