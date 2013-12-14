@@ -21,7 +21,7 @@ class HookFeu extends Hook {
 		this.capteur = capteur;
 	}
 	
-	public void evaluate(Robot robot)
+	public void evaluate(final Robot robot)
 	{
 		if(capteur.isThereFire())
 			declencher();
