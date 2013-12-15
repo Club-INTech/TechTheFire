@@ -38,7 +38,7 @@ class Communication
 	{
 		if ( strcmp ( ordre , "?") == 0 )
 		{
-			serial_pc::printfln ( "5" );
+			serial_pc::printfln ( "3" );
 		}
 		else if ( strcmp ( ordre , "bb" ) == 0 )			//bb = bac bas
 		{
