@@ -1,7 +1,7 @@
 package hook;
 
 import container.Service;
-import robot.cartes.Capteur;
+import robot.cartes.Capteurs;
 import smartMath.Vec2;
 import utils.Log;
 import utils.Read_Ini;
@@ -24,11 +24,11 @@ public class HookGenerator implements Service {
 	
 	private Read_Ini config;
 	private Log log;
-	private Capteur capteur;
+	private Capteurs capteur;
 
 	private int tolerance_position = 20;
 	
-	public HookGenerator(Read_Ini config, Log log, Capteur capteur)
+	public HookGenerator(Read_Ini config, Log log, Capteurs capteur)
 	{
 		this.config = config;
 		this.log = log;
@@ -42,6 +42,10 @@ public class HookGenerator implements Service {
 		}
 		
 	}
+
+	/*
+	 * Hook de position
+	 */
 	
 	public Hook hook_position(Vec2 position, int tolerance, boolean effectuer_symetrie)
 	{
@@ -59,6 +63,33 @@ public class HookGenerator implements Service {
 	{
 		return hook_position(position, tolerance_position, effectuer_symetrie);
 	}
+
+	
+	/*
+	 * Hook d'abscisse
+	 */
+	
+	public Hook hook_abscisse(float abscisse, int tolerance, boolean effectuer_symetrie)
+	{
+		return new HookAbscisse(config, log, abscisse, tolerance, effectuer_symetrie);
+	}
+	public Hook hook_abscisse(float abscisse, int tolerance)
+	{
+		return hook_abscisse(abscisse, tolerance, false);
+	}
+	public Hook hook_abscisse(float abscisse)
+	{
+		return hook_abscisse(abscisse, tolerance_position, false);
+	}
+	public Hook hook_abscisse(float abscisse, boolean effectuer_symetrie)
+	{
+		return hook_abscisse(abscisse, tolerance_position, effectuer_symetrie);
+	}
+
+	
+	/*
+	 * Hook de feu
+	 */
 
 	public Hook hook_feu()
 	{

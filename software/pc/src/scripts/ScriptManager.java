@@ -1,17 +1,16 @@
 package scripts;
 
-import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 
 import pathfinding.Pathfinding;
 import hook.HookGenerator;
-import robot.Robot;
-import robot.RobotChrono;
-import robot.RobotVrai;
-import table.Table;
 import threads.ThreadTimer;
 import utils.Log;
 import utils.Read_Ini;
 import container.Service;
+import exception.ScriptException;
 
  /**
   * Classe enregistrée comme service qui fournira les scripts
@@ -20,48 +19,32 @@ import container.Service;
  
 public class ScriptManager implements Service {
 	
-	private Pathfinding pathfinding;
-	private ThreadTimer threadtimer;
-	private Robot robot;
-	private RobotVrai robotvrai;
-	private RobotChrono robotchrono;
-	private HookGenerator hookgenerator;
-	private Table table;
-	private Read_Ini config;
 	private Log log;
-	
-	public String[] scripts;
-	
-	public ScriptManager(Pathfinding pathfinding, ThreadTimer threadtimer, RobotVrai robotvrai, RobotChrono robotchrono, HookGenerator hookgenerator, Table table, Read_Ini config, Log log) {
-		this.pathfinding = pathfinding;
-		this.threadtimer = threadtimer;
-		this.robotvrai = robotvrai;
-		this.robotchrono = robotchrono;
-		this.hookgenerator = hookgenerator;
-		this.table = table;
-		this.config = config;
+
+	private Map<String,Script> instancesScripts = new Hashtable<String,Script>();
+
+	public ScriptManager(Pathfinding pathfinding, ThreadTimer threadtimer, HookGenerator hookgenerator, Read_Ini config, Log log) {
 		this.log = log;
-
+		
+		instancesScripts.put("ScriptTree", new ScriptTree(pathfinding, threadtimer, hookgenerator, config, log));
+		instancesScripts.put("ScriptLances", new ScriptTree(pathfinding, threadtimer, hookgenerator, config, log));
+		
 	}
 	
-	// TODO
-	public ArrayList<Script> scriptsRestants()
+	public Set<String> getNomsScripts()
 	{
-		return null;
+		return instancesScripts.keySet();
 	}
 
-	// TODO
-	public Script getScript(String nom, Table table, Robot robot, Pathfinding pathfinding)
+	public Script getScript(String nom) throws ScriptException
 	{
-		return null;
-//		if(nom == "ScriptPosition")
-//			return new Script
-	}
-	
-	// TODO
-	public int[] getId(String nom_script)
-	{
-		return null;
+		Script script = instancesScripts.get(nom);
+		if(script == null)
+		{
+			log.warning("Script inconnu: "+nom, this);
+			throw new ScriptException();
+		}
+		return script;
 	}
 	
 }

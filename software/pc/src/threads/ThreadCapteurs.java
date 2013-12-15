@@ -1,12 +1,9 @@
 package threads;
 
 import robot.RobotVrai;
-import robot.cartes.Capteur;
+import robot.cartes.Capteurs;
 import smartMath.Vec2;
 import table.Table;
-import utils.Log;
-import utils.Read_Ini;
-import container.Service;
 
 /**
  * Thread qui ajoute en continu les obstacles détectés par les capteurs
@@ -17,7 +14,7 @@ import container.Service;
 class ThreadCapteurs extends AbstractThread {
 
 	private RobotVrai robotvrai;
-	private Capteur capteur;
+	private Capteurs capteur;
 	private Table table;
 	private ThreadTimer threadTimer;
 	
@@ -30,7 +27,7 @@ class ThreadCapteurs extends AbstractThread {
 	private int table_y = 2000;
 	private int capteurs_frequence = 5;
 	
-	ThreadCapteurs(Read_Ini config, Log log, RobotVrai robotvrai, ThreadTimer threadTimer, Table table, Capteur capteur)
+	ThreadCapteurs(RobotVrai robotvrai, ThreadTimer threadTimer, Table table, Capteurs capteur)
 	{
 		super(config, log);
 		this.robotvrai = robotvrai;
@@ -95,14 +92,7 @@ class ThreadCapteurs extends AbstractThread {
 						date_dernier_ajout = (int)System.currentTimeMillis();
 				
 			}
-			try
-			{
-			Thread.sleep((long)1/capteurs_frequence);
-			}
-			catch(Exception e)
-			{
-				log.critical("Erreur sleep: "+e.toString(), this);
-			}
+			sleep((long)1/capteurs_frequence);
 			
 		}
         log.debug("Fin du thread de capteurs", this);

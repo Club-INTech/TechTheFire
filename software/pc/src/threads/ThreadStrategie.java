@@ -1,15 +1,13 @@
 package threads;
 
+import exception.ScriptException;
 import pathfinding.Pathfinding;
 import robot.RobotChrono;
 import robot.RobotVrai;
-import scripts.Script;
+import strategie.MemoryManager;
 import strategie.NoteScriptVersion;
 import strategie.Strategie;
 import table.Table;
-import utils.Log;
-import utils.Read_Ini;
-import container.Service;
 
 /**
  * Thread qui calculera en continu la stratégie à adopter
@@ -24,29 +22,37 @@ public class ThreadStrategie extends AbstractThread {
 	private Table table;
 	private RobotVrai robotvrai;
 	private RobotChrono robotchrono;
+	private MemoryManager memorymanager;
 	private Pathfinding pathfinding;
 
-	private Table futureTable;
-	private RobotChrono futurRobotChrono;
-	
-	ThreadStrategie(Read_Ini config, Log log, Strategie strategie, Table table, RobotVrai robotvrai, RobotChrono robotchrono, Pathfinding pathfinding)
+	ThreadStrategie(Strategie strategie, Table table, RobotVrai robotvrai, RobotChrono robotchrono, Pathfinding pathfinding, MemoryManager memorymanager)
 	{
-		super(config, log);
 		this.strategie = strategie;
 		this.table = table;
 		this.robotvrai = robotvrai;
 		this.robotchrono = robotchrono;
 		this.pathfinding = pathfinding;
+		this.memorymanager = memorymanager;
 	}
 	
 	public void run()
 	{
+		int profondeur_max = 2;
 		while(!stop_threads)
 		{
+			strategie.analyse_ennemi();
+			robotchrono.majRobotChrono(robotvrai);
 			// Evaluation d'une stratégie de secours si ce script bug (en premier car plus urgent)
 			Table tableBlocage = table;
 			tableBlocage.creer_obstacle(robotvrai.getPosition()/*+distance*/);
-			NoteScriptVersion meilleurErreur = strategie.evaluation(System.currentTimeMillis(), table, robotchrono, pathfinding, 2);
+			memorymanager.setModelTable(tableBlocage, profondeur_max);
+			memorymanager.setModelRobotChrono(robotchrono, profondeur_max);
+			NoteScriptVersion meilleurErreur = new NoteScriptVersion();
+			try {
+				meilleurErreur = strategie.evaluation(System.currentTimeMillis(), pathfinding, profondeur_max);
+			} catch (ScriptException e) {
+				log.critical(e, this);
+			}
 
 			strategie.prochainScriptEnnemi = meilleurErreur.script;
 			
@@ -58,7 +64,12 @@ public class ThreadStrategie extends AbstractThread {
 //				futurRobotChrono = strategie.scriptEnCours.futurRobotChrono(robotchrono, strategie.versionScriptEnCours);
 			}
 
-			NoteScriptVersion meilleurProchain = strategie.evaluation(System.currentTimeMillis(), futureTable, futurRobotChrono, pathfinding, 2);
+			NoteScriptVersion meilleurProchain = new NoteScriptVersion();
+			try {
+				meilleurProchain = strategie.evaluation(System.currentTimeMillis(), pathfinding, profondeur_max);
+			} catch (ScriptException e) {
+				log.critical(e, this);
+			}
 			
 			strategie.prochainScript = meilleurProchain.script;
 		}

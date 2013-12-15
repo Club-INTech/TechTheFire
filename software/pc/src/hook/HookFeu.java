@@ -1,7 +1,7 @@
 package hook;
 
 import robot.Robot;
-import robot.cartes.Capteur;
+import robot.cartes.Capteurs;
 import utils.Log;
 import utils.Read_Ini;
 
@@ -13,15 +13,15 @@ import utils.Read_Ini;
 
 class HookFeu extends Hook {
 
-	private Capteur capteur;
+	private Capteurs capteur;
 	
-	public HookFeu(Read_Ini config, Log log, Capteur capteur)
+	public HookFeu(Read_Ini config, Log log, Capteurs capteur)
 	{
 		super(config, log);
 		this.capteur = capteur;
 	}
 	
-	public void evaluate(Robot robot)
+	public void evaluate(final Robot robot)
 	{
 		if(capteur.isThereFire())
 			declencher();
