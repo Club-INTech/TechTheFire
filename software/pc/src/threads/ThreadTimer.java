@@ -1,10 +1,8 @@
 package threads;
 
-import robot.cartes.Capteur;
+import robot.cartes.Capteurs;
 import robot.cartes.Deplacements;
 import table.Table;
-import utils.Log;
-import utils.Read_Ini;
 
 /**
  * Thread qui s'occupe de la gestion du temps: début du match, péremption des obstacles
@@ -16,7 +14,7 @@ public class ThreadTimer extends AbstractThread {
 
 	// Dépendance
 	private Table table;
-	private Capteur capteur;
+	private Capteurs capteur;
 	private Deplacements deplacements;
 	
 	public boolean match_demarre = false;
@@ -24,16 +22,15 @@ public class ThreadTimer extends AbstractThread {
 	public long date_debut;
 	public long duree_match = 90000;
 	
-	ThreadTimer(Read_Ini config, Log log, Table table, Capteur capteur, Deplacements deplacements)
+	ThreadTimer(Table table, Capteurs capteur, Deplacements deplacements)
 	{
-		super(config, log);
 		this.table = table;
 		this.capteur = capteur;
 		this.deplacements = deplacements;
 		
 		// facteur 1000 car temps_match est en secondes et duree_match en ms
 		try {
-			duree_match = 1000*Long.parseLong(this.config.get("temps_match"));
+			duree_match = 1000*Long.parseLong(AbstractThread.config.get("temps_match"));
 		}
 		catch(Exception e)
 		{

@@ -1,12 +1,16 @@
 package scripts;
 
+import hook.Callback;
+import hook.Executable;
+import hook.Hook;
 import hook.HookGenerator;
+import hook.methodes.LeverRateau;
+import hook.methodes.TirerBalles;
 
 import java.util.ArrayList;
 
 import pathfinding.Pathfinding;
-import robot.RobotChrono;
-import robot.RobotVrai;
+import robot.Robot;
 import smartMath.Vec2;
 import table.Table;
 import threads.ThreadTimer;
@@ -25,12 +29,9 @@ import exception.MouvementImpossibleException;
 class ScriptLances extends Script {
 	
 
-	public ScriptLances(Pathfinding pathfinding, ThreadTimer threadtimer,
-			RobotVrai robotvrai, RobotChrono robotchrono,
-			HookGenerator hookgenerator, Table table, Read_Ini config, Log log)
+	public ScriptLances(Pathfinding pathfinding, ThreadTimer threadtimer, HookGenerator hookgenerator, Read_Ini config, Log log)
 	{
-		super(pathfinding, threadtimer, robotvrai, robotchrono, hookgenerator, table,
-				config, log);
+		super(pathfinding, threadtimer, hookgenerator, config, log);
 	}
 
 	/*
@@ -40,44 +41,55 @@ class ScriptLances extends Script {
 	
 
 	@Override
-	public ArrayList<Integer> version() {
-		/*
-		 * De 0 √† 2 versions possibles
-		 */
-		return null;
+	public ArrayList<Integer> version(final Robot robot, final Table table) {
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		// En fait, si j'ai bien compris, les versions représentent en fait
+		// le nombre de lances pouvant être lancées, dans la limite de 4.
+		// J'ai bon ?
+		if (robot.getNbrLances() > 0) {
+			versionList.add(0);
+			versionList.add(1);
+		}
+		return versionList;
 	}
 
 	@Override
-	public Vec2 point_entree(int id) {
+	public Vec2 point_entree(int id, final Robot robot, final Table table) {
 		// A modifier, la position devant le mammouth
+		// Note à moi-même : demander à Ngoné ou Alexandre pour la distance
 		return new Vec2(0,0);
 	}
 
 	@Override
-	public int score(int id_version) {
-		// combien on gagne? demander √† la table
-		return 0;
+	public int score(int id_version, final Robot robot, final Table table) {
+		return robot.getNbrLances()*2;
 	}
 
 	@Override
-	public int poids() {
+	public int poids(final Robot robot, final Table table) {
 		// On s'en fout pour le moment
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	protected void execute(int id_version) throws MouvementImpossibleException
+	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
 	{
 		// ajuster l'orientation du robot (objet robot)
 		robot.tourner(0);
 		// tirer (objet robot)
-		// √† r√©fl√©chir (c√¥t√© droit ou gauche)
-		robot.tirerBalles(true);
+		ArrayList<Hook> hooks = new ArrayList<Hook>();
+		Executable tirerballes = new TirerBalles(robot);
+		Hook hook = hookgenerator.hook_abscisse(0); // modifier abscisse
+		hook.ajouter_callback(new Callback(tirerballes, true));		
+		hooks.add(hook);
+		
+		robot.set_vitesse_translation("vitesse_mammouth");
+		robot.avancer(50, hooks); // modifier distance
 	}
 
 	@Override
-	protected void termine() {
+	protected void termine(Robot robot, Table table) {
 		// vide
 	}
 	

@@ -1,11 +1,9 @@
 package threads;
 
 import robot.RobotVrai;
-import robot.cartes.Capteur;
+import robot.cartes.Capteurs;
 import smartMath.Vec2;
 import table.Table;
-import utils.Log;
-import utils.Read_Ini;
 
 /**
  * Thread qui ajoute en continu les obstacles détectés par les capteurs
@@ -16,7 +14,7 @@ import utils.Read_Ini;
 class ThreadCapteurs extends AbstractThread {
 
 	private RobotVrai robotvrai;
-	private Capteur capteur;
+	private Capteurs capteur;
 	private Table table;
 	private ThreadTimer threadTimer;
 	
@@ -29,7 +27,7 @@ class ThreadCapteurs extends AbstractThread {
 	private int table_y = 2000;
 	private int capteurs_frequence = 5;
 	
-	ThreadCapteurs(Read_Ini config, Log log, RobotVrai robotvrai, ThreadTimer threadTimer, Table table, Capteur capteur)
+	ThreadCapteurs(RobotVrai robotvrai, ThreadTimer threadTimer, Table table, Capteurs capteur)
 	{
 		super(config, log);
 		this.robotvrai = robotvrai;

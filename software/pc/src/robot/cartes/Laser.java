@@ -1,5 +1,7 @@
 package robot.cartes;
 
+import java.util.ArrayList;
+
 import robot.RobotVrai;
 import robot.serial.Serial;
 import smartMath.Vec2;
@@ -37,7 +39,7 @@ public class Laser implements Service {
 	}
 	
 	// TODO
-	public Balise[] balises_actives()
+	public ArrayList<Balise> balises_actives()
 	{
 		return null;
 	}

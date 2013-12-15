@@ -14,12 +14,12 @@ import scripts.ScriptManager;
 import strategie.MemoryManager;
 import strategie.Strategie;
 import table.Table;
+import threads.ThreadAnalyseEnnemi;
 import threads.ThreadTimer;
 import threads.ThreadManager;
-import robot.RobotChrono;
 import robot.RobotVrai;
 import robot.cartes.Actionneurs;
-import robot.cartes.Capteur;
+import robot.cartes.Capteurs;
 import robot.cartes.Deplacements;
 import robot.cartes.FiltrageLaser;
 import robot.cartes.Laser;
@@ -84,7 +84,7 @@ public class Container {
 			services.put(nom, (Service)new Deplacements((Log)getService("Log"),
 														(Serial)getService("serieAsservissement")));
 		else if(nom == "Capteur")
-			services.put(nom, (Service)new Capteur(	(Read_Ini)getService("Read_Ini"),
+			services.put(nom, (Service)new Capteurs(	(Read_Ini)getService("Read_Ini"),
 													(Log)getService("Log"),
 													(Serial)getService("serieCapteursActionneurs")));
 		else if(nom == "Actionneurs")
@@ -94,30 +94,25 @@ public class Container {
 		else if(nom == "HookGenerator")
 			services.put(nom, (Service)new HookGenerator(	(Read_Ini)getService("Read_Ini"),
 															(Log)getService("Log"),
-															(Capteur)getService("Capteur")));		
+															(Capteurs)getService("Capteur")));		
 		else if(nom == "RobotVrai")
 			services.put(nom, (Service)new RobotVrai(	(Pathfinding)getService("Pathfinding"),
-														(Capteur)getService("Capteur"),
+														(Capteurs)getService("Capteur"),
 														(Actionneurs)getService("Actionneurs"),
 														(Deplacements)getService("Deplacements"),
 														(HookGenerator)getService("HookGenerator"),
 														(Table)getService("Table"),
 														(Read_Ini)getService("Read_Ini"),
 														(Log)getService("Log")));		
-		else if(nom == "RobotChrono")
-			services.put(nom, (Service)new RobotChrono(	(Read_Ini)getService("Read_Ini"),
-														(Log)getService("Log")));
 		else if(nom == "ScriptManager")
 			services.put(nom, (Service)new ScriptManager(	(Pathfinding)getService("Pathfinding"),
 															(ThreadTimer)getService("threadTimer"),
-															(RobotVrai)getService("RobotVrai"),
-															(RobotChrono)getService("RobotChrono"),
 															(HookGenerator)getService("HookGenerator"),
-															(Table)getService("Table"),
 															(Read_Ini)getService("Read_Ini"),
 															(Log)getService("Log")));
 		else if(nom == "Strategie")
 			services.put(nom, (Service)new Strategie(	(MemoryManager)getService("MemoryManager"),
+														(ThreadAnalyseEnnemi)getService("threadAnalyseEnnemi"),
 														(ThreadTimer)getService("threadTimer"),
 														(ScriptManager)getService("ScriptManager"),
 														(Pathfinding)getService("Pathfinding"),
@@ -140,8 +135,7 @@ public class Container {
 		else if(nom == "MemoryManager")
 			services.put(nom, (Service)new MemoryManager(	(Read_Ini)getService("Read_Ini"),
 															(Log)getService("Log"),
-															(Table)getService("Table"),
-															(RobotChrono)getService("RobotChrono")));
+															(Table)getService("Table")));
 		else if(nom == "Laser")
 			services.put(nom, (Service)new Laser(	(Read_Ini)getService("Read_Ini"),
 													(Log)getService("Log"),

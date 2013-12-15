@@ -12,10 +12,9 @@ import container.Service;
  * @author PF
  */
 
-public class Capteur implements Service {
+public class Capteurs implements Service {
 
 	// Dépendances
-	private Read_Ini config;
 	private Log log;
 	private Serial serie;
 
@@ -24,9 +23,8 @@ public class Capteur implements Service {
     private final int nb_capteurs_ultrason_avant = 1;
     private final int nb_capteurs_ultrason_arriere = 1;
     
-	public Capteur(Read_Ini config, Log log, Serial serie)
+	public Capteurs(Read_Ini config, Log log, Serial serie)
 	{
-		this.config = config;
 		this.log = log;
 		this.serie = serie;
 	}
@@ -84,5 +82,11 @@ public class Capteur implements Service {
     {
     	return false;
     }
-    
+
+    // TODO
+    public boolean isFireRed()
+    {
+    	return false;
+    }
+
 }
