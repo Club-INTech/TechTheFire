@@ -1,6 +1,11 @@
 package scripts;
 
+import hook.Callback;
+import hook.Executable;
+import hook.Hook;
 import hook.HookGenerator;
+import hook.methodes.LeverRateau;
+import hook.methodes.TirerBalles;
 
 import java.util.ArrayList;
 
@@ -41,14 +46,9 @@ class ScriptLances extends Script {
 		// En fait, si j'ai bien compris, les versions repr�sentent en fait
 		// le nombre de lances pouvant �tre lanc�es, dans la limite de 4.
 		// J'ai bon ?
-		int n;
-		if (robot.getNbrLances()>=4) {
-			n = 4;
-		} else {
-			n = robot.getNbrLances();
-		}
-		for (int i = 0; i < n+1; i++) {
-			versionList.add(i);
+		if (robot.getNbrLances() > 0) {
+			versionList.add(0);
+			versionList.add(1);
 		}
 		return versionList;
 	}
@@ -62,8 +62,7 @@ class ScriptLances extends Script {
 
 	@Override
 	public int score(int id_version, final Robot robot, final Table table) {
-		// combien on gagne? demander à la table
-		return 0;
+		return robot.getNbrLances()*2;
 	}
 
 	@Override
@@ -79,8 +78,14 @@ class ScriptLances extends Script {
 		// ajuster l'orientation du robot (objet robot)
 		robot.tourner(0);
 		// tirer (objet robot)
-		// à réfléchir (côté droit ou gauche)
-		robot.tirerBalles(true);
+		ArrayList<Hook> hooks = new ArrayList<Hook>();
+		Executable tirerballes = new TirerBalles(robot);
+		Hook hook = hookgenerator.hook_abscisse(0); // modifier abscisse
+		hook.ajouter_callback(new Callback(tirerballes, true));		
+		hooks.add(hook);
+		
+		robot.set_vitesse_translation("vitesse_mammouth");
+		robot.avancer(50, hooks); // modifier distance
 	}
 
 	@Override
