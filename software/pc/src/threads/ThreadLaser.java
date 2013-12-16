@@ -42,6 +42,7 @@ class ThreadLaser extends AbstractThread {
 		}
 	}
 	
+	@Override
 	public void run()
 	{
 		// On attends le démarrage du match et qu'au moins une balise réponde
