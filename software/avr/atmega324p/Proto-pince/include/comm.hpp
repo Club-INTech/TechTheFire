@@ -13,7 +13,8 @@ class Communication
 	typedef uart1 serial_ax12;
 	typedef AX<serial_ax12> Ax12;
 	Ax12 pince;						//ax12 de la pince
-	Ax12 roger;
+	Ax12 position;
+	Ax12 orientation;
 	
 	public:
 
@@ -21,7 +22,8 @@ class Communication
 
 	Communication():
 		pince (0,1,1023),
-		roger (4,1,1023)
+		orientation (1,1,1023),
+		position (2,1,1023)
 	{
 		serial_pc::init();
 		serial_pc::change_baudrate (9600);
@@ -53,7 +55,26 @@ class Communication
 			serial_pc::read (i);
 			pince.goTo (i);
 		}
-		
+		else if ( strcmp ( ordre , " bas" ) == 0)
+		{
+			this -> bas ();
+		}
+		else if ( strcmp (ordre , "milieu" ) == 0)
+		{
+			this -> milieu ();
+		}
+		else if (strcmp (ordre , "haut") ==0)
+		{
+			this -> haut ();
+		}
+		else if (strcmp (ordre , "angle") == 0)
+		{
+			serial_pc::printfln ( "angle?" );			
+			int i;
+			serial_pc::read (i);
+			position.goTo (i);
+			orientation.goTo (120 -i);
+		}
 	}
 
 //actions de la pince		
@@ -64,9 +85,24 @@ class Communication
 	}
 	void fermer ()
 	{
-		pince.goTo (230);
+		pince.goTo (150);
 	}
-	 
+	void bas ()
+	{
+		position.goTo(1);
+		orientation.goTo(150);
+	}
+	void milieu ()
+	{
+		position.goTo(60);
+		orientation.goTo(60);
+	}
+	void haut ()
+	{
+		position.goTo(150);
+		orientation.goTo(1);
+	}
+	
 	
 };
 
