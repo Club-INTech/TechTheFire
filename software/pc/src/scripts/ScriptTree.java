@@ -3,7 +3,6 @@ package scripts;
 import robot.Robot;
 import smartMath.Vec2;
 import table.Table;
-import threads.ThreadTimer;
 import utils.Log;
 import utils.Read_Ini;
 import hook.Callback;
@@ -19,9 +18,9 @@ import exception.MouvementImpossibleException;
 
 class ScriptTree extends Script{
 
-	public ScriptTree(Pathfinding pathfinding, ThreadTimer threadtimer, HookGenerator hookgenerator, Read_Ini config, Log log)
+	public ScriptTree(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log)
 	{
-		super(pathfinding, threadtimer, hookgenerator, config, log);
+		super(pathfinding, hookgenerator, config, log);
 	}
 
 	@Override
@@ -39,8 +38,7 @@ class ScriptTree extends Script{
 	}
 
 	@Override
-
-	public Vec2 point_entree(int id_version, final Robot robot, final Table table) {
+	protected Vec2 point_entree(int id_version, final Robot robot, final Table table) {
 		Vec2 entree = new Vec2();
 
 		if (id_version == 0)

@@ -4,7 +4,6 @@ import hook.Callback;
 import hook.Executable;
 import hook.Hook;
 import hook.HookGenerator;
-import hook.methodes.LeverRateau;
 import hook.methodes.TirerBalles;
 
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import pathfinding.Pathfinding;
 import robot.Robot;
 import smartMath.Vec2;
 import table.Table;
-import threads.ThreadTimer;
 import utils.Log;
 import utils.Read_Ini;
 import exception.MouvementImpossibleException;
@@ -29,9 +27,9 @@ import exception.MouvementImpossibleException;
 class ScriptLances extends Script {
 	
 
-	public ScriptLances(Pathfinding pathfinding, ThreadTimer threadtimer, HookGenerator hookgenerator, Read_Ini config, Log log)
+	public ScriptLances(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log)
 	{
-		super(pathfinding, threadtimer, hookgenerator, config, log);
+		super(pathfinding, hookgenerator, config, log);
 	}
 
 	/*
@@ -43,8 +41,8 @@ class ScriptLances extends Script {
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		// En fait, si j'ai bien compris, les versions représentent en fait
-		// le nombre de lances pouvant être lancées, dans la limite de 4.
+		// En fait, si j'ai bien compris, les versions reprÔøΩsentent en fait
+		// le nombre de lances pouvant ÔøΩtre lancÔøΩes, dans la limite de 4.
 		// J'ai bon ?
 		if (robot.getNbrLances() > 0) {
 			versionList.add(0);
@@ -54,9 +52,9 @@ class ScriptLances extends Script {
 	}
 
 	@Override
-	public Vec2 point_entree(int id, final Robot robot, final Table table) {
+	protected Vec2 point_entree(int id, final Robot robot, final Table table) {
 		// A modifier, la position devant le mammouth
-		// Note à moi-même : demander à Ngoné ou Alexandre pour la distance
+		// Note ÔøΩ moi-mÔøΩme : demander ÔøΩ NgonÔøΩ ou Alexandre pour la distance
 		return new Vec2(0,0);
 	}
 
