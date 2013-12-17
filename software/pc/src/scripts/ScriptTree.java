@@ -40,42 +40,29 @@ public class ScriptTree extends Script{
 
 	@Override
 	protected Vec2 point_entree(int id_version, final Robot robot, final Table table) {
-		Vec2 entree = new Vec2();
+		Vec2 entree = null;
 
 		if (id_version == 0)
-		{
-			entree.x = 1165 ; // à modifier en fonction de la taille du robot
-			entree.y = 700 ;
-		}
-		if (id_version == 1)
-		{
-			entree.x = 800;
-			entree.y = 435;		//idem
-		}
-		if (id_version == 2)
-		{
-			entree.x = -800;
-			entree.y = 435 ;	//idem
-		}
-		if (id_version == 3)
-		{
-			entree.x = -1165 ;	//idem
-			entree.y = 700 ;
-		}
+			entree = new Vec2(1165, 700);
+		else if (id_version == 1)
+			entree = new Vec2(800, 435);
+		else if (id_version == 2)
+			entree = new Vec2(-800, 435);
+		else if (id_version == 3)
+			entree = new Vec2(-1165, 700);
 		return entree;
 	}
 
 	@Override
 	public int score(int id_version, final Robot robot, final Table table) {
 		int res = 0;
+
 		if (id_version <= 1)
-		{
 			res = table.nbrTotalTree(0) + table.nbrTotalTree(1);
-		}
+
 		else
-		{
 			res = table.nbrTotalTree(2) + table.nbrTotalTree(3);
-		}
+
 		return res;
 	}
 

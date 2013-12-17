@@ -56,7 +56,7 @@ public class ScriptLances extends Script {
 	protected Vec2 point_entree(int id, final Robot robot, final Table table) {
 		// A modifier, la position devant le mammouth
 		// Note � moi-m�me : demander � Ngon� ou Alexandre pour la distance
-		return new Vec2(0,0);
+		return new Vec2(1000,1500);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class ScriptLances extends Script {
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
 		Executable tirerballes = new TirerBalles(robot);
 		Hook hook = hookgenerator.hook_abscisse(0); // modifier abscisse
-		hook.ajouter_callback(new Callback(tirerballes, true));		
+		hook.ajouter_callback(new Callback(tirerballes, true));
 		hooks.add(hook);
 		
 		robot.set_vitesse_translation("vitesse_mammouth");
