@@ -25,7 +25,7 @@ import exception.MouvementImpossibleException;
 
 // TODO Guy
 
-class ScriptLances extends Script {
+public class ScriptLances extends Script {
 	
 
 	public ScriptLances(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)

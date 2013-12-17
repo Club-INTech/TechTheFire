@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import pathfinding.Pathfinding;
 import exception.MouvementImpossibleException;
 
-class ScriptTree extends Script{
+public class ScriptTree extends Script{
 
 	public ScriptTree(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
 	{
