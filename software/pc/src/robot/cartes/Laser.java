@@ -107,7 +107,7 @@ public class Laser implements Service {
 	 * @param id
 	 * @return
 	 */
-	public boolean ping_balise(int id)
+	private boolean ping_balise(int id)
 	{
 		String[] ping = serie.communiquer("ping_all", balises.length);
 		return ping[id] != "aucune réponse";
@@ -117,7 +117,7 @@ public class Laser implements Service {
 	 * Récupère la fréquence actuelle du moteur
 	 * @return
 	 */
-	public float frequence_moteur()
+	private float frequence_moteur()
 	{
 		String[] reponse = serie.communiquer("freq", 1);
 		return Float.parseFloat(reponse[0]);
