@@ -1,6 +1,7 @@
 package scripts;
 
 import robot.Robot;
+import robot.RobotVrai;
 import smartMath.Vec2;
 import table.Table;
 import utils.Log;
@@ -18,9 +19,9 @@ import exception.MouvementImpossibleException;
 
 class ScriptTree extends Script{
 
-	public ScriptTree(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log)
+	public ScriptTree(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
 	{
-		super(pathfinding, hookgenerator, config, log);
+		super(pathfinding, hookgenerator, config, log, robotvrai);
 	}
 
 	@Override

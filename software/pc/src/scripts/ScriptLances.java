@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import pathfinding.Pathfinding;
 import robot.Robot;
+import robot.RobotVrai;
 import smartMath.Vec2;
 import table.Table;
 import utils.Log;
@@ -27,9 +28,9 @@ import exception.MouvementImpossibleException;
 class ScriptLances extends Script {
 	
 
-	public ScriptLances(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log)
+	public ScriptLances(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
 	{
-		super(pathfinding, hookgenerator, config, log);
+		super(pathfinding, hookgenerator, config, log, robotvrai);
 	}
 
 	/*
