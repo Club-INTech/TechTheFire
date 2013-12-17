@@ -38,7 +38,7 @@ class Communication
 	{
 		if ( strcmp ( ordre , "?") == 0 )
 		{
-			serial_pc::printfln ( "0" );
+			serial_pc::printfln ( "pince" );
 		}
 		else if ( strcmp ( ordre , "o" ) == 0 )			//o = ouvrir
 		{
@@ -55,7 +55,7 @@ class Communication
 			serial_pc::read (i);
 			pince.goTo (i);
 		}
-		else if ( strcmp ( ordre , " bas" ) == 0)
+		else if ( strcmp ( ordre , "bas" ) == 0)
 		{
 			this -> bas ();
 		}
@@ -73,8 +73,8 @@ class Communication
 			int i;
 			serial_pc::read (i);
 			position.goTo (i);
-			orientation.goTo (120 -i);
-		}
+			orientation.goTo ((i-150)% 360);
+			}
 	}
 
 //actions de la pince		
@@ -89,18 +89,19 @@ class Communication
 	}
 	void bas ()
 	{
-		position.goTo(1);
-		orientation.goTo(150);
+		orientation.goTo(270);
+		position.goTo(60);
 	}
 	void milieu ()
 	{
-		position.goTo(60);
-		orientation.goTo(60);
+		orientation.goTo(180);
+		position.goTo(150);
 	}
 	void haut ()
 	{
-		position.goTo(150);
-		orientation.goTo(1);
+	  orientation.goTo(90);
+	  position.goTo(240);
+		
 	}
 	
 	

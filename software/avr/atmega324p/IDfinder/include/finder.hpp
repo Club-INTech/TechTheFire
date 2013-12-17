@@ -44,7 +44,7 @@ class Communication
 	{
 	  if ( strcmp ( ordre , "?") == 0 )
 	    {
-	      serial_pc::printfln ( "2" );
+	      serial_pc::printfln ( "test" );
 	    }
 	  else if (strcmp(ordre,"t")==0)
 	    {
