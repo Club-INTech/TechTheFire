@@ -60,5 +60,10 @@ public class ScriptDeposerFeu extends Script {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public String toString()
+	{
+		return "ScriptDeposerFeu";
+	}
 
 }

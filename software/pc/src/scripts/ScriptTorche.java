@@ -61,5 +61,9 @@ public class ScriptTorche extends Script {
 		
 	}
 
+	public String toString()
+	{
+		return "ScriptTorche";
+	}
 	
 }

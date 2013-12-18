@@ -118,4 +118,9 @@ public class ScriptTree extends Script{
 		robot.remonter_rateaux();	
 	}
 
+	public String toString()
+	{
+		return "ScriptTree";
+	}
+
 }
