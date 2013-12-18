@@ -92,4 +92,9 @@ public class ScriptLances extends Script {
 		// vide
 	}
 	
+	public String toString()
+	{
+		return "ScriptLances";
+	}
+
 }
