@@ -55,25 +55,33 @@ class Communication
 			serial_pc::read (i);
 			pince.goTo (i);
 		}
-		else if ( strcmp ( ordre , "bas" ) == 0)
+		else if ( strcmp ( ordre , "b" ) == 0)
 		{
 			this -> bas ();
 		}
-		else if ( strcmp (ordre , "milieu" ) == 0)
+		else if ( strcmp (ordre , "m" ) == 0)
 		{
 			this -> milieu ();
 		}
-		else if (strcmp (ordre , "haut") ==0)
+		else if (strcmp (ordre , "h") ==0)
 		{
-			this -> haut ();
+       	       		this -> haut ();
 		}
 		else if (strcmp (ordre , "angle") == 0)
 		{
 			serial_pc::printfln ( "angle?" );			
-			int i;
-			serial_pc::read (i);
-			position.goTo (i);
-			orientation.goTo ((i-150)% 360);
+			int p,o;
+			serial_pc::read (p);
+			position.goTo (p);
+			  if ((p-150) < 0)
+			    {
+			      o = 330-p ;
+			    }
+			  else
+			    {
+			      o = p-150 ;
+			    }
+			orientation.goTo (o);
 			}
 	}
 
@@ -94,14 +102,14 @@ class Communication
 	}
 	void milieu ()
 	{
-		orientation.goTo(180);
+		orientation.goTo(185);
 		position.goTo(150);
 	}
 	void haut ()
 	{
-	  orientation.goTo(90);
-	  position.goTo(240);
-		
+	  	position.goTo(240);
+		_delay_ms(600);
+		orientation.goTo(100);
 	}
 	
 	
