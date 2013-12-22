@@ -1,0 +1,14 @@
+=> point de depart :ca une distance D (avant blocage) du tronc
+
+=> "rbd" ; "rbg"
+
+=> "d" ; "-D"
+
+/!\ hook /!\ a une distance h de l'arbre : "rbbg" ; "rbbd"
+
+=> "rhg" ; "rhd"
+
+=> "d" ; "D" /!\ deplacement a faible vitesse necessaire /!\
+
+=> rrg ; rrd
+

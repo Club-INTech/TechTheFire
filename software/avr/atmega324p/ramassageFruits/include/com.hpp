@@ -117,7 +117,7 @@ class Communication
 
 	void rangerRateaug ()
 	{
-		rateauG.goTo (60);
+		rateauG.goTo (240);
 	}
 	void rateauBasg ()
 	{
@@ -125,11 +125,11 @@ class Communication
 	}
 	void rateauBasBasg ()
 	{
-		rateauG.goTo (170);		
+		rateauG.goTo (130);		
 	}	
 	void rateauHautg ()
 	{
-		rateauG.goTo (110);
+		rateauG.goTo (190);
 	}
 	 
 	
