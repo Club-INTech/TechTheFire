@@ -4,6 +4,9 @@
 #include <libintech/uart.hpp>
 #include <libintech/timer.hpp>
 #include <libintech/isr.hpp>
+#include <libintech/algorithm.hpp>
+
+typedef ring_buffer<uint16_t, NB_VALEURS_MEDIANE_SRF> ringBufferSRF;
 
 INITIALISE_INTERRUPT_MANAGER();
 
@@ -25,7 +28,7 @@ int main() {
 
   D3::high();
   D4::high();
-  D5::low();
+  D5::high();
   D6::low();
 
   timer0::mode(timer0::MODE_COUNTER);
