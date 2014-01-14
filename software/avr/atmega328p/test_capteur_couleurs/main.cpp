@@ -52,36 +52,41 @@ int main() {
   }
 }
 
-void interruption_timer(){
+void interruption_timer()
+{
 
-  flag++;
-  if(flag == 1){
-    countR = counter;
-    D5::high();
-    D6::high();
+	flag++;
+	if(flag == 1)
+	{
+		countR = counter;
+		D5::high();
+		D6::high();
 
-   }
-  else if(flag == 2){
+	}
+	else if(flag == 2)
+	{
 
-    countG = counter;
-    D5::low();
-    D6::high();
-  
-  }
-  else if(flag == 3){
+		countG = counter;
+		D5::low();
+		D6::high();
 
-    countB = counter;
-    D5::low();
-    D6::low();
-  }
-  else if(flag == 4){
+	}
+	else if(flag == 3)
+	{
 
-    flag = 0;
-  }
-  counter = 0;
+		countB = counter;
+		D5::low();
+		D6::low();
+	}
+	else if(flag == 4)
+	{
+
+		flag = 0;
+	}
+	counter = 0;
 }
 
-void interruption_int0(){
-
-  counter++;
+void interruption_int0()
+{
+	counter++;
 }

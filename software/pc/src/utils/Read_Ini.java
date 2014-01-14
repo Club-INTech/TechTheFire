@@ -1,23 +1,27 @@
 package utils;
 
+import container.Service;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import exception.ConfigException;
 
-public class Read_Ini {
+
+public class Read_Ini implements Service {
 	private String name_local_file = "local.ini";
 	private String name_config_file = "config.ini";
 	private String path;
-	public Properties config = new Properties();
+	private Properties config = new Properties();
 	private Properties local = new Properties();
 	
     Enumeration<?> e = local.propertyNames();
 
 	
-	public Read_Ini(String path)
+	public Read_Ini(String path) throws ConfigException
 	{
 		this.path = path;
 		try
@@ -27,6 +31,7 @@ public class Read_Ini {
 		catch  (IOException e)
 		{
 			e.printStackTrace();
+			throw new ConfigException("Erreur ouverture de config.ini");
 		}
 		
 		try
@@ -43,7 +48,21 @@ public class Read_Ini {
 			catch (IOException e2)
 			{
 				e2.printStackTrace();
+				throw new ConfigException("Erreur création de local.ini");
 			}	
+			throw new ConfigException("Erreur ouverture de local.ini");
 		}	
 	}
+	
+	public String get(String nom) throws ConfigException
+	{
+		String out = null;
+		out = config.getProperty(nom);
+		if(out == null)
+		{
+			throw new ConfigException("Erreur config: "+nom+" introuvable.");
+		}
+		return out;
+	}
+	
 }

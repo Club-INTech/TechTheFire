@@ -2,13 +2,29 @@ package table;
 
 import smartMath.Vec2;
 
-public class Fireplace extends Game_Element {
-	private float radius ;
+class Fireplace extends Game_Element {
+	private int placed_fires;
 	
-	public Fireplace (Vec2 position, float rad)
+	/**
+	 * Constructeur appelé par clone()
+	 * @param position
+	 * @param rad
+	 * @param placed_fires
+	 */
+	private Fireplace (Vec2 position, int placed_fires)
 	{
 		super(position);
-		this.radius = rad;
+		this.placed_fires = placed_fires;
+	}
+
+	public void clone(Fireplace fireplace)
+	{
+		fireplace.placed_fires = placed_fires;
+	}
+	
+	public int getPlaced_fires()
+	{
+		return placed_fires;
 	}
 	
 }

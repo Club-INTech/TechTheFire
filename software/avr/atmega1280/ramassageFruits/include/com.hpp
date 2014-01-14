@@ -12,16 +12,18 @@ class Communication
 	typedef uart0 serial_pc;
 	typedef uart1 serial_ax12;
 	typedef AX<serial_ax12> Ax12;
-	Ax12 rateau;						//ax12 du rateau
-	Ax12 bac;							//ax12 du bac
+	Ax12 rateauD;						//ax12 du rateau
+	Ax12 bac;
+	Ax12 rateauG;							//ax12 du bac
 	
 	public:
 
 //constructeur
 
 	Communication():
-		rateau (2,1,1023),
-		bac (1,1,1023)
+		rateauD (2,1,1023),
+		bac (1,1,1023),
+		rateauG (3,1,1023)
 	{
 		serial_pc::init();
 		serial_pc::change_baudrate (9600);
@@ -36,7 +38,7 @@ class Communication
 	{
 		if ( strcmp ( ordre , "?") == 0 )
 		{
-			serial_pc::printfln ( "5" );
+			serial_pc::printfln ( "3" );
 		}
 		else if ( strcmp ( ordre , "bb" ) == 0 )			//bb = bac bas
 		{
@@ -46,19 +48,38 @@ class Communication
 		{
 			this->bacHaut ();
 		}
- 		else if ( strcmp ( ordre , "rr" ) == 0 )			//rr = rangerRateau
+ 		else if ( strcmp ( ordre , "rrd" ) == 0 )			//rrd = rangerRateaud
 		{
-			this->rangerRateau ();
+			this->rangerRateaud ();
 		}
-		else if ( strcmp ( ordre , "rb" ) == 0 )			//rb = rateauBas
+		else if ( strcmp ( ordre , "rbd" ) == 0 )			//rbd = rateauBasd
 		{
-			this->rateauBas ();
+			this->rateauBasd ();
 		}
-		else if ( strcmp ( ordre , "rh" ) == 0 )			//rh = rateauHaut
+		else if ( strcmp ( ordre , "rhd" ) == 0 )			//rhd = rateauHautd
 		{
-			this->rateauHaut ();
+			this->rateauHautd ();
 		}
-		
+		else if ( strcmp ( ordre , "rbbd" ) == 0 )			//rbbd = rateauBasBasd
+		{
+			this->rateauBasBasd ();
+		}
+		else if ( strcmp ( ordre , "rrg" ) == 0 )			//rrg = rangerRateaug
+		{
+			this->rangerRateaug ();
+		}
+		else if ( strcmp ( ordre , "rbg" ) == 0 )			//rbg = rateauBasg
+		{
+			this->rateauBasg ();
+		}
+		else if ( strcmp ( ordre , "rhg" ) == 0 )			//rhg = rateauHautg
+		{
+			this->rateauHautg ();
+		}
+		else if ( strcmp ( ordre , "rbbg" ) == 0 )			//rbbg = rateauBasBasg
+		{
+			this->rateauBasBasg ();
+		}
 	}
 
 //actions du bac		
@@ -69,22 +90,45 @@ class Communication
 	}
 	void bacHaut ()
 	{
-		bac.goTo (100);
+		bac.goTo (120);
 	}
 
-//actions du rateau
+//actions du rateau droit
 
-	void rangerRateau ()
+	void rangerRateaud ()
 	{
-		rateau.goTo (60);
+		rateauD.goTo (60);
 	}
-	void rateauBas ()
+	void rateauBasd ()
 	{
-		rateau.goTo (150);
+		rateauD.goTo (150);
 	}
-	void rateauHaut ()
+	void rateauBasBasd ()
 	{
-		rateau.goTo (90);
+		rateauD.goTo (170);		
+	}	
+	void rateauHautd ()
+	{
+		rateauD.goTo (110);
+	}
+
+//actions du rateau gauche
+
+	void rangerRateaug ()
+	{
+		rateauG.goTo (60);
+	}
+	void rateauBasg ()
+	{
+		rateauG.goTo (150);
+	}
+	void rateauBasBasg ()
+	{
+		rateauG.goTo (170);		
+	}	
+	void rateauHautg ()
+	{
+		rateauG.goTo (110);
 	}
 	 
 	

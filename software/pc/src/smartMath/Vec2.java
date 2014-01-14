@@ -41,7 +41,7 @@ public class Vec2
 	{
 		return (float) Math.sqrt(SquaredLength());
 	}
-
+	
 	// dot product
 	public float dot(Vec2 other)
 	{
@@ -66,6 +66,21 @@ public class Vec2
 	{
 		return new Vec2(this.x, this.y);
 	}
+	
+	public float SquaredDistance(Vec2 other)
+	{
+		return (x-other.x)*(x-other.x) + (y-other.y)*(y-other.y);
+	}
 
+	public float distance(Vec2 other)
+	{
+		return (float) Math.sqrt(SquaredDistance(other));
+	}
+	
+	public String toString()
+	{
+		return "("+x+","+y+")";
+	}
+	
 }
 

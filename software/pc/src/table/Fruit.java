@@ -1,17 +1,20 @@
 package table;
 
-import smartMath.Vec2;
+class Fruit {
 
-public class Fruit extends Game_Element {
-
-	private int fruit_id; // face à l'arbre, le fruit 0 est celui juste à droite, et on tourne dans le sens trigonométrique
-	private boolean taken = false;
+	private boolean good;
 	
-	public Fruit (Vec2 position, int ID)
+	public Fruit(boolean good)
 	{
-		super(position);
-		this.fruit_id=ID;
-		
+		this.good = good;
 	}
-
+	
+	public void clone(Fruit fruit)
+	{
+		fruit.good = good;
+	}
+	
+	public boolean isGood() {
+		return good;
+	}
 }
