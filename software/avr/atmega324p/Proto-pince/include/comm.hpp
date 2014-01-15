@@ -12,9 +12,12 @@ class Communication
 	typedef uart0 serial_pc;
 	typedef uart1 serial_ax12;
 	typedef AX<serial_ax12> Ax12;
-	Ax12 pince;						//ax12 de la pince
-	Ax12 position;
-	Ax12 orientation;
+	Ax12 pinceGauche; //ax12 de la pince gauche
+	Ax12 positionGauche;
+	Ax12 orientationGauche;
+  Ax12 pinceDroite; //ax12 de la pince droite
+  Ax12 positionDroite; 
+  Ax12 orientationDroite;
 	
 	public:
 
@@ -62,14 +65,14 @@ class Communication
  		else if ( strcmp ( ordre , "ag" ) == 0 )			//a = angle
 		{
 			serial_pc::printfln ( "angle?" );			
-			int i;
+			uint16_t i;
 			serial_pc::read (i);
 			pinceGauche.goTo (i);
 		}
 		else if ( strcmp ( ordre , "ad" ) == 0 )		       
 		{
 			serial_pc::printfln ( "angle?" );			
-			int i;
+			uint16_t i;
 			serial_pc::read (i);
 			pinceDroite.goTo (i);
 		}
@@ -99,11 +102,16 @@ class Communication
 		{
        	       		this -> hautDroite ();
 		}
+		else if (strcmp (ordre, "test")==0)
+		  {
+		    this -> test ();
+		  }
+
 		else if (strcmp (ordre , "angleg") == 0)
 // angle de l'ax 12 de position
 		{
 			serial_pc::printfln ( "angle?" );			
-			int p,o;
+			uint16_t p,o;
 			serial_pc::read (p);
 			positionGauche.goTo (p);
 			  if ((p-150) < 0)
@@ -142,7 +150,16 @@ class Communication
 	}
 	void fermerGauche ()
 	{
-		pinceGauche.goTo (150);
+	  uint16_t positionPrecedente = (pinceGauche.getPosition_0_1023());
+	  uint16_t positionActuelle = positionPrecedente ;
+	  pinceGauche.goTo(155);
+	  for(int i=0; i<7;i++)
+	      {
+		_delay_ms(100);
+		positionActuelle = (pinceGauche.getPosition_0_1023());
+		if (positionActuelle == positionPrecedente) // vu qu'on a attendu 0,1 s, si on est toujours à la meme position, c'est que ça bloque
+		  pinceGauche.goTo(positionActuelle);//Dans ce cas on bloque l'ax12 là où il est
+	      }
 	}
 	void basGauche ()
 	{
@@ -166,7 +183,18 @@ class Communication
 	}
 	void fermerDroite ()
 	{
-		pinceDroite.goTo (90);
+	  uint16_t positionPrecedente = (pinceDroite.getPosition_0_1023());
+	  uint16_t positionActuelle = positionPrecedente ;
+	  pinceDroite.goTo(90);
+	  for(int i=0; i<7; i++)
+	      {
+		_delay_ms(100);
+		positionActuelle = (pinceDroite.getPosition_0_1023());
+		if (positionActuelle == positionPrecedente) // vu qu'on a attendu 0,1 s, si on est toujours à la meme position, c'est que ça bloque
+		  pinceDroite.goTo(positionActuelle);//Dans ce cas on bloque l'ax12 là où il est
+		else // on est encore en mouvement, donc on actualise la position
+		 positionPrecedente = positionActuelle ;
+	      }
 	}
 	void basDroite ()
 	{
@@ -184,8 +212,10 @@ class Communication
 		_delay_ms(600);
 		orientationDroite.goTo(100);
 	}
-	
-	
+  void test ()
+  {
+    positionDroite.goToB(200);
+  }	
 };
 
 #endif
