@@ -186,7 +186,28 @@ class Communication
 		{
 			this->rateauBasBasg ();
 		}
-
+		else if (strcmp(ordre, "rampinceg") == 0 )
+		{
+			this->ouvrirGauche();
+			this->basGauche();
+			_delay_ms(3000);
+			this->fermerGauche();
+			_delay_ms(750);
+			this->hautGauche();
+		}
+		else if (strcmp(ordre, "ramrat") == 0 )
+		{
+			this->rateauBasg();
+			this->rateauBasd();
+			_delay_ms(2000);
+			this->rateauBasBasg();
+			this->rateauBasBasd()
+			_delay_ms(500);
+			this->rateauHautg();
+			_delay_ms(300);
+			this->rateauHautd();
+			_delay_ms(3000);
+		}			
 	}
 
 //actions de la pince		
