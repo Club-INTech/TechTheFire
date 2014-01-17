@@ -32,7 +32,7 @@ public:
 
 	Moteur() : maxPWM_(255) {
 		Timer::mode(Timer::MODE_PWM);
-		Timer::prescaler(Timer::PRESCALER_1);
+		Timer::set_prescaler(Timer::prescaler::PRESCALER_1);
 		Timer::pwm::waveform_mode(Timer::pwm::PWM_FAST);
 		if (Channel == 'A')
 		{
