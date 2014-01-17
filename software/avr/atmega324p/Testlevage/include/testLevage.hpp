@@ -8,19 +8,19 @@
 class Communication
 {
 	public:
-	
-	typedef uart0 serial_pc;
-	typedef uart1 serial_ax12;
-	typedef AX<serial_ax12> Ax12;
-        Ax12 support;				
-	
+
+		typedef uart0 serial_pc;
+		typedef uart1 serial_ax12;
+		typedef AX<serial_ax12> Ax12;
+		Ax12 support;				
+
 	public:
 
-//constructeur
+		//constructeur
 
-	Communication():
-	  support (1,1,1023)
-  {
+		Communication():
+			support (1,1,1023)
+	{
 		serial_pc::init();
 		serial_pc::change_baudrate (9600);
 		serial_pc::activer_acquittement(true);
@@ -28,46 +28,47 @@ class Communication
 		serial_ax12::change_baudrate (9600);
 	}
 
-//fonction d'execution des ordres
-	
-	void execute (char ordre[])
-	{
-	  if ( strcmp ( ordre , "?") == 0 )
-	    {
-	      serial_pc::printfln ( "1" );
-	    }
-	  else if (strcmp(ordre,"up")==0)
-	    {
-	       	serial_pc::printfln ( "ok" );
-		up();
-	    }
-	  else if (strcmp(ordre,"mid")==0)
-	    {
-	      serial_pc::printfln ( "ok" );
-	      mid();
-	    }
-	  else if (strcmp(ordre,"down")==0)
-	    {
-	      serial_pc::printfln ("ok");
-	      down();
-	    }
-}
+		//fonction d'execution des ordres
 
-//actions de l'ax12
+		void execute (char ordre[])
+		{
+			if ( strcmp ( ordre , "?") == 0 )
+			{
+				serial_pc::printfln ( "1" );
+			}
+			else if (strcmp(ordre,"up")==0)
+			{
+				serial_pc::printfln ( "ok" );
+				up();
+			}
+			else if (strcmp(ordre,"mid")==0)
+			{
+				serial_pc::printfln ( "ok" );
+				mid();
+			}
+			else if (strcmp(ordre,"down")==0)
+			{
+				serial_pc::printfln ("ok");
+				down();
+			}
+		}
 
-  void up()
-  {
-    support.goTo (60);
-  }
+		//actions de l'ax12
 
-  void mid()
-  {
-    support.goTo (150);
-  }
+		void up()
+		{
+			support.goTo (60);
+		}
 
-  void down()
-  {
-    support.goTo (240);
-  }
+		void mid()
+		{
+			support.goTo (150);
+		}
+
+		void down()
+		{
+			support.goTo (240);
+		}
+};
 
 #endif 
