@@ -162,6 +162,9 @@ public:
     }
 };
 
+template<class TimerSize>
+uint8_t TimerRegisters<3, TimerSize>::_prescaler = 0;
+
 template<>
 class TimerPrescaler<3>
 {

@@ -6,7 +6,7 @@
 
 int main(){
 	timer0::mode(timer0::MODE_PWM);
-	timer0::prescaler(timer0::prescaler::PRESCALER_8);
+	timer0::set_prescaler(timer0::prescaler::PRESCALER_8);
 
 	timer0::pwm::waveform_mode(timer0::pwm::PWM_FAST);
 	timer0::pwm::output_mode_b(timer0::pwm::OUTPUT_NON_INVERTING);

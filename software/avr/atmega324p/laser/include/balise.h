@@ -4,13 +4,10 @@
 #include <stdint.h>
 #include <libintech/singleton.hpp>
 #include <libintech/timer.hpp>
-#include <libintech/pwm.hpp>
+#include <libintech/uart.hpp>
 #include <libintech/moteur.hpp>
 #include <libintech/asservissement.hpp>
-#include <libintech/register.hpp>
-#include <libintech/serial/serial_0.hpp>
-#include <libintech/serial/serial_1.hpp>
-#include <libintech/ring_buffer.hpp>
+#include <libintech/gpio.hpp>
 #include <util/delay.h>
 
 #include "define.h"
@@ -28,15 +25,15 @@ class Balise : public Singleton<Balise>
 		/**
 		 * Communication vers le PC
 		 */
-        typedef Serial<0> serial_pc;
+        typedef uart0 serial_pc;
         
         /**
          * Communication radio
          */
         #if MODE_XBEE_S8 == 1
-        typedef XbeeS8< Serial<1> > xbee;
+        typedef XbeeS8< uart1 > xbee;
         #else
-        typedef Xbee< Serial<1> > xbee;
+        typedef Xbee< uart1 > xbee;
         #endif
         
         /**
@@ -44,12 +41,12 @@ class Balise : public Singleton<Balise>
          *
          * Doit être le plus précis possible (16 bits), mais ne doit pas faire d'overflow
          */
-        typedef Timer<1,64> timer_toptour;
+        typedef timer1 timer_toptour;
         
         /**
-         * Moteur sur le Timer 0 en FastPWM. Pont en H sur le PORTB3
+         * Moteur sur le Timer 0. Pont en H sur le PORTB3
          */
-        typedef PWM<0,ModeFastPwm,1,'A'> pwm_motor;
+        typedef timer0 pwm_motor;
         
         /**
          * PWM Laser
@@ -57,12 +54,12 @@ class Balise : public Singleton<Balise>
          * Prescaler 1: f = 80kHZ (fait chauffer le pont de diodes)
          * Prescaler 8: f = 10kHz (bruyant)
          */
-        typedef PWM<0,ModeFastPwm,1,'B'> pwm_laser;
+        typedef timer0 pwm_laser;
         
         /**
          * Moteur
          */
-        Moteur< pwm_motor, AVR_PORTD<PORTD4> > motor;
+        Moteur< pwm_motor, 'A', D4 > motor;
         
         /**
          * Asservissement du moteur
@@ -72,7 +69,7 @@ class Balise : public Singleton<Balise>
         /**
          * Timer pour la boucle d'asservissement
          */
-        typedef Timer<2,1024> timer_control;
+        typedef timer2 timer_control;
         
         /**
          * Valeur de la codeuse

@@ -8,6 +8,7 @@
 #define ASSERVISSEMENT_H
 
 #include <stdint.h>
+#include <stdlib.h>
 
 class Asservissement {
 public:

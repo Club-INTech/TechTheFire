@@ -4,7 +4,14 @@ Balise::Balise():
     motor_control(20,2.5,0.048),
     last_period_(0)
 {
-    
+    // -----------------------
+    // Compte-tour
+    // -----------------------
+
+    // Initialisation du timer
+    timer_toptour::mode(timer_toptour::MODE_COUNTER);
+    timer_toptour::set_prescaler(timer_toptour::prescaler::PRESCALER_64);
+
     // -----------------------
     // Liaison série
     // -----------------------
@@ -17,44 +24,33 @@ Balise::Balise():
     xbee::init();
     xbee::change_baudrate(BALISE_BAUDRATE);
     
-    // -----------------------
-    // Compte-tour
-    // -----------------------
-    
-    // Initialisation du timer
-    timer_toptour::init();
-    
     // Input sur INT2 = PB2
-    cbi(DDRB,PORTB2);
-    
     // Pull-up activée sur INT2
-    sbi(PORTB,PORTB2);
+
+    B2::input_pull_up();
     
     // Interruption sur front montant
-    sbi(EICRA,ISC21);
-    sbi(EICRA,ISC20);
-    sbi(EIMSK,INT2);
+    int2::mode(int2::RISING_EDGE);
     
     // -----------------------
     // Moteur
     // -----------------------
-    
+    B3::output();
+
     // Codeuse A/B en input
-    cbi(DDRC, DDC0);
-    cbi(DDRC, DDC1);
-    
     // Pull-up activée
-    sbi(PORTC,PORTC0);
-    sbi(PORTC,PORTC1);
+    C0::input_pull_up();
+    C1::input_pull_up();
     
     // Interruptions codeuse sur PORTC
     // A = PCINT17
     // B = PCINT16
-    sbi(PCMSK2, PCINT16);
-    sbi(PCMSK2, PCINT17);
-    sbi(PCICR, PCIE2);
+    pcint16::enable();
+    pcint17::enable();
     
-    timer_control::init();
+    timer_control::mode(timer_control::MODE_COUNTER);
+    timer_control::set_prescaler(timer_control::prescaler::PRESCALER_1024);
+    timer_control::counter::overflow_interrupt::enable();
     
     motor.maxPWM(150);
     motor_control.consigne(DEFAULT_SPEED_ORDER);
@@ -68,17 +64,17 @@ Balise::Balise():
     // Attention, ici DIR est un créneau et PWM est constant
     
     // Pin PWM en output
-    sbi(DDRB,PORTB0);
+    B0::output();
     
     // Pin DIR pour alimenter les lasers
-    pwm_laser::init();
-	pwm_laser::value(127);
+	pwm_laser::pwm::waveform_mode(pwm_laser::pwm::PWM_FAST);
+    pwm_laser::pwm::pwm_b(127);
 
     // -----------------------
     // Diode debug
     // -----------------------
 
-    sbi(DDRD,PORTD7);
+    D7::output();
 
     // -----------------------
     // Interruptions
@@ -206,18 +202,18 @@ void Balise::execute(char *order)
         for (uint8_t id = 0; id < BALISE_NUMBER; id++)
         {			
 			// Temps avant transmission
-			uint16_t clock1 = timer_toptour::value();
+			uint16_t clock1 = timer_toptour::counter::value();
 			
 			xbee::send(balise_address[id], "?");
 			
 			// Temps après transmission
-			uint16_t clock2 = timer_toptour::value();
+			uint16_t clock2 = timer_toptour::counter::value();
             uint32_t buffer;
             
             if (xbee::read(buffer, TIMEOUT) == xbee::READ_SUCCESS)
             {
 				// Temps après réception
-				uint16_t clock3 = timer_toptour::value();
+				uint16_t clock3 = timer_toptour::counter::value();
 				
 				int16_t transmit_time = (clock2 < clock1) ? clock2 - clock1 + last_period() : clock2 - clock1;
 				int16_t reception_time = (clock3 < clock2) ? clock3 - clock2 + last_period() : clock3 - clock2;
@@ -255,12 +251,12 @@ void Balise::execute(char *order)
             
         // Calcul du temps d'aller retour
         // ! Attention ! Ne marche que si le moteur tourne
-        uint16_t clock1 = timer_toptour::value();
+        uint16_t clock1 = timer_toptour::counter::value();
             
         if (xbee::read(value, TIMEOUT) == xbee::READ_SUCCESS)
         {
             // Calcul de l'aller retour
-			uint16_t clock2 = timer_toptour::value();
+			uint16_t clock2 = timer_toptour::counter::value();
 				
 			// Décodage de la transmission
 			offset_ = value >> 8;
@@ -391,7 +387,7 @@ void Balise::last_period(uint16_t period)
 float Balise::angle(int32_t offset)
 {
     // Temps à soustraire de l'angle pour avoir la valeur au moment du passage du laser
-    int32_t t0 = ((int32_t)timer_toptour::value() - offset);
+    int32_t t0 = ((int32_t)timer_toptour::counter::value() - offset);
     
     // En cas d'offset grand, le moteur a pu faire plusieurs tours
     // Approximation sur la période, considérée comme constante
@@ -426,19 +422,19 @@ float Balise::angle(int32_t offset)
 void Balise::laser_on()
 {
     // Activation du timer PWM pour DIR
-	pwm_laser::value(127);
+	pwm_laser::pwm::pwm_b(127);
     
     // Pin PWM du pont H à 5V
-    sbi(PORTB,PORTB0);
+    B0::high();
 }
 
 void Balise::laser_off()
 {
     // Désactivation du timer PWM pour DIR
-	pwm_laser::value(0);
+	pwm_laser::pwm::pwm_b(0);
     
     // Pin PWM du pont H à 0V
-    cbi(PORTB,PORTB0);
+    B0::low();
 }
 
 // -----------------------
@@ -469,12 +465,12 @@ void Balise::control(int32_t current_speed)
 
 void Balise::diode_on()
 {
-    sbi(PORTD,PORTD7);
+    D7::high();
 }
 
 void Balise::diode_off()
 {
-    cbi(PORTD,PORTD7);
+    D7::low();
 }
 
 void Balise::diode_blink()
