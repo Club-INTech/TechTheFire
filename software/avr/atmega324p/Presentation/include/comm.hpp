@@ -15,21 +15,27 @@ class Communication
 	Ax12 pinceGauche; //ax12 de la pince gauche
 	Ax12 positionGauche;
 	Ax12 orientationGauche;
-	Ax12 pinceDroite; //ax12 de la pince droite
-	Ax12 positionDroite; 
-	Ax12 orientationDroite;
-	
+  Ax12 pinceDroite; //ax12 de la pince droite
+  Ax12 positionDroite; 
+  Ax12 orientationDroite;
+  Ax12 rateauGauche;
+  Ax12 rateauDroit;
+  Ax12 bacFruits;
+
 	public:
 
 //constructeur
 
 	Communication():
 		pinceGauche (0,1,1023),
-		positionGauche (2,1,1023),
 		orientationGauche (1,1,1023),
+		positionGauche (2,1,1023),
 		pinceDroite (3,1,1023),
+		orientationDroite (4,1,1023),
 		positionDroite (5,1,1023),
-		orientationDroite (4,1,1023)
+		rateauGauche(6,1,1023),
+		rateauDroit(7,1,1023),
+		bacFruits(8,1,1023)
 	{
 		serial_pc::init();
 		serial_pc::change_baudrate (9600);
@@ -44,7 +50,7 @@ class Communication
 	{
 		if ( strcmp ( ordre , "?") == 0 )
 		{
-			serial_pc::printfln ( "pince" );
+			serial_pc::printfln ( "Demo" );
 		}
 		else if ( strcmp ( ordre , "og" ) == 0 )			//o = ouvrir
 		{
@@ -140,6 +146,68 @@ class Communication
 			    }
 			orientationDroite.goTo (o);
 			}
+		else if ( strcmp ( ordre , "bb" ) == 0 )			//bb = bac bas
+		{
+			this->bacBas ();
+		}
+		else if ( strcmp ( ordre , "bh" ) == 0 )			//bh = bacHaut
+		{
+			this->bacHaut ();
+		}
+ 		else if ( strcmp ( ordre , "rrd" ) == 0 )			//rrd = rangerRateaud
+		{
+			this->rangerRateaud ();
+		}
+		else if ( strcmp ( ordre , "rbd" ) == 0 )			//rbd = rateauBasd
+		{
+			this->rateauBasd ();
+		}
+		else if ( strcmp ( ordre , "rhd" ) == 0 )			//rhd = rateauHautd
+		{
+			this->rateauHautd ();
+		}
+		else if ( strcmp ( ordre , "rbbd" ) == 0 )			//rbbd = rateauBasBasd
+		{
+			this->rateauBasBasd ();
+		}
+		else if ( strcmp ( ordre , "rrg" ) == 0 )			//rrg = rangerRateaug
+		{
+			this->rangerRateaug ();
+		}
+		else if ( strcmp ( ordre , "rbg" ) == 0 )			//rbg = rateauBasg
+		{
+			this->rateauBasg ();
+		}
+		else if ( strcmp ( ordre , "rhg" ) == 0 )			//rhg = rateauHautg
+		{
+			this->rateauHautg ();
+		}
+		else if ( strcmp ( ordre , "rbbg" ) == 0 )			//rbbg = rateauBasBasg
+		{
+			this->rateauBasBasg ();
+		}
+		else if (strcmp(ordre, "rampinceg") == 0 )
+		{
+			this->ouvrirGauche();
+			this->basGauche();
+			_delay_ms(3000);
+			this->fermerGauche();
+			_delay_ms(750);
+			this->hautGauche();
+		}
+		else if (strcmp(ordre, "ramrat") == 0 )
+		{
+			this->rateauBasg();
+			this->rateauBasd();
+			_delay_ms(2000);
+			this->rateauBasBasg();
+			this->rateauBasBasd()
+			_delay_ms(500);
+			this->rateauHautg();
+			_delay_ms(300);
+			this->rateauHautd();
+			_delay_ms(3000);
+		}			
 	}
 
 //actions de la pince		

@@ -163,6 +163,26 @@ public:
 };
 
 template<class TimerSize>
+uint8_t TimerRegisters<2, TimerSize>::_prescaler = 0;
+
+template<>
+class TimerPrescaler<2>
+{
+public:
+    enum PrescalerValue
+    {
+        PRESCALER_DISABLE,
+        PRESCALER_1,
+        PRESCALER_8,
+        PRESCALER_32,
+        PRESCALER_64,
+        PRESCALER_128,
+        PRESCALER_256,
+        PRESCALER_1024
+    };
+};
+
+template<class TimerSize>
 class TimerInterrupt<TimerRegisters<2, TimerSize>, 0>
 {
 public:

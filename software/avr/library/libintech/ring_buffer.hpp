@@ -1,8 +1,6 @@
 #ifndef RING_BUFFER_HPP
 #define RING_BUFFER_HPP
 
-#include "serial/serial_0.hpp"
-
 template<typename T, uint16_t BUFFER_SIZE>
 class ring_buffer {
 private:

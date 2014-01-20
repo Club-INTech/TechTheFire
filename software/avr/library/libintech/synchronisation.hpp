@@ -6,7 +6,6 @@
 
 #include "libintech/timer.hpp"
 #include <libintech/xbee.hpp>
-#include <libintech/serial/serial_0.hpp>
 
 #define SYNCHRO_ITERATIONS 1
 

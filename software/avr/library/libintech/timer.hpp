@@ -8,6 +8,7 @@
 #include "timer/waveform.hpp"
 #include "timer/pwm.hpp"
 #include "timer/counter.hpp"
+#include "timer/prescaler.hpp"
 
 //NOTE on a fait ce choix pour éviter les if, à expliquer!
 //TODO spécificités des Timers 16 bits (interrupt ICIE1 timer 16 bits)
@@ -24,29 +25,7 @@ public:
     typedef TimerWaveform<_registers, TimerSize> waveform;
     typedef TimerPwm<_registers, TimerSize> pwm;
     typedef TimerCounter<_registers, TimerSize> counter;
-
-    enum PrescalerValue
-    {
-#ifdef TCNT2
-        PRESCALER_DISABLE,
-        PRESCALER_1,
-        PRESCALER_8,
-        PRESCALER_32,
-        PRESCALER_64,
-        PRESCALER_128,
-        PRESCALER_256,
-        PRESCALER_1024,
-#else
-        PRESCALER_DISABLE,
-        PRESCALER_1,
-        PRESCALER_8,
-        PRESCALER_64,
-        PRESCALER_256,
-        PRESCALER_1024,
-        EXTERNAL_FALLING,
-        EXTERNAL_RISING
-#endif
-    };
+    typedef TimerPrescaler <ID> prescaler;
 
     enum TimerMode
     {
@@ -82,12 +61,12 @@ public:
         _registers::enable();
     }
 
-    static inline void prescaler(const PrescalerValue p)
+    static inline void set_prescaler(const typename prescaler::PrescalerValue p)
     {
         _registers::prescaler(p);
     }
 
-    static inline uint8_t prescaler()
+    static inline uint8_t get_prescaler()
     {
         return _registers::prescaler();
     }

@@ -15,7 +15,7 @@ int main()
 {
 	B5::output();
 	timer1::mode(timer1::MODE_COUNTER);
-	timer1::prescaler(timer1::PRESCALER_64);
+	timer1::set_prescaler(timer1::prescaler::PRESCALER_64);
 	timer1::counter::overflow_interrupt::attach(f);
 	timer1::counter::overflow_interrupt::enable();
 	uart0::init();

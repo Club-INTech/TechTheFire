@@ -9,8 +9,7 @@
 #include <util/delay.h>
 
 #include <libintech/asservissement.hpp>
-#include <libintech/serial/serial_impl.hpp>
-#include <libintech/serial/serial_0.hpp>
+#include <libintech/uart.hpp>
 #include <libintech/timer.hpp>
 #include <libintech/gpio.hpp>
 #include <libintech/moteur.hpp>
@@ -41,7 +40,7 @@ private:
     //Timer 1 en mode compteur, Prescaler de 1
     typedef timer1 timerCompteur;
     
-    typedef Serial<0> serial_t_;
+    typedef uart0 serial_t_;
     
     float x_;
     float y_;

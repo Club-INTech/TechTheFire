@@ -13,8 +13,6 @@
 #include "timer.hpp"
 #include "gpio.hpp"
 #include "safe_enum.hpp"
-#include "serial/serial_impl.hpp"
-
 
 /**
  * 
@@ -27,12 +25,12 @@ class Moteur {
 
 public:
 	static const uint8_t TIMER_ID = Timer::ID;
-	
+
 public:
 
-	Moteur() : maxPWM_(255) {
+	Moteur() : maxPWM_(255), pwm_(0) {
 		Timer::mode(Timer::MODE_PWM);
-		Timer::prescaler(Timer::PRESCALER_1);
+		Timer::set_prescaler(Timer::prescaler::PRESCALER_1);
 		Timer::pwm::waveform_mode(Timer::pwm::PWM_FAST);
 		if (Channel == 'A')
 		{
@@ -44,7 +42,6 @@ public:
 		}
 		DirectionRegister::output();
 	}
-
 
 private:
 	int16_t maxPWM_;

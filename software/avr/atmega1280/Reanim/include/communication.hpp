@@ -31,26 +31,21 @@ class Communication
 		{
 			serial_pc::printfln("reanim");
 		}
-		else if (strcmp(ordre,"angle") == 0)
-		{
-			uint16_t t;
-			serial_pc::read(t);
-			ax12.goTo(t);
-		}
-		else if (strcmp(ordre,"pompe") == 0)
-		{
-			ax12.goToB(90);
-			_delay_ms(750);
-			ax12.goToB(250);
-			_delay_ms(750);
-		}
 		else if(strcmp(ordre,"reanim")==0)
 		  {
 		    serial_pc::printfln("Réanim en cours");
 		    ax12.reanimationMode(9600);
 		    serial_pc::printfln("Reanim finie");
 		  }
+		else if(strcmp(ordre,"test")==0)
+		  {
+		    ax12.goTo(90);
+		    _delay_ms(750);
+		    ax12.goTo(180);
+		    _delay_ms(750);
+		  }
 	}
+
 };
 
 #endif

@@ -13,7 +13,7 @@ Robot::Robot() :
 	serial_t_::init();
 	sei();
 	timerCompteur::mode(timerCompteur::MODE_COUNTER);
-	timerCompteur::prescaler(timerCompteur::PRESCALER_1);
+	timerCompteur::set_prescaler(timerCompteur::prescaler::PRESCALER_1);
 	timerCompteur::counter::overflow_interrupt::enable();
 	D5::output();
 	D6::output();
