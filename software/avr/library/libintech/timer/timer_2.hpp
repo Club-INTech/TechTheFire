@@ -169,17 +169,17 @@ template<>
 class TimerPrescaler<2>
 {
 public:
-    enum PrescalerValue
-    {
-        PRESCALER_DISABLE,
-        PRESCALER_1,
-        PRESCALER_8,
-        PRESCALER_32,
-        PRESCALER_64,
-        PRESCALER_128,
-        PRESCALER_256,
-        PRESCALER_1024
-    };
+  enum PrescalerValue
+  {
+      PRESCALER_DISABLE,
+      PRESCALER_1,
+      PRESCALER_8,
+      PRESCALER_32,
+      PRESCALER_64,
+      PRESCALER_128,
+      PRESCALER_256,
+      PRESCALER_1024
+  };
 };
 
 template<class TimerSize>
