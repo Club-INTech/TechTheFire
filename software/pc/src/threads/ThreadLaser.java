@@ -45,6 +45,7 @@ class ThreadLaser extends AbstractThread {
 	@Override
 	public void run()
 	{
+		log.debug("Lancement du thread de laser", this);
 		// On attends le démarrage du match et qu'au moins une balise réponde
 		while(!threadtimer.match_demarre || laser.verifier_balises_connectes() == 0)
 		{
