@@ -1,5 +1,7 @@
 package scripts;
 
+import robot.Cote;
+import robot.PositionRateau;
 import robot.Robot;
 import robot.RobotVrai;
 import smartMath.Vec2;
@@ -93,19 +95,21 @@ public class ScriptTree extends Script{
 		}
 		
 		// on déploie les bras 
-		robot.baisser_rateaux();
+		robot.rateau(PositionRateau.BAS, Cote.DROIT);
+		robot.rateau(PositionRateau.BAS, Cote.GAUCHE);
 		// on avance et on rebaisse les rateaux au min
 		robot.avancer(-200);
-		robot.baisser_rateaux_bas();
+		robot.rateau(PositionRateau.SUPER_BAS, Cote.DROIT);
+		robot.rateau(PositionRateau.SUPER_BAS, Cote.GAUCHE);
 		// on remonte les bras à mi-hauteur en fonction de la position du fruit pourri, tout en reculant
 		
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
-		Executable remonteDroit = new LeverRateau(robot, true);
+		Executable remonteDroit = new LeverRateau(robot, Cote.DROIT);
 		Hook hook = hookgenerator.hook_position(new Vec2(0,0));
 		hook.ajouter_callback(new Callback(remonteDroit, true));		
 		hooks.add(hook);
 
-		Executable remonteGauche = new LeverRateau(robot, false);
+		Executable remonteGauche = new LeverRateau(robot, Cote.GAUCHE);
 		hook = hookgenerator.hook_position(new Vec2(0,0));
 		hook.ajouter_callback(new Callback(remonteGauche, true));
 		hooks.add(hook);
@@ -115,7 +119,8 @@ public class ScriptTree extends Script{
 
 	@Override
 	protected void termine(Robot robot, Table table) {
-		robot.remonter_rateaux();	
+		robot.rateau(PositionRateau.RANGER, Cote.DROIT);
+		robot.rateau(PositionRateau.RANGER, Cote.GAUCHE);
 	}
 
 	public String toString()
