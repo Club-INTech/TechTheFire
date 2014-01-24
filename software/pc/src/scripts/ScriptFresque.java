@@ -30,7 +30,11 @@ public class ScriptFresque extends Script {
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		if(robot.isFresquesPosees())
+			return versionList;
+
 		// TODO
+		// 2, 3 versions?
 		return versionList;
 	}
 

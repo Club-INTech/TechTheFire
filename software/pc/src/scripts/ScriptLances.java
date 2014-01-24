@@ -74,6 +74,7 @@ public class ScriptLances extends Script {
 	@Override
 	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
 	{
+		robot.va_au_point(point_entree(id_version, robot, table));
 		// ajuster l'orientation du robot (objet robot)
 		robot.tourner(0);
 		// tirer (objet robot)
