@@ -53,7 +53,7 @@ public class ScriptLances extends Script {
 	}
 
 	@Override
-	protected Vec2 point_entree(int id, final Robot robot, final Table table) {
+	protected Vec2 point_entree(int id) {
 		// A modifier, la position devant le mammouth
 		// Note � moi-m�me : demander � Ngon� ou Alexandre pour la distance
 		return new Vec2(1200,1400);

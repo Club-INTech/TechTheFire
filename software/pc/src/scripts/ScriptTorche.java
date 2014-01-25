@@ -31,7 +31,7 @@ public class ScriptTorche extends Script {
 	}
 
 	@Override
-	protected Vec2 point_entree(int id, Robot robot, Table table) {
+	protected Vec2 point_entree(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -32,22 +32,20 @@ public class ScriptFresque extends Script {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		if(robot.isFresquesPosees())
 			return versionList;
-
-		// TODO
-		// 2, 3 versions?
+		versionList.add(0);
+		versionList.add(1);
+		versionList.add(2);
 		return versionList;
 	}
 
 	@Override
-	protected Vec2 point_entree(int id, final Robot robot, final Table table) {
-		// TODO
-		return null;
+	protected Vec2 point_entree(int id) {
+		return new Vec2(-150+id*150, 1800);
 	}
 
 	@Override
 	public int score(int id_version, final Robot robot, final Table table) {
-		// TODO
-		return 0;
+		return 6;
 	}
 
 	@Override
