@@ -49,8 +49,8 @@ public class ScriptDeposerFeu extends Script {
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table)
-			throws MouvementImpossibleException {
+	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
+	{
 		// TODO Auto-generated method stub
 		
 	}
