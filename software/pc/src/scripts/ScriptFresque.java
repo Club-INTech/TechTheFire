@@ -40,7 +40,7 @@ public class ScriptFresque extends Script {
 
 	@Override
 	protected Vec2 point_entree(int id) {
-		return new Vec2(-150+id*150, 1800);
+		return new Vec2(-150+id*150, 1700);
 	}
 
 	@Override
@@ -58,7 +58,10 @@ public class ScriptFresque extends Script {
 	@Override
 	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
 	{
-		// TODO
+		robot.tourner((float)Math.PI/2);
+		robot.avancer(300, false, true);
+		robot.deposer_fresques();
+		robot.avancer(-300);
 	}
 
 	@Override
