@@ -12,6 +12,7 @@ import table.Table;
 import utils.Log;
 import utils.Read_Ini;
 import exception.MouvementImpossibleException;
+import exception.SerialException;
 
 /**
  * Script de dépose des fresques
@@ -56,7 +57,7 @@ public class ScriptFresque extends Script {
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
+	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException, SerialException
 	{
 		robot.tourner((float)-Math.PI/2);
 		robot.avancer(-300, false, true);

@@ -54,9 +54,11 @@ public class ScriptLances extends Script {
 
 	@Override
 	protected Vec2 point_entree(int id) {
-		// A modifier, la position devant le mammouth
-		// Note � moi-m�me : demander � Ngon� ou Alexandre pour la distance
-		return new Vec2(1200,1400);
+		// Les points d'entrées ne sont pas symétriques car le lanceur n'est que d'un seul côté
+		if(couleur == "jaune")
+			return new Vec2(-400,1400);
+		else
+			return new Vec2(-1200,1400);
 	}
 
 	@Override
@@ -74,7 +76,7 @@ public class ScriptLances extends Script {
 	@Override
 	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
 	{
-		robot.tourner((float)Math.PI);
+		robot.tourner((float)Math.PI, true);
 
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
 		Executable tirerballes = new TirerBalles(robot);

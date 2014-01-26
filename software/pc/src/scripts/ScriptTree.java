@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import pathfinding.Pathfinding;
 import exception.MouvementImpossibleException;
+import exception.SerialException;
 
 public class ScriptTree extends Script{
 
@@ -70,7 +71,7 @@ public class ScriptTree extends Script{
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
+	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException, SerialException
 	{
 		int Fruitsgauche = table.nbrLeftTree(id_version) ;
 		int Fruitsdroite = table.nbrRightTree(id_version);
@@ -110,8 +111,12 @@ public class ScriptTree extends Script{
 
 	@Override
 	protected void termine(Robot robot, Table table) {
-		robot.rateau(PositionRateau.RANGER, Cote.DROIT);
-		robot.rateau(PositionRateau.RANGER, Cote.GAUCHE);
+		try {
+			robot.rateau(PositionRateau.RANGER, Cote.DROIT);
+			robot.rateau(PositionRateau.RANGER, Cote.GAUCHE);
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String toString()

@@ -46,8 +46,9 @@ class ThreadLaser extends AbstractThread {
 	public void run()
 	{
 		log.debug("Lancement du thread de laser", this);
+
 		// On attends le démarrage du match et qu'au moins une balise réponde
-		while(!threadtimer.match_demarre || laser.verifier_balises_connectes() == 0)
+		while(laser.verifier_balises_connectes() == 0)
 		{
 			if(stop_threads)
 			{
@@ -58,6 +59,7 @@ class ThreadLaser extends AbstractThread {
 		}
 
 		// Allumage des lasers
+		log.debug("Allumage des lasers", this);
 		laser.allumer();
 
 		// Attente de la vitesse stable
@@ -86,30 +88,39 @@ class ThreadLaser extends AbstractThread {
 			for(Balise balise: balises)
 			{
                 // Récupération de la position brute
-				Vec2 p_bruit = laser.position_balise(balise.id); 
-
-                // Aucune réponse valable
-                if(p_bruit == null)
+				try {
+					Vec2 p_bruit = laser.position_balise(balise.id); 
+	                // Aucune réponse valable
+	                if(p_bruit == null)
+						continue;
+	                
+	                // Mise à jour du modèle de filtrage
+	                filtragelaser.update(p_bruit);
+	
+	                // Récupération des valeurs filtrées
+	                Vec2 p_filtre = filtragelaser.position();
+	
+	                // Vérification si l'obstacle est sur la table 
+	                if(p_filtre.x > -table_x/2 && p_filtre.y > 0 && p_filtre.x < table_x/2 && p_filtre.y < table_y)
+	                    table.deplacer_robot_adverse(balise.id, p_filtre);
+	                
+	                sleep((long)(1./lasers_frequence));
+	                long end = System.currentTimeMillis();
+	                filtragelaser.update_dt((int)(end-start));
+				}
+				catch(Exception e)
+				{
+					// TODO (désactiver pour le moment car, vu que FiltrageLaser n'est pas fini, y'a des erreurs tout le temps)
+//					e.printStackTrace();
 					continue;
-                
-                // Mise à jour du modèle de filtrage
-                filtragelaser.update(p_bruit);
-
-                // Récupération des valeurs filtrées
-                Vec2 p_filtre = filtragelaser.position();
-
-                // Vérification si l'obstacle est sur la table 
-                if(p_filtre.x > -table_x/2 && p_filtre.y > 0 && p_filtre.x < table_x/2 && p_filtre.y < table_y)
-                    table.deplacer_robot_adverse(balise.id, p_filtre);
-                
-                sleep((long)(1./lasers_frequence));
-                long end = System.currentTimeMillis();
-                filtragelaser.update_dt((int)(end-start));
+				}
 			}
 
-			laser.eteindre();
-	        log.debug("Fin du thread des lasers", this);
         }
+
+        laser.eteindre();
+        log.debug("Fin du thread des lasers", this);
+
 	}
 
 }
