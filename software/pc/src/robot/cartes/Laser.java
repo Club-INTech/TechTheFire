@@ -18,7 +18,6 @@ import container.Service;
 public class Laser implements Service {
 
 	// Dépendances
-	private Read_Ini config;
 	private Log log;
 	private Serial serie;
 	private RobotVrai robotvrai;
@@ -27,7 +26,6 @@ public class Laser implements Service {
 	
 	public Laser(Read_Ini config, Log log, Serial serie, RobotVrai robotvrai)
 	{
-		this.config = config;
 		this.log = log;
 		this.serie = serie;
 		this.robotvrai = robotvrai;
