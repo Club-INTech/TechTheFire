@@ -193,14 +193,15 @@ public class Laser implements Service {
 						|| reponse[0] == "UNVISIBLE" || reponse[1] == "UNVISIBLE"))
 				{
 					try {
-					float angle = Float.parseFloat(reponse[1]);
-					n++;
-					moyenne += angle;
-					valeurs.add(angle);
+						float angle = Float.parseFloat(reponse[1]);
+						n++;
+						moyenne += angle;
+						valeurs.add(angle);
 					}
 					catch(Exception e)
 					{
-						log.critical(e, this);
+						log.critical("Reponse reçue: "+reponse[1], this);
+						e.printStackTrace();
 					}
 				}
 			}
@@ -220,11 +221,11 @@ public class Laser implements Service {
 			// Vérification de la cohérence
 			if(n < essais / 2 || ecart_type > 1)
 			{
-                log.warning("balise n°"+Integer.toString(b.id)+" ignorée pendant le match, valeurs renvoyées incohérentes (valeurs reçues = "+Integer.toString(n)+" / "+Integer.toString(essais)+", angle moyen = "+Float.toString(moyenne)+", écart-type = "+Float.toString(ecart_type)+")", this);
+                log.critical("balise n°"+Integer.toString(b.id)+" ignorée pendant le match, valeurs renvoyées incohérentes (valeurs reçues = "+Integer.toString(n)+" / "+Integer.toString(essais)+", angle moyen = "+Float.toString(moyenne)+", écart-type = "+Float.toString(ecart_type)+")", this);
                 b.active = false;
 			}
 			else
-                log.warning("balise n°"+Integer.toString(b.id)+" renvoie des valeurs cohérentes (valeurs reçues = "+Integer.toString(n)+" / "+Integer.toString(essais)+", angle moyen = "+Float.toString(moyenne)+", écart-type = "+Float.toString(ecart_type)+")", this);				
+                log.debug("balise n°"+Integer.toString(b.id)+" renvoie des valeurs cohérentes (valeurs reçues = "+Integer.toString(n)+" / "+Integer.toString(essais)+", angle moyen = "+Float.toString(moyenne)+", écart-type = "+Float.toString(ecart_type)+")", this);				
 		}
 		
 	
