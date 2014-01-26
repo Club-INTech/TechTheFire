@@ -96,7 +96,7 @@ public class ScriptTree extends Script{
 		Executable remonteDroit = new LeverRateau(robot, Cote.DROIT);
 		double distance = 30; // dépend de fruitsdroite
 		Vec2 diff = new Vec2((float)(distance*Math.cos((double)robot.getOrientation())),(float)(distance*Math.sin((double)robot.getOrientation())));
-		Hook hook = hookgenerator.hook_position(robot.getPosition().PlusNewVector(diff));
+<		Hook hook = hookgenerator.hook_position(robot.getPosition().PlusNewVector(diff));
 		hook.ajouter_callback(new Callback(remonteDroit, true));
 		hooks.add(hook);
 

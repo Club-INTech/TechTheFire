@@ -192,10 +192,16 @@ public class Laser implements Service {
 						|| reponse[0] == "OLD_VALUE" || reponse[1] == "OLD_VALUE"
 						|| reponse[0] == "UNVISIBLE" || reponse[1] == "UNVISIBLE"))
 				{
+					try {
 					float angle = Float.parseFloat(reponse[1]);
 					n++;
 					moyenne += angle;
 					valeurs.add(angle);
+					}
+					catch(Exception e)
+					{
+						log.critical(e, this);
+					}
 				}
 			}
 			
