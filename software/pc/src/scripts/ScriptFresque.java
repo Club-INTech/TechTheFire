@@ -58,10 +58,10 @@ public class ScriptFresque extends Script {
 	@Override
 	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
 	{
-		robot.tourner((float)Math.PI/2);
-		robot.avancer(300, false, true);
+		robot.tourner((float)-Math.PI/2);
+		robot.avancer(-300, false, true);
 		robot.deposer_fresques();
-		robot.avancer(-300);
+		robot.avancer(300);
 	}
 
 	@Override
