@@ -23,8 +23,11 @@ class HookFeu extends Hook {
 	
 	public void evaluate(final Robot robot)
 	{
-		if(capteur.isThereFire())
+		if(capteur.isThereFire()) // vérifier aussi que le robot n'en porte pas déjà un...
+		{
+			log.warning("Un feu a été détecté! Il est pris.", this);
 			declencher();
+		}
 	}
 	
 }

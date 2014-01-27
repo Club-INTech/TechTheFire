@@ -32,11 +32,11 @@ class Fire extends Game_Element {
 		this.taken = true;
 	}
 	
-	public boolean isTaken()
+/*	public boolean isTaken()
 	{
 		return taken;
 	}
-	
+	*/
 	public void ejectFire()
 	{
 		this.onFireplace = true;

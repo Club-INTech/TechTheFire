@@ -19,12 +19,12 @@ class Torch extends Game_Element {
 		fires[1] = fire1;
 		fires[2] = fire2;
 	}
-
+/*
 	public void clone(Torch torch)
 	{
 		 fires[0].clone(torch.fires[0]);
 		 fires[1].clone(torch.fires[1]);
 		 fires[2].clone(torch.fires[2]);
 	}
-	
+	*/
 }
