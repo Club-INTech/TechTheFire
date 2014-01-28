@@ -7,6 +7,7 @@ import robot.cartes.FiltrageLaser;
 import robot.cartes.Laser;
 import smartMath.Vec2;
 import table.Table;
+import utils.Sleep;
 
 /**
  * Thread de gestion de la balise laser
@@ -55,7 +56,7 @@ class ThreadLaser extends AbstractThread {
 				log.debug("Stoppage du thread laser", this);
 				return;
 			}
-			sleep(100);
+			Sleep.sleep(100);
 		}
 
 		// Allumage des lasers
@@ -63,7 +64,7 @@ class ThreadLaser extends AbstractThread {
 		laser.allumer();
 
 		// Attente de la vitesse stable
-		sleep(3000);
+		Sleep.sleep(3000);
 		
 		for(Balise balise: laser.balises_ignorees())
 		{
