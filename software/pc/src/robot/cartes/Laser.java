@@ -8,6 +8,7 @@ import smartMath.Vec2;
 import utils.Log;
 import utils.Read_Ini;
 import container.Service;
+import exception.SerialException;
 
 /**
  * Classe qui gère la balise laser
@@ -18,7 +19,6 @@ import container.Service;
 public class Laser implements Service {
 
 	// Dépendances
-	private Read_Ini config;
 	private Log log;
 	private Serial serie;
 	private RobotVrai robotvrai;
@@ -27,7 +27,6 @@ public class Laser implements Service {
 	
 	public Laser(Read_Ini config, Log log, Serial serie, RobotVrai robotvrai)
 	{
-		this.config = config;
 		this.log = log;
 		this.serie = serie;
 		this.robotvrai = robotvrai;
@@ -69,8 +68,12 @@ public class Laser implements Service {
 	 */
 	public void allumer()
 	{
-		serie.communiquer("motor_on", 0);
-		serie.communiquer("laser_on", 0);
+		try {
+			serie.communiquer("motor_on", 0);
+			serie.communiquer("laser_on", 0);
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -78,8 +81,12 @@ public class Laser implements Service {
 	 */
 	public void eteindre()
 	{
-		serie.communiquer("motor_off", 0);
-		serie.communiquer("laser_off", 0);
+		try {
+			serie.communiquer("motor_off", 0);
+			serie.communiquer("laser_off", 0);
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -90,14 +97,18 @@ public class Laser implements Service {
 	{
 		int balises_ok = 0;
 		for(Balise b: balises)
-			if(ping_balise(b.id))
-			{
-				if(!b.active)
+			try {
+				if(ping_balise(b.id))
 				{
-					b.active = true;
-                    log.debug("balise n°" + Integer.toString(b.id) + " répondant au ping", this);
+					if(!b.active)
+					{
+						b.active = true;
+				        log.debug("balise n°" + Integer.toString(b.id) + " répondant au ping", this);
+					}
+					balises_ok++;
 				}
-				balises_ok++;
+			} catch (SerialException e) {
+				e.printStackTrace();
 			}
 		return balises_ok;
 	}
@@ -106,8 +117,9 @@ public class Laser implements Service {
 	 * Ping une balise
 	 * @param id
 	 * @return
+	 * @throws SerialException 
 	 */
-	private boolean ping_balise(int id)
+	private boolean ping_balise(int id) throws SerialException
 	{
 		String[] ping = serie.communiquer("ping_all", balises.length);
 		return ping[id] != "aucune réponse";
@@ -119,16 +131,25 @@ public class Laser implements Service {
 	 */
 	private float frequence_moteur()
 	{
-		String[] reponse = serie.communiquer("freq", 1);
-		return Float.parseFloat(reponse[0]);
+		try {
+			String[] reponse = serie.communiquer("freq", 1);
+			return Float.parseFloat(reponse[0]);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return 18; // TODO valeur normale
+		}
+
 	}
 	
 	/**
 	 * Récupère la valeur (rayon, angle) d'une balise
 	 * @param id
 	 * @return
+	 * @throws SerialException 
 	 */
-	public Vec2 position_balise(int id)
+	public Vec2 position_balise(int id) throws SerialException
 	{
 		String chaines[] = {"value", Integer.toString(id)};
 		String[] reponse = serie.communiquer(chaines, 2);
@@ -188,16 +209,22 @@ public class Laser implements Service {
 			
 			for(int i = 0; i < essais; i++)
 			{
-				String chaines[] = {"value", Integer.toString(b.id)};
-				String[] reponse = serie.communiquer(chaines, 2);
-				if(!(reponse[0] == "NO_RESPONSE" || reponse[1] == "NO_RESPONSE"
-						|| reponse[0] == "OLD_VALUE" || reponse[1] == "OLD_VALUE"
-						|| reponse[0] == "UNVISIBLE" || reponse[1] == "UNVISIBLE"))
+				try {
+					String chaines[] = {"value", Integer.toString(b.id)};
+					String[] reponse = serie.communiquer(chaines, 2);
+					if(!(reponse[0] == "NO_RESPONSE" || reponse[1] == "NO_RESPONSE"
+							|| reponse[0] == "OLD_VALUE" || reponse[1] == "OLD_VALUE"
+							|| reponse[0] == "UNVISIBLE" || reponse[1] == "UNVISIBLE"))
+					{
+						float angle = Float.parseFloat(reponse[1]);
+						n++;
+						moyenne += angle;
+						valeurs.add(angle);
+					}
+				}
+				catch(Exception e)
 				{
-					float angle = Float.parseFloat(reponse[1]);
-					n++;
-					moyenne += angle;
-					valeurs.add(angle);
+					e.printStackTrace();
 				}
 			}
 			
@@ -216,11 +243,11 @@ public class Laser implements Service {
 			// Vérification de la cohérence
 			if(n < essais / 2 || ecart_type > 1)
 			{
-                log.warning("balise n°"+Integer.toString(b.id)+" ignorée pendant le match, valeurs renvoyées incohérentes (valeurs reçues = "+Integer.toString(n)+" / "+Integer.toString(essais)+", angle moyen = "+Float.toString(moyenne)+", écart-type = "+Float.toString(ecart_type)+")", this);
+                log.critical("balise n°"+Integer.toString(b.id)+" ignorée pendant le match, valeurs renvoyées incohérentes (valeurs reçues = "+Integer.toString(n)+" / "+Integer.toString(essais)+", angle moyen = "+Float.toString(moyenne)+", écart-type = "+Float.toString(ecart_type)+")", this);
                 b.active = false;
 			}
 			else
-                log.warning("balise n°"+Integer.toString(b.id)+" renvoie des valeurs cohérentes (valeurs reçues = "+Integer.toString(n)+" / "+Integer.toString(essais)+", angle moyen = "+Float.toString(moyenne)+", écart-type = "+Float.toString(ecart_type)+")", this);				
+                log.debug("balise n°"+Integer.toString(b.id)+" renvoie des valeurs cohérentes (valeurs reçues = "+Integer.toString(n)+" / "+Integer.toString(essais)+", angle moyen = "+Float.toString(moyenne)+", écart-type = "+Float.toString(ecart_type)+")", this);				
 		}
 		
 	

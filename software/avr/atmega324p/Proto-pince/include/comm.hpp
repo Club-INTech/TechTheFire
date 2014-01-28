@@ -15,9 +15,9 @@ class Communication
 	Ax12 pinceGauche; //ax12 de la pince gauche
 	Ax12 positionGauche;
 	Ax12 orientationGauche;
-  Ax12 pinceDroite; //ax12 de la pince droite
-  Ax12 positionDroite; 
-  Ax12 orientationDroite;
+	Ax12 pinceDroite; //ax12 de la pince droite
+	Ax12 positionDroite; 
+	Ax12 orientationDroite;
 	
 	public:
 
@@ -25,11 +25,11 @@ class Communication
 
 	Communication():
 		pinceGauche (0,1,1023),
-		orientationGauche (1,1,1023),
 		positionGauche (2,1,1023),
+		orientationGauche (1,1,1023),
 		pinceDroite (3,1,1023),
-		orientationDroite (4,1,1023),
-		positionDroite (5,1,1023)
+		positionDroite (5,1,1023),
+		orientationDroite (4,1,1023)
 	{
 		serial_pc::init();
 		serial_pc::change_baudrate (9600);

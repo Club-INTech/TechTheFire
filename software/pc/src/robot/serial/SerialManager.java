@@ -19,9 +19,9 @@ public class SerialManager
 	private Log log;
 
 	//Series a instancier
-	public Serial serieAsservissement;
-	public Serial serieCapteursActionneurs;
-	public Serial serieLaser;
+	public Serial serieAsservissement = null;
+	public Serial serieCapteursActionneurs = null;
+	public Serial serieLaser = null;
 	
 	//On stock les series dans une liste
 	private Hashtable<String, Serial> series = new Hashtable<String, Serial>();
@@ -95,14 +95,14 @@ public class SerialManager
 		String pings[] = new String[20];
 		for (int baudrate : this.baudrate)
 		{
-			System.out.println("liste des pings pour le baudrate " + baudrate);
+			log.debug("liste des pings pour le baudrate " + baudrate, this);
 
 			for(int k = 0; k < this.connectedSerial.size(); k++)
 			{
 				if (!deja_attribues.contains(k))
 				{
 					//Creation d'une serie de test
-					Serial serialTest = new Serial(log, "carte de test");
+					Serial serialTest = new Serial(log, "carte de test de ping");
 
 					serialTest.initialize(this.connectedSerial.get(k), baudrate);
 					
@@ -185,6 +185,8 @@ public class SerialManager
 		else
 		{
 			log.critical("Aucune série du nom : " + name + " n'existe", this);
+			log.critical("Vérifiez les branchements ou l'interface+simulateur (redémarrez si besoin).", this);
+			log.critical("Vérifiez aussi que tous les processus Java exécutant ce code sont éteints.", this);
 			throw new SerialManagerException("serie non trouvée");
 		}
 	}

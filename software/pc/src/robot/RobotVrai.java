@@ -7,6 +7,7 @@ import smartMath.Vec2;
 import table.Table;
 import utils.Log;
 import utils.Read_Ini;
+import utils.Sleep;
 import hook.Hook;
 import hook.HookGenerator;
 
@@ -17,6 +18,7 @@ import java.util.Hashtable;
 import exception.BlocageException;
 import exception.CollisionException;
 import exception.MouvementImpossibleException;
+import exception.SerialException;
 
 /**
  * Classe qui fournit des déplacements haut niveau
@@ -36,10 +38,9 @@ public class RobotVrai extends Robot {
 	private float orientation_consigne = (float)-Math.PI/2;
 	
 	private boolean blocage = false;
-	private boolean enMouvement = true;
+//	private boolean enMouvement = true;
 	
-//	private boolean marche_arriere = false;
-	private boolean effectuer_symetrie = true;
+	private boolean marche_arriere = false;
 	
 	public boolean pret = false;
 	
@@ -51,7 +52,6 @@ public class RobotVrai extends Robot {
 //	private boolean maj_marche_arriere;
 	private int disque_tolerance_consigne;
 	private int distance_degagement_robot;
-	private String couleur;
 	private float angle_degagement_robot;
 	private boolean correction_trajectoire;
 	
@@ -69,19 +69,65 @@ public class RobotVrai extends Robot {
 		try
 		{
 			largeur_robot = Integer.parseInt(config.get("largeur_robot"));
-			distance_detection = Integer.parseInt(config.get("distance_detection"));
-			disque_tolerance_consigne = Integer.parseInt(config.get("disque_tolerance_maj"));
-			distance_degagement_robot = Integer.parseInt(config.get("distance_degagement_robot"));
-			sleep_milieu_boucle_acquittement = Integer.parseInt(config.get("sleep_milieu_boucle_acquittement"));
-			angle_degagement_robot = Float.parseFloat(config.get("angle_degagement_robot"));
-			correction_trajectoire = Boolean.parseBoolean(config.get("correction_trajectoire"));
-			couleur = config.get("couleur");
 		}
 		catch(Exception e)
 		{
 			log.critical(e, this);
 		}
- 	}
+		try
+		{
+			distance_detection = Integer.parseInt(config.get("distance_detection"));
+		}
+		catch(Exception e)
+		{
+			log.critical(e, this);
+		}
+		try
+		{
+			disque_tolerance_consigne = Integer.parseInt(config.get("disque_tolerance_consigne"));
+		}
+		catch(Exception e)
+		{
+			log.critical(e, this);
+		}
+		try
+		{
+			distance_degagement_robot = Integer.parseInt(config.get("distance_degagement_robot"));
+		}
+		catch(Exception e)
+		{
+			log.critical(e, this);
+		}
+		try
+		{
+			sleep_milieu_boucle_acquittement = Integer.parseInt(config.get("sleep_milieu_boucle_acquittement"));
+		}
+		catch(Exception e)
+		{
+			log.critical(e, this);
+		}
+		try
+		{
+			angle_degagement_robot = Float.parseFloat(config.get("angle_degagement_robot"));
+		}
+		catch(Exception e)
+		{
+			log.critical(e, this);
+		}
+		try
+		{
+			correction_trajectoire = Boolean.parseBoolean(config.get("correction_trajectoire"));
+		}
+		catch(Exception e)
+		{
+			log.critical(e, this);
+		}
+		try {
+			update_x_y_orientation();
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/*
 	 * MÉTHODES PUBLIQUES
@@ -97,17 +143,23 @@ public class RobotVrai extends Robot {
 	 * Arrête le robot
 	 * @param avec_blocage
 	 */
+	@Override
 	public void stopper(boolean avec_blocage)
 	{
 		log.debug("Arrêt du robot", this);
 		if(avec_blocage)
 			blocage = true;
-		deplacements.stopper();			
+		try {
+			deplacements.stopper();
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}			
 	}
 	
 	/**
 	 * Arrête le robot
 	 */
+	@Override
 	public void stopper()
 	{
 		stopper(true);
@@ -117,24 +169,26 @@ public class RobotVrai extends Robot {
 	 * Modifie la consigne en angle, de façon non bloquante
 	 * @param angle
 	 */
-	public void correction_angle(float angle)
+/*	private void correction_angle(float angle)
 	{
 		orientation_consigne = angle;
 		deplacements.tourner((int)angle);
 	}
+*/
 	
 	/**
 	 * Avance d'une certaine distance (méthode bloquante), gestion des hooks
 	 */
+	@Override
 	public void avancer(int distance, ArrayList<Hook> hooks, int nbTentatives, boolean retenterSiBlocage, boolean sansLeverException) throws MouvementImpossibleException
 	{
 		log.debug("Avancer de "+Integer.toString(distance), this);
 
-//		boolean memoire_marche_arriere = marche_arriere;
 		boolean memoire_effectuer_symetrie = effectuer_symetrie;
-
-//		marche_arriere = (distance < 0);
 		effectuer_symetrie = false;
+
+		if(distance < 0)
+			marche_arriere = true;
 
 		Vec2 consigne = new Vec2(0,0);
 		consigne.x = (float) (position.x + distance*Math.cos(orientation_consigne));
@@ -153,8 +207,8 @@ public class RobotVrai extends Robot {
 		}
 		finally
 		{
-//			marche_arriere = memoire_marche_arriere;
 			effectuer_symetrie = memoire_effectuer_symetrie;
+			marche_arriere = false;
 		}
 		
 	}
@@ -163,6 +217,7 @@ public class RobotVrai extends Robot {
 	 * Fait tourner le robot (méthode bloquante)
 	 * @throws MouvementImpossibleException 
 	 */
+	@Override
 	public void tourner(float angle, ArrayList<Hook> hooks, int nombre_tentatives, boolean sans_lever_exception) throws MouvementImpossibleException
 	{
 		if(effectuer_symetrie)
@@ -206,21 +261,19 @@ public class RobotVrai extends Robot {
 	 * Fait suivre au robot un chemin (fourni par la recherche de chemin)
 	 * @throws MouvementImpossibleException 
 	 */
-	public void suit_chemin(ArrayList<Vec2> chemin, ArrayList<Hook> hooks, boolean marche_arriere_auto, boolean symetrie_effectuee) throws MouvementImpossibleException
+	@Override
+	protected void suit_chemin(ArrayList<Vec2> chemin, ArrayList<Hook> hooks, boolean retenter_si_blocage, boolean symetrie_effectuee) throws MouvementImpossibleException
 	{
 		for(Vec2 position: chemin)
-		{
-//			if(marche_arriere_auto)
-//				marche_arriere = marche_arriere_est_plus_rapide(position);
-			va_au_point(position, hooks, false, 2, true, symetrie_effectuee, false);
-		}
+			va_au_point(position, hooks, false, nb_tentatives, retenter_si_blocage, symetrie_effectuee, false);
 	}
 
 
 	/**
 	 * Le robot va au point demandé
 	 */
-	public void va_au_point(Vec2 point, ArrayList<Hook> hooks, boolean trajectoire_courbe, int nombre_tentatives, boolean retenter_si_blocage, boolean symetrie_effectuee, boolean sans_lever_exception) throws MouvementImpossibleException
+	@Override
+	protected void va_au_point(Vec2 point, ArrayList<Hook> hooks, boolean trajectoire_courbe, int nombre_tentatives, boolean retenter_si_blocage, boolean symetrie_effectuee, boolean sans_lever_exception) throws MouvementImpossibleException
 	{
 		// appliquer la symétrie ne doit pas modifier ce point !
 		point = point.clone();
@@ -247,11 +300,12 @@ public class RobotVrai extends Robot {
 				stopper();
 				if(retenter_si_blocage)
 				{
+					// TODO gérer nombre_tentatives = 0
 					log.warning("Blocage en déplacement ! On recule... reste "+Integer.toString(nombre_tentatives)+" tentatives", this);
-//					if(marche_arriere)
-//						avancer(distance_degagement_robot, nombre_tentatives-1);
-//					else
-					avancer(-distance_degagement_robot, nombre_tentatives-1);
+					if(marche_arriere)
+						avancer(distance_degagement_robot, nombre_tentatives-1);
+					else
+						avancer(-distance_degagement_robot, nombre_tentatives-1);
 				}
 			}
 			finally
@@ -267,9 +321,9 @@ public class RobotVrai extends Robot {
 			{
 				log.warning("attente avant nouvelle tentative... reste "+Integer.toString(nombre_tentatives)+" tentative(s)", this);
 				sleep(1000);
-				va_au_point(point, hooks, trajectoire_courbe, nombre_tentatives-1, true, false, false);
+				va_au_point(point, hooks, trajectoire_courbe, nombre_tentatives-1, retenter_si_blocage, true, sans_lever_exception);
 			}
-			else
+			else if(!sans_lever_exception)
 				throw new MouvementImpossibleException(this);
 		}
 	
@@ -278,27 +332,34 @@ public class RobotVrai extends Robot {
 	/**
 	 * Modifie la vitesse de translation
 	 */
+	@Override
 	public void set_vitesse_translation(String vitesse)
 	{
 		int pwm_max = conventions_vitesse_translation(vitesse);
-		deplacements.set_vitesse_translation(pwm_max);
+		try {
+			deplacements.set_vitesse_translation(pwm_max);
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
 		log.debug("Modification de la vitesse de translation: "+vitesse, this);
 	}
 
 	/**
 	 * Modifie la vitesse de rotation
 	 */
+	@Override
 	public void set_vitesse_rotation(String vitesse)
 	{
 		int pwm_max = conventions_vitesse_rotation(vitesse);
-		deplacements.set_vitesse_rotation(pwm_max);
+		try {
+			deplacements.set_vitesse_rotation(pwm_max);
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
 		log.debug("Modification de la vitesse de rotation: "+vitesse, this);
 	}
 	
-	/**
-	 * UTILISÉ UNIQUEMENT PAR LE THREAD DE MISE À JOUR
-	 */	
-	public void update_x_y_orientation()
+	public void update_x_y_orientation() throws SerialException
 	{
 		float[] infos = deplacements.get_infos_x_y_orientation();
 		synchronized(position)
@@ -314,110 +375,99 @@ public class RobotVrai extends Robot {
 	 */
 
 	// TODO
-	public void initialiser_actionneurs()
+	public void initialiser_actionneurs_deplacements()
 	{
-		
+		try {
+			deplacements.activer_asservissement_rotation();
+			deplacements.activer_asservissement_translation();
+			actionneurs.rateau_ranger_droit();
+			actionneurs.rateau_ranger_gauche();		
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
 	}
 
+	@Override
 	public void tirerBalles()
 	{
 		// TODO
+		nombre_lances--;
 	}
-	
 	
 	@Override
 	public void takefire() {
-		boolean retourner = capteur.isFireRed() ^ couleur == "rouge";
+//		boolean retourner = capteur.isFireRed() ^ couleur == "rouge";
 		// TODO
 		
 	}
 	
 	@Override
-	public void baisser_rateaux() {
-		// TODO Auto-generated method stub
-		
+	public void bac_bas() throws SerialException
+	{
+		actionneurs.bac_bas();
 	}
 
 	@Override
-	public void baisser_rateaux_bas() {
-		// TODO Auto-generated method stub
-		
+	public void bac_haut() throws SerialException
+	{
+		actionneurs.bac_haut();
 	}
 
 	@Override
-	public void remonter_rateau(boolean right) {
-		// TODO Auto-generated method stub
-		
+	public void rateau(PositionRateau position, Cote cote) throws SerialException
+	{
+		if(position == PositionRateau.BAS && cote == Cote.DROIT)
+			actionneurs.rateau_bas_droit();
+		else if(position == PositionRateau.BAS && cote == Cote.GAUCHE)
+			actionneurs.rateau_bas_gauche();
+		else if(position == PositionRateau.HAUT && cote == Cote.DROIT)
+			actionneurs.rateau_haut_droit();
+		else if(position == PositionRateau.HAUT && cote == Cote.GAUCHE)
+			actionneurs.rateau_haut_gauche();
+		else if(position == PositionRateau.RANGER && cote == Cote.DROIT)
+			actionneurs.rateau_ranger_droit();
+		else if(position == PositionRateau.RANGER && cote == Cote.GAUCHE)
+			actionneurs.rateau_ranger_gauche();
+		else if(position == PositionRateau.SUPER_BAS && cote == Cote.DROIT)
+			actionneurs.rateau_super_bas_droit();
+		else if(position == PositionRateau.SUPER_BAS && cote == Cote.GAUCHE)
+			actionneurs.rateau_super_bas_gauche();
 	}
 
 	@Override
-	public void remonter_rateaux() {
-		// TODO Auto-generated method stub
-		
+	public void deposer_fresques() {
+		fresques_posees = true;
 	}
-	
+
 	/* 
 	 * GETTERS & SETTERS
 	 */
 	
+	@Override
 	public void setPosition(Vec2 position) {
 		synchronized(this.position)
 		{
 			this.position = position;
 		}
-		deplacements.set_x((int)position.x);
-		deplacements.set_y((int)position.y);
-	}
-
-	public void setOrientation(float orientation) {
-		this.orientation = orientation;
-		deplacements.set_orientation((int)orientation);
-	}
-
-	public Vec2 getConsigne() {
-		return consigne;
-	}
-
-	public void setConsigne(Vec2 consigne) {
-		synchronized(this.consigne)
-		{
-			this.consigne = consigne;
+		try {
+			deplacements.set_x((int)position.x);
+			deplacements.set_y((int)position.y);
+		} catch (SerialException e) {
+			e.printStackTrace();
 		}
 	}
 
-	public boolean isBlocage() {
-		return blocage;
+	@Override
+	public void setOrientation(float orientation) {
+		this.orientation = orientation;
+		orientation_consigne = orientation;
+		try {
+			deplacements.set_orientation(orientation);
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
 	}
 
-	public void setBlocage(boolean blocage) {
-		this.blocage = blocage;
-	}
-
-	public boolean isEnMouvement() {
-		return enMouvement;
-	}
-
-	public void setEnMouvement(boolean enMouvement) {
-		this.enMouvement = enMouvement;
-	}
-
-/*
-	public boolean isMarche_arriere() {
-		return marche_arriere;
-	}
-
-	public void setMarche_arriere(boolean marche_arriere) {
-		this.marche_arriere = marche_arriere;
-	}
-*/
-	public boolean isEffectuer_symetrie() {
-		return effectuer_symetrie;
-	}
-
-	public void setEffectuer_symetrie(boolean effectuer_symetrie) {
-		this.effectuer_symetrie = effectuer_symetrie;
-	}
-	
 	/*
 	 * MÉTHODES PRIVÉES
 	 */
@@ -434,6 +484,12 @@ public class RobotVrai extends Robot {
 	{
 		blocage = false;
 		orientation_consigne = angle;
+		try {
+			deplacements.tourner(angle);
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
+		
 		while(!acquittement(true, sans_lever_exception))
 		{
 			if(hooks != null)
@@ -458,15 +514,20 @@ public class RobotVrai extends Robot {
 	 * @param sans_lever_exception
 	 * @throws BlocageException 
 	 */
-	private void va_au_pointBasNiveau(Vec2 position, ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean sans_lever_exception) throws CollisionException, BlocageException
+	private void va_au_pointBasNiveau(Vec2 point, ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean sans_lever_exception) throws CollisionException, BlocageException
 	{
         // comme à toute consigne initiale de mouvement, le robot est débloqué
 		blocage = false;
 
 		// mise en place d'un point consigne, à atteindre (en attribut pour persister dans _mise_a_jour_consignes() )
-		consigne = position.clone();
+		consigne = point.clone();
 
 		Vec2 delta = consigne.clone();
+		try {
+			update_x_y_orientation();
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
 		delta.Minus(position);
 		float distance = delta.Length();
 		
@@ -476,27 +537,35 @@ public class RobotVrai extends Robot {
 //		maj_marche_arriere = marche_arriere;
 		maj_ancien_angle = angle;
 		
-/*		if(marche_arriere)
+		if(marche_arriere)
 		{
 			distance *= -1;
 			angle += Math.PI;
 		}
-*/		
+		
 		if(!trajectoire_courbe)
 		{
             // sans virage : la première rotation est blocante
 			tournerBasNiveau(angle);
 			// on n'avance pas si un obstacle est devant
 			detecter_collision();
-			deplacements.avancer(distance);
+			try {
+				deplacements.avancer(distance);
+			} catch (SerialException e) {
+				e.printStackTrace();
+			}
 		}
 		else
 		{
 			orientation_consigne = angle;
-			deplacements.tourner(angle);
-			// on n'avance pas si un obstacle est devant
-			detecter_collision();
-			deplacements.avancer(distance);			
+			try {
+				deplacements.tourner(angle);
+				// on n'avance pas si un obstacle est devant
+				detecter_collision();
+				deplacements.avancer(distance);			
+			} catch (SerialException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		while(!acquittement(true, sans_lever_exception))
@@ -544,8 +613,12 @@ public class RobotVrai extends Robot {
 */
 			// L'attribut orientation_consigne doit être mis à jour à chaque deplacements.tourner() pour le fonctionnement de avancerBasNiveau()
 			orientation_consigne = angle;
-			deplacements.tourner(angle);
-			deplacements.avancer(distance);
+			try {
+				deplacements.tourner(angle);
+				deplacements.avancer(distance);
+			} catch (SerialException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -576,37 +649,41 @@ public class RobotVrai extends Robot {
 	private boolean acquittement(boolean detection_collision, boolean sans_lever_exception) throws BlocageException, CollisionException
 	{
         // récupérations des informations d'acquittement
-		Hashtable<String, Integer> infos = deplacements.maj_infos_stoppage_enMouvement();
-		
-        //robot bloqué ?
-        //deplacements.gestion_blocage() n'indique qu'un NOUVEAU blocage : garder le ou logique avant l'ancienne valeur (attention aux threads !)
-		if(blocage || deplacements.gestion_blocage(infos))
-		{
-			blocage = true;
-			throw new BlocageException(this);
+		Hashtable<String, Integer> infos;
+		try {
+				infos = deplacements.maj_infos_stoppage_enMouvement();
+			
+	        //robot bloqué ?
+	        //deplacements.gestion_blocage() n'indique qu'un NOUVEAU blocage : garder le ou logique avant l'ancienne valeur (attention aux threads !)
+			if(blocage || deplacements.gestion_blocage(infos))
+			{
+				blocage = true;
+				if(!sans_lever_exception)
+					throw new BlocageException(this);
+				return true;
+			}
+			
+			// ennemi détecté devant le robot?
+			if(detection_collision)
+				detecter_collision();
+			
+			// robot arrivé?
+			if(!deplacements.update_enMouvement(infos))
+				return true;
+		} catch (SerialException e) {
+			e.printStackTrace();
 		}
-		
-		// ennemi détecté devant le robot?
-		if(detection_collision)
-			detecter_collision();
-		
-		// robot arrivé?
-		if(!deplacements.update_enMouvement(infos))
-			return true;
 
 		// robot encore en mouvement
 		return false;
 	}
-	
-	private void sleep(long duree)
+
+	/**
+	 * Méthode sleep utilisée par les scripts
+	 */
+	public void sleep(long duree)
 	{
-		try {
-		Thread.sleep(duree);
-		}
-		catch(Exception e)
-		{
-			System.out.println(e);
-		}
+		Sleep.sleep(duree);
 	}
 
 
@@ -645,7 +722,10 @@ public class RobotVrai extends Robot {
 		return marche_arriere_est_plus_rapide(consigne, -1000);
 	}
 */
-	
+
+	/**
+	 * Appelée par des exceptions
+	 */
 	public void annuleConsigneOrientation()
 	{
 		orientation_consigne = orientation;

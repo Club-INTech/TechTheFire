@@ -1,7 +1,4 @@
-#include <libintech/serial/serial_0_interrupt.hpp>
-#include <libintech/serial/serial_1_interrupt.hpp>
-#include <libintech/serial/serial_0.hpp>
-#include <libintech/serial/serial_1.hpp>
+#include <libintech/uart.hpp>
 #include <libintech/timer.hpp>
 #include <stdint.h>
 #include <avr/interrupt.h>
@@ -39,7 +36,7 @@ ISR(TIMER1_OVF_vect)
 		
     // Désactivation du timer	
     Balise::timer_toptour::disable();	
-    Balise::timer_toptour::value(0);
+    Balise::timer_toptour::counter::value(0);
 }
 
 /**
@@ -63,10 +60,10 @@ ISR(INT2_vect)
     Balise &balise = Balise::Instance();
     
     // On ignore les impulsions quand l'aimant est encore trop proche du capteur
-    if (Balise::timer_toptour::value() >= balise.last_period() / 3)
+    if (Balise::timer_toptour::counter::value() >= balise.last_period() / 3)
     {
-        balise.last_period(Balise::timer_toptour::value());
-        Balise::timer_toptour::value(0);
+        balise.last_period(Balise::timer_toptour::counter::value());
+        Balise::timer_toptour::counter::value(0);
         Balise::timer_toptour::enable();	
     }
 }
@@ -85,8 +82,8 @@ ISR(PCINT2_vect)
 	
 	Balise &balise = Balise::Instance();
 	
-	canal_a = rbi(PINC,PORTC1);
-	canal_b = rbi(PINC,PORTC0);
+	canal_a = C1::read();
+	canal_b = C2::read();
 	
 	// Vérification que l'on est sur un front (useless ?)
 	if (!(canal_a != previous_canal_a || canal_b != previous_canal_b)) return;

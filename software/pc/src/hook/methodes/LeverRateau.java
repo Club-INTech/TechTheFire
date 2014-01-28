@@ -1,5 +1,8 @@
 package hook.methodes;
 
+import exception.SerialException;
+import robot.Cote;
+import robot.PositionRateau;
 import robot.Robot;
 import hook.Executable;
 
@@ -11,19 +14,23 @@ import hook.Executable;
 
 public class LeverRateau implements Executable  {
 
-	private boolean coteDroit;
+	private Cote cote;
 	private Robot robot;
 	
-	public LeverRateau(Robot robot, boolean coteDroit)
+	public LeverRateau(Robot robot, Cote cote)
 	{
 		this.robot = robot;
-		this.coteDroit = coteDroit;
+		this.cote = cote;
 	}
 	
 	@Override
 	public void execute()
 	{
-		robot.remonter_rateau(coteDroit);
+		try {
+			robot.rateau(PositionRateau.HAUT, cote);
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
 	}	
 	
 }

@@ -9,7 +9,6 @@
 
 #include "twi_master.h"
 
-#include <libintech/serial/serial_0_interrupt.hpp>
 #include <stdint.h>
 #include <libintech/interrupt_manager.hpp>
 #include "robot.h"

@@ -60,6 +60,7 @@ class CapteurSRF
    CapteurSRF() :
 	derniereDistance(0)
     {
+	   	origineTimer = 0;
         PinRegisterOut::set_output();
         PinRegisterIn::set_input();
         PinRegisterOut::clear_interrupt();  //nos envois ne déclencheront pas d'interruption
@@ -135,7 +136,8 @@ class CapteurSRFMono
 
    public:	//constructeur
    CapteurSRFMono() :
-	derniereDistance(0)
+	derniereDistance(0),
+	origineTimer(0)
     {
     }
 

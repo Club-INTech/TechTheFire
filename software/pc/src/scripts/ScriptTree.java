@@ -1,5 +1,7 @@
 package scripts;
 
+import robot.Cote;
+import robot.PositionRateau;
 import robot.Robot;
 import robot.RobotVrai;
 import smartMath.Vec2;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 
 import pathfinding.Pathfinding;
 import exception.MouvementImpossibleException;
+import exception.SerialException;
 
 public class ScriptTree extends Script{
 
@@ -26,20 +29,15 @@ public class ScriptTree extends Script{
 
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table) {
-		int i;
 		ArrayList<Integer> versionsList = new ArrayList<Integer>();
-		for (i=0; i<=3; i++)
-		{
-			if (table.isTreeTaken(i) == false)
-				{
-					versionsList.add(i);
-				}
-		}
+		for (int i = 0; i < 4; i++)
+			if (!table.isTreeTaken(i))
+				versionsList.add(i);
 		return versionsList;
 	}
 
 	@Override
-	protected Vec2 point_entree(int id_version, final Robot robot, final Table table) {
+	protected Vec2 point_entree(int id_version) {
 		Vec2 entree = null;
 
 		if (id_version == 0)
@@ -73,49 +71,52 @@ public class ScriptTree extends Script{
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
+	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException, SerialException
 	{
 		int Fruitsgauche = table.nbrLeftTree(id_version) ;
 		int Fruitsdroite = table.nbrRightTree(id_version);
 		
 		// Orientation du robot, le rateau étant à l'arrière
 		if (id_version == 0)
-		{
-			robot.tourner((float)(Math.PI));
-		}
-		if (id_version ==1 || id_version ==2)
-		{
+			robot.tourner((float)Math.PI);
+		else if (id_version == 1 || id_version == 2)
 			robot.tourner((float) (Math.PI / 2));
-		}
-		if (id_version ==3)
-		{
+		else if (id_version ==3)
 			robot.tourner(0) ;
-		}
-		
+
 		// on déploie les bras 
-		robot.baisser_rateaux();
+		robot.rateau(PositionRateau.BAS, Cote.DROIT);
+		robot.rateau(PositionRateau.BAS, Cote.GAUCHE);
 		// on avance et on rebaisse les rateaux au min
 		robot.avancer(-200);
-		robot.baisser_rateaux_bas();
+/*		robot.rateau(PositionRateau.SUPER_BAS, Cote.DROIT);
+		robot.rateau(PositionRateau.SUPER_BAS, Cote.GAUCHE);
 		// on remonte les bras à mi-hauteur en fonction de la position du fruit pourri, tout en reculant
 		
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
-		Executable remonteDroit = new LeverRateau(robot, true);
-		Hook hook = hookgenerator.hook_position(new Vec2(0,0));
-		hook.ajouter_callback(new Callback(remonteDroit, true));		
+		Executable remonteDroit = new LeverRateau(robot, Cote.DROIT);
+		double distance = 30; // dépend de fruitsdroite
+		Vec2 diff = new Vec2((float)(distance*Math.cos((double)robot.getOrientation())),(float)(distance*Math.sin((double)robot.getOrientation())));
+<		Hook hook = hookgenerator.hook_position(robot.getPosition().PlusNewVector(diff));
+		hook.ajouter_callback(new Callback(remonteDroit, true));
 		hooks.add(hook);
 
-		Executable remonteGauche = new LeverRateau(robot, false);
+		Executable remonteGauche = new LeverRateau(robot, Cote.GAUCHE);
 		hook = hookgenerator.hook_position(new Vec2(0,0));
 		hook.ajouter_callback(new Callback(remonteGauche, true));
 		hooks.add(hook);
 		
-		robot.avancer(60, hooks);
+		robot.avancer(60, hooks);*/
 	}
 
 	@Override
 	protected void termine(Robot robot, Table table) {
-		robot.remonter_rateaux();	
+		try {
+			robot.rateau(PositionRateau.RANGER, Cote.DROIT);
+			robot.rateau(PositionRateau.RANGER, Cote.GAUCHE);
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String toString()

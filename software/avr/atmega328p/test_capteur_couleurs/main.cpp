@@ -4,6 +4,7 @@
 #include <libintech/uart.hpp>
 #include <libintech/timer.hpp>
 #include <libintech/isr.hpp>
+#include <libintech/capteur_srf05.hpp>
 #include <libintech/algorithm.hpp>
 
 typedef ring_buffer<uint16_t, NB_VALEURS_MEDIANE_SRF> ringBufferSRF;
@@ -32,7 +33,7 @@ int main() {
   D6::low();
 
   timer0::mode(timer0::MODE_COUNTER);
-  timer0::prescaler(timer0::PRESCALER_1);
+  timer0::set_prescaler(timer0::prescaler::PRESCALER_1);
 
   timer0::counter::overflow_interrupt::attach(interruption_timer);
   timer0::counter::overflow_interrupt::enable();
