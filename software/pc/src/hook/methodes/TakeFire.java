@@ -1,5 +1,6 @@
 package hook.methodes;
 
+import exception.SerialException;
 import robot.Robot;
 import hook.Executable;
 
@@ -19,7 +20,11 @@ public class TakeFire implements Executable {
 	}
 
 	public void execute() {
-		robot.takefire();
+		try {
+			robot.takefire();
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
 	}
 
 	

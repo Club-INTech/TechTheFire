@@ -3,6 +3,7 @@ package scripts;
 import java.util.ArrayList;
 
 import exception.MouvementImpossibleException;
+import exception.SerialException;
 import hook.HookGenerator;
 import pathfinding.Pathfinding;
 import robot.Robot;
@@ -13,15 +14,18 @@ import utils.Log;
 import utils.Read_Ini;
 
 /**
- * Script de récupération de feux sur les torches mobiles et les feux debout
+ * Script de dépose de fruits
  * @author pf
  *
  */
-public class ScriptTorche extends Script {
 
-	public ScriptTorche(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
-	{
+public class ScriptDeposerFruits extends Script {
+
+	public ScriptDeposerFruits(Pathfinding pathfinding,
+			HookGenerator hookgenerator, Read_Ini config, Log log,
+			RobotVrai robotvrai) {
 		super(pathfinding, hookgenerator, config, log, robotvrai);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -50,7 +54,7 @@ public class ScriptTorche extends Script {
 
 	@Override
 	protected void execute(int id_version, Robot robot, Table table)
-			throws MouvementImpossibleException {
+			throws MouvementImpossibleException, SerialException {
 		// TODO Auto-generated method stub
 		
 	}
@@ -61,9 +65,4 @@ public class ScriptTorche extends Script {
 		
 	}
 
-	public String toString()
-	{
-		return "ScriptTorche";
-	}
-	
 }
