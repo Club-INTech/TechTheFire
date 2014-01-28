@@ -55,6 +55,7 @@ public class ScriptLances extends Script {
 	@Override
 	protected Vec2 point_entree(int id) {
 		// Les points d'entrées ne sont pas symétriques car le lanceur n'est que d'un seul côté
+		// TODO gérer couleur symétrie
 		if(couleur == "jaune")
 			return new Vec2(-400,1400);
 		else
