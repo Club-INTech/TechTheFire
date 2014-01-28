@@ -1,20 +1,24 @@
 package robot.cartes;
 
 import smartMath.Matrn;
-
+import Jama.Matrix;
 /**
  * Filtrage mathématique. Classe en visibilité "friendly"
  * @author pf
- *
+ * @auteur clément
  */
+//Les erreurs sont dues à la mauvaise gestion des excptions, PF? Au secours !!!
+
 
 public class Kalman {
-	Matrn x;
-	Matrn p;
-	Matrn f;
-	Matrn h;
-	Matrn r;
-	Matrn q;
+	//les attributs qui ont été mises en public sont utilisées dans FiltrageLaser.java
+	public Matrn x;
+	private Matrn p;
+	public Matrn f;
+	private Matrn h;
+	private Matrn r;
+	private Matrn q;
+	private Matrn ident;
 	public Kalman(Matrn x, Matrn p, Matrn f, Matrn h, Matrn r, Matrn q) 
 		{
 			
@@ -24,29 +28,24 @@ public class Kalman {
 			this.h = h;
 			this.r = r;
 			this.q = q;
+			this.ident = Matrn.identiter(this.x.taille[0]);
 			
 		}
-		// TODO Auto-generated constructor stub
+	
 		void prediction(Matrn u)
 		{
 			if (u == null)
 			{
-				Matrn u = Matrn(x.taille[0], x.taille[1], 0);
+				u = new Matrn(this.x.taille[0], this.x.taille[1], 0);
 			}
-			Matrn tampon1 = this.f;
-			tampon1.multiplier(this.x);
-			tampon1.addition(u);
-			this.x = tampon1;
+			this.x = this.f.multiplier(this.x).additionner(u);
 			//self.x = (self.F * self.x) + u
-			Matrn tampon2 = this.f;
-			tampon2.multiplier(this.p);
-			Matrn tampon3 = this.f;
-			tampon3.transpose();
-			tampon2.multiplier(tampon3);
-			this.p = tampon2;
-			this.p.addition(this.q);
-			/*Tout ça , ça fait ça : self.P = self.F * self.P * self.F.transpose() + self.Q*/
-			/*oui c'est lourd*/
+			this.p = this.f.multiplier(this.p).multiplier(this.f.transpose()).additionner(this.q);
+			
+			/*self.P = self.F * self.P * self.F.transpose() + self.Q*/
+			/*
+			 * Il y a une histoire d'exception et j'ai la flemme de gérer ça. PF?
+			 */
 		}
 		void prediction()
 		{
@@ -54,16 +53,15 @@ public class Kalman {
 		}
 		void measurement(Matrn z)
 		{
-			Matrn tampon1 = this.h;
-			tampon1.multiplier(x);
-			Matrn tampon2 = z;
-			tampon2.soustraire(tampon1);
-			Matrn y = tampon2;
+			Matrn y = z.soustraire(this.h.multiplier(this.x));
+			Matrn s = this.h.multiplier(this.p).multiplier(this.h.transpose()).additionner(this.r);
+			Matrn k = this.p.multiplier(p).multiplier(this.h.transpose()).multiplier(s.inverser());
+			this.x.additionner_egal(k.multiplier(y));
+			this.p = (this.ident.soustraire(k.multiplier(this.h))).multiplier(this.p);
 		}
 		void filtrer(Matrn z,Matrn u)
 		{
 			prediction(u);
 			measurement(z);			
-		}
-		
+		}		
 }
