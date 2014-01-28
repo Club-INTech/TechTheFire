@@ -27,13 +27,13 @@ int main() {
   uart0::init();
   uart0::change_baudrate(9600); // vitesse de connection: 9600
 
-  D3::high();
+  D3::low();
   D4::high();
   D5::high();
   D6::low();
 
   timer0::mode(timer0::MODE_COUNTER);
-  timer0::set_prescaler(timer0::prescaler::PRESCALER_1);
+  timer0::set_prescaler(timer0::prescaler::PRESCALER_1024);
 
   timer0::counter::overflow_interrupt::attach(interruption_timer);
   timer0::counter::overflow_interrupt::enable();
@@ -48,7 +48,7 @@ int main() {
     uart0::read(buffer);
     if(!strcmp(buffer,"?")){
 
-      uart0::printfln("red = %d, blue = %d, green = %d", countR, countB, countG);
+      uart0::printfln("red = %d, blue = %d, green = %d valeur = %d", countR, countB, countG, counter);
     }
   }
 }
@@ -60,24 +60,24 @@ void interruption_timer()
 	if(flag == 1)
 	{
 		countR = counter;
-		D5::high();
-		D6::high();
+		D4::high(); //DD5
+		D3::high(); //D6
 
 	}
 	else if(flag == 2)
 	{
 
 		countG = counter;
-		D5::low();
-		D6::high();
+		D4::low();
+		D3::high();
 
 	}
 	else if(flag == 3)
 	{
 
 		countB = counter;
-		D5::low();
-		D6::low();
+		D4::low();
+		D3::low();
 	}
 	else if(flag == 4)
 	{
