@@ -7,12 +7,13 @@
 #include <libintech/capteur_srf05.hpp>
 #include <libintech/algorithm.hpp>
 
-typedef ring_buffer<uint16_t, NB_VALEURS_MEDIANE_SRF> ringBufferSRF;
+typedef ring_buffer<uint16_t, 6> ringBufferC;
 
 INITIALISE_INTERRUPT_MANAGER();
 
+ringBufferC ringBufferValeursR, ringBufferValeursB, ringBufferValeursG;
 int flag = 0;
-uint16_t counter = 0, countR = 0, countG = 0, countB = 0;
+uint16_t counter = 0, countR = 0, countG = 0, countB = 0, medR, medG, medB;
 void interruption_timer();
 void interruption_int0();
 
@@ -47,8 +48,17 @@ int main() {
   while(1){
     uart0::read(buffer);
     if(!strcmp(buffer,"?")){
+      
+      ringBufferValeursR.append(countR);
+      medR = mediane(ringBufferValeursR);
 
-      uart0::printfln("red = %d, blue = %d, green = %d valeur = %d", countR, countB, countG, counter);
+      ringBufferValeursB.append(countB);
+      medB = mediane(ringBufferValeursB);
+
+      ringBufferValeursG.append(countG);
+      medG = mediane(ringBufferValeursG);
+
+      uart0::printfln("red = %d, blue = %d, green = %d", medR, medB, medG);
     }
   }
 }
@@ -91,3 +101,10 @@ void interruption_int0()
 {
 	counter++;
 }
+
+/*Cablage: s0 = D6
+           s1 = D5
+           s2 = D4
+           s3 = D3
+           out = D2
+*/ 
