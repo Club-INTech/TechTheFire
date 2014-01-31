@@ -3,7 +3,7 @@ package robot.cartes;
 import smartMath.Vec2;
 
 
-/*
+/**
  * @author clément
  */
 import robot.cartes.Kalman;

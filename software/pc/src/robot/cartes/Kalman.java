@@ -1,7 +1,8 @@
 package robot.cartes;
 
+import exception.MatriceException;
 import smartMath.Matrn;
-import Jama.Matrix;
+
 /**
  * Filtrage mathématique. Classe en visibilité "friendly"
  * @author pf
@@ -38,9 +39,13 @@ public class Kalman {
 			{
 				u = new Matrn(this.x.taille[0], this.x.taille[1], 0);
 			}
-			this.x = this.f.multiplier(this.x).additionner(u);
+			try {
+				this.x = this.f.multiplier(this.x).additionner(u);
+				this.p = this.f.multiplier(this.p).multiplier(this.f.transpose()).additionner(this.q);
+			} catch (MatriceException e) {
+				e.printStackTrace();
+			}
 			//self.x = (self.F * self.x) + u
-			this.p = this.f.multiplier(this.p).multiplier(this.f.transpose()).additionner(this.q);
 			
 			/*self.P = self.F * self.P * self.F.transpose() + self.Q*/
 			/*
@@ -53,11 +58,16 @@ public class Kalman {
 		}
 		void measurement(Matrn z)
 		{
-			Matrn y = z.soustraire(this.h.multiplier(this.x));
-			Matrn s = this.h.multiplier(this.p).multiplier(this.h.transpose()).additionner(this.r);
-			Matrn k = this.p.multiplier(p).multiplier(this.h.transpose()).multiplier(s.inverser());
-			this.x.additionner_egal(k.multiplier(y));
-			this.p = (this.ident.soustraire(k.multiplier(this.h))).multiplier(this.p);
+			Matrn y;
+			try {
+				y = z.soustraire(this.h.multiplier(this.x));
+				Matrn s = this.h.multiplier(this.p).multiplier(this.h.transpose()).additionner(this.r);
+				Matrn k = this.p.multiplier(p).multiplier(this.h.transpose()).multiplier(s.inverser());
+				this.x.additionner_egal(k.multiplier(y));
+				this.p = (this.ident.soustraire(k.multiplier(this.h))).multiplier(this.p);
+			} catch (MatriceException e) {
+				e.printStackTrace();
+			}
 		}
 		void filtrer(Matrn z,Matrn u)
 		{
