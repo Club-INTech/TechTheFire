@@ -26,8 +26,9 @@ public class ScriptDeposerFeu extends Script {
 
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		return versionList;
 	}
 
 	@Override

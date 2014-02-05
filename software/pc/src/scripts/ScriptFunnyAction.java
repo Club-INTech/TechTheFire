@@ -30,8 +30,9 @@ public class ScriptFunnyAction extends Script {
 
 	@Override
 	public ArrayList<Integer> version(Robot robot, Table table) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		return versionList;
 	}
 
 	@Override
