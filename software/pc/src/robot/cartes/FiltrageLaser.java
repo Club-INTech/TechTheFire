@@ -1,6 +1,11 @@
 package robot.cartes;
 
 import smartMath.Vec2;
+
+
+/**
+ * @author clément
+ */
 import robot.cartes.Kalman;
 import utils.Log;
 import utils.Read_Ini;
@@ -12,8 +17,12 @@ public class FiltrageLaser implements Service {
 	private Log log;
 	private double dt;
 	private Matrn x;
-	private Matrn P;
-	private Matrn F;
+	private Matrn p;
+	private Matrn f;
+	private Kalman filtre_kalman;
+	private Vec2 last_point;
+	private int valeurs_rejetees;
+	private Vec2[] historique;
 	public FiltrageLaser(Read_Ini config, Log log)
 	{
 		this.log = log;
@@ -21,60 +30,63 @@ public class FiltrageLaser implements Service {
 		double[][] tab_x = {{1400.}, {100.},{0.},{0.}};
 		Matrn x = new Matrn(tab_x);
 		double[][] tab_p = {{30,0,0,0},{0,30,0,0},{0,0,10,0},{0,0,0,10}};
-		Matrn P = new Matrn(tab_p);
+		Matrn p = new Matrn(tab_p);
 		double[][] tab_f = {{1,0,dt,0},{0,1,0,dt},{0,0,1,0},{0,0,0,1}};
-		Matrn F = new Matrn(tab_f);
+		Matrn f = new Matrn(tab_f);
 		double[][] tab_h = {{1,0,0,0},{0,1,0,0}};
-		Matrn H = new Matrn(tab_h);
+		Matrn h = new Matrn(tab_h);
 		double[][] tab_r = {{900,0},{0,900}};
-		Matrn R = new Matrn(tab_r);
+		Matrn r = new Matrn(tab_r);
 		double[][] tab_q = {{Math.pow(dt, 3)/3., 0, Math.pow(dt, 2.)/2., 0},{0, Math.pow(dt, 3.)/3., 0, Math.pow(dt, 2.)/2},{Math.pow(dt, 2.)/2., 0, 4*dt, 0},{0, Math.pow(dt, 2.)/2, 0, 4*dt}};
-		Matrn Q = new Matrn(tab_q);
-		Kalman filtre_kalman = new Kalman(x, P, F, H, R, Q); 
+		Matrn q = new Matrn(tab_q);
+		Kalman filtre_kalman = new Kalman(x, p, f, h, r, q); 
 		Vec2[] historique = new Vec2[3];
 		int valeurs_rejetees = 0;
-		double acceleration = null;
+		//double acceleration = null; 
+		//Je sais pas à quoi acceleration servait dans le code python, puisqu'il était inutile...
 		
 		
 	}
 	
 
-	// TODO
-	public Vec2 etat_robot_adverse()
+	
+	public Matrn etat_robot_adverse()
 	{
 		return filtre_kalman.x;
+		//Veut-on vraiment retourner le type Matrn? Pas certain ! Mais c'est plutôt pratique
 	}
 	
-	// TODO
+	
 	public void update_dt(float new_dt)
 	{
 		dt = new_dt;
-		filtre_kalman.F.matrice[0][2] = new_dt;
-		filtre_kalman.F.matrice[1][3] = new_dt;
+		filtre_kalman.f.matrice[0][2] = new_dt; //encore visibilité !
+		filtre_kalman.f.matrice[1][3] = new_dt; //et toujours !!
 	}
 
-	// TODO
+	
 	public Vec2 position()
 	{
 		return last_point;
+		//hésitation observée dans le code python, en voici une interprétation
 	}
-	// TODO
+	
 	public Vec2 vitesse()
 	{
-		Kalman state = filtre_kalman;
-		return new Vitesse((int)(state[2], (int)state[3])) ;
+		Matrn state = filtre_kalman.x;
+		return new Vec2((int)state.matrice[2][0], (int)state.matrice[3][0]) ;
 	}
 
-	// TODO
+	
 	public void update(Vec2 point)
 	{
 		if(this.filtrage_acceleration(point))
 		{
-			Vec2 last_point = point;
+			this.last_point = new Vec2(point.x, point.y);
 		}
 	}
 	
-	// TODO
+	
 	private boolean filtrage_acceleration(Vec2 pointm0)
 	{
 		if(historique.length != 3)
@@ -89,8 +101,10 @@ public class FiltrageLaser implements Service {
 		Vec2 vitesse_m2 = pointm2.MinusNewVector(pointm3);
 		Vec2 acceleration_actuelle = vitesse_actuelle.MinusNewVector(vitesse_m1);
 		Vec2 acceleration_precedente = vitesse_m1.MinusNewVector(vitesse_m2);
-		Vec2 jerk = acceleration_actuelle.MinusNewVector(acceleration_precedente);
-		float produit = acceleration_actuelle.dot(vitesse_m1);
+		//Vec2 jerk = acceleration_actuelle.MinusNewVector(acceleration_precedente);
+		//float produit = acceleration_actuelle.dot(vitesse_m1);
+		//jerk et produit étaient utilisés dans du code inutilisé en Python
+		//donc voilà, au cas où il y en a besoin...
 		if(acceleration_actuelle.SquaredLength()/Math.pow(dt,2) >50000 & this.valeurs_rejetees < 3 )
 		{
 			valeurs_rejetees +=1;
@@ -98,7 +112,7 @@ public class FiltrageLaser implements Service {
 		}
 		else
 		{
-			int valeurs_rejetees = 0;
+			valeurs_rejetees = 0;
 		    return true;
 		}
 	}

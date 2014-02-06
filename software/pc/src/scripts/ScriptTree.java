@@ -37,7 +37,7 @@ public class ScriptTree extends Script{
 	}
 
 	@Override
-	protected Vec2 point_entree(int id_version) {
+	public Vec2 point_entree(int id_version) {
 		Vec2 entree = null;
 
 		if (id_version == 0)
@@ -77,12 +77,14 @@ public class ScriptTree extends Script{
 		int Fruitsdroite = table.nbrRightTree(id_version);
 		
 		// Orientation du robot, le rateau étant à l'arrière
+//		log.debug("I", this);
 		if (id_version == 0)
 			robot.tourner((float)Math.PI);
 		else if (id_version == 1 || id_version == 2)
 			robot.tourner((float) (Math.PI / 2));
 		else if (id_version ==3)
 			robot.tourner(0) ;
+//		log.debug("II", this);
 
 		// on déploie les bras 
 		robot.rateau(PositionRateau.BAS, Cote.DROIT);
@@ -117,6 +119,13 @@ public class ScriptTree extends Script{
 		} catch (SerialException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public float proba_reussite()
+	{
+		// TODO
+		return 1;
 	}
 
 	public String toString()

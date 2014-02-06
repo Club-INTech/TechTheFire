@@ -198,16 +198,16 @@ else if ( strcmp ( ordre , "bb" ) == 0 )			//bb = bac bas
 	}
 	void fermerGauche ()
 	{
-	  uint16_t positionPrecedente = (pinceGauche.getPosition_0_1023());
-	  uint16_t positionActuelle = positionPrecedente ;
+//	  uint16_t positionPrecedente = (pinceGauche.getPosition_0_1023());
+//	  uint16_t positionActuelle = positionPrecedente ;
 	  pinceGauche.goTo(155);
-	  for(int i=0; i<7;i++)
+/*	  for(int i=0; i<7;i++)
 	      {
 		_delay_ms(100);
 		positionActuelle = (pinceGauche.getPosition_0_1023());
 		if (positionActuelle == positionPrecedente) // vu qu'on a attendu 0,1 s, si on est toujours à la meme position, c'est que ça bloque
 		  pinceGauche.goTo(positionActuelle);//Dans ce cas on bloque l'ax12 là où il est
-	      }
+	      }*/
 	}
 	void basGauche ()
 	{
@@ -231,10 +231,10 @@ else if ( strcmp ( ordre , "bb" ) == 0 )			//bb = bac bas
 	}
 	void fermerDroite ()
 	{
-	  uint16_t positionPrecedente = (pinceDroite.getPosition_0_1023());
-	  uint16_t positionActuelle = positionPrecedente ;
+//	  uint16_t positionPrecedente = (pinceDroite.getPosition_0_1023());
+//	  uint16_t positionActuelle = positionPrecedente ;
 	  pinceDroite.goTo(90);
-	  for(int i=0; i<7; i++)
+/*	  for(int i=0; i<7; i++)
 	      {
 		_delay_ms(100);
 		positionActuelle = (pinceDroite.getPosition_0_1023());
@@ -242,7 +242,7 @@ else if ( strcmp ( ordre , "bb" ) == 0 )			//bb = bac bas
 		  pinceDroite.goTo(positionActuelle);//Dans ce cas on bloque l'ax12 là où il est
 		else // on est encore en mouvement, donc on actualise la position
 		 positionPrecedente = positionActuelle ;
-	      }
+	      }*/
 	}
 	void basDroite ()
 	{
