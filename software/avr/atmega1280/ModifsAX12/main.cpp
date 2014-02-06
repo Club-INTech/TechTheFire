@@ -1,19 +1,19 @@
 #include <stdint.h>
+#include "modifs.hpp"
 #include <libintech/interrupt_manager.hpp>
 #include <libintech/isr.hpp>
-#include "pince.hpp"
 
 INITIALISE_INTERRUPT_MANAGER();
 
 int main ()
 {
 	Communication communication;
-	char ordre[20];
-	
+	Communication::serial_pc::activer_acquittement(true);
+
+	char tab[20];
 	while (1)
 	{
-		Communication::serial_pc::read (ordre);
-		communication.execute (ordre);
-	}	
-	
+		Communication::serial_pc::read(tab);
+		communication.execute(tab);
+	}
 }

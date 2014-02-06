@@ -1,5 +1,5 @@
-#ifndef COMM_HPP
-#define COMM_HPP
+#ifndef PINCE_HPP
+#define PINCE_HPP
 
 #include <libintech/ax12.hpp>
 #include <libintech/uart.hpp>
@@ -13,23 +13,28 @@ class Communication
 	typedef uart1 serial_ax12;
 	typedef AX<serial_ax12> Ax12;
 	Ax12 pinceGauche; //ax12 de la pince gauche
-	Ax12 positionGauche;
 	Ax12 orientationGauche;
+	Ax12 positionGauche;
+  Ax12 retourneurGauche;
 	Ax12 pinceDroite; //ax12 de la pince droite
-	Ax12 positionDroite; 
 	Ax12 orientationDroite;
-	
+	Ax12 positionDroite; 
+  Ax12 retourneurDroite ;
+
 	public:
 
 //constructeur
 
 	Communication():
 		pinceGauche (0,1,1023),
-		positionGauche (2,1,1023),
 		orientationGauche (1,1,1023),
-		pinceDroite (3,1,1023),
-		positionDroite (5,1,1023),
-		orientationDroite (4,1,1023)
+		positionGauche (2,1,1023),
+		retourneurGauche (3,1,1023),
+		pinceDroite (4,1,1023),
+		orientationDroite (5,1,1023),
+		positionDroite (6,1,1023),
+		retourneurDroite (7,1,1023)
+
 	{
 		serial_pc::init();
 		serial_pc::change_baudrate (9600);
@@ -81,6 +86,17 @@ class Communication
 		{
 			this -> basGauche ();
 		}
+	else if ( strcmp ( ordre , "tg" ) == 0)
+// retourner un feu
+		{
+			this -> retournerGauche ();
+		}
+	else if ( strcmp ( ordre , "rg" ) == 0)
+// remettre en position initiale niveau rotation
+		{
+			this -> retablirGauche ();
+		}
+
 		else if ( strcmp ( ordre , "bd" ) == 0)
 		{
 			this -> basDroite ();
@@ -113,7 +129,8 @@ class Communication
 			serial_pc::printfln ( "angle?" );			
 			uint16_t p,o;
 			serial_pc::read (p);
-			positionGauche.goTo (p);
+			pinceGauche.goTo(p);
+/* positionGauche.goTo (p);
 			  if ((p-150) < 0)
 			    {
 			      o = 330-p ;
@@ -122,7 +139,7 @@ class Communication
 			    {
 			      o = p-150 ;
 			    }
-			orientationGauche.goTo (o);
+			    orientationGauche.goTo (o); */
 			}
 		else if (strcmp (ordre , "angled") == 0)
 		{
@@ -146,37 +163,46 @@ class Communication
 	
 	void ouvrirGauche ()
 	{
-		pinceGauche.goTo (60);
+		pinceGauche.goTo(0);
 	}
 	void fermerGauche ()
 	{
-	  uint16_t positionPrecedente = (pinceGauche.getPosition_0_1023());
-	  uint16_t positionActuelle = positionPrecedente ;
-	  pinceGauche.goTo(155);
-	  for(int i=0; i<7;i++)
-	      {
-		_delay_ms(100);
-		positionActuelle = (pinceGauche.getPosition_0_1023());
-		if (positionActuelle == positionPrecedente) // vu qu'on a attendu 0,1 s, si on est toujours à la meme position, c'est que ça bloque
-		  pinceGauche.goTo(positionActuelle);//Dans ce cas on bloque l'ax12 là où il est
-	      }
+	  //  uint16_t positionPrecedente = (pinceGauche.getPosition_0_1023());
+	  //  uint16_t positionActuelle = positionPrecedente ;
+	  pinceGauche.goTo(65);
+	  //for(int i=0; i<7;i++)
+	  //    {
+	  //	_delay_ms(100);
+	  //	positionActuelle = (pinceGauche.getPosition_0_1023());
+	  //	if (positionActuelle == positionPrecedente) // vu qu'on a attendu 0,1 s, si on est toujours à la meme position, c'est que ça bloque
+		  //	  pinceGauche.goTo(positionActuelle);//Dans ce cas on bloque l'ax12 là où il est
+	  //   }
 	}
 	void basGauche ()
 	{
-		orientationGauche.goTo(270);
 		positionGauche.goTo(60);
+		orientationGauche.goTo(210);
 	}
 	void milieuGauche ()
 	{
-		orientationGauche.goTo(185);
 		positionGauche.goTo(150);
+		orientationGauche.goTo(120);
+
 	}
 	void hautGauche ()
 	{
 	  	positionGauche.goTo(240);
 		_delay_ms(600);
-		orientationGauche.goTo(100);
+		orientationGauche.goTo(30);
 	}
+  void retournerGauche ()
+  {
+    retourneurGauche.goTo (60);
+  }
+  void retablirGauche ()
+  {
+    retourneurGauche.goTo (240);
+  }
 	void ouvrirDroite ()
 	{
 		pinceDroite.goTo (180);
@@ -211,7 +237,16 @@ class Communication
 	  	positionDroite.goTo(240);
 		_delay_ms(600);
 		orientationDroite.goTo(100);
-	}
+	} 
+  void retournerDroite ()
+  {
+    retourneurDroite.goTo (60);
+  }
+  void retablirDroite ()
+  {
+    retourneurDroite.goTo (240);
+  }
+
   void test ()
   {
     positionDroite.goToB(200);
