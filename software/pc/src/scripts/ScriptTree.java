@@ -37,7 +37,7 @@ public class ScriptTree extends Script{
 	}
 
 	@Override
-	protected Vec2 point_entree(int id_version) {
+	public Vec2 point_entree(int id_version) {
 		Vec2 entree = null;
 
 		if (id_version == 0)
@@ -119,6 +119,13 @@ public class ScriptTree extends Script{
 		} catch (SerialException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public float proba_reussite()
+	{
+		// TODO
+		return 1;
 	}
 
 	public String toString()
