@@ -1,6 +1,8 @@
 package table;
 
-class Tree {
+import smartMath.Vec2;
+
+class Tree extends Game_Element {
 
 	// Indice dans arrayTree:
 	//depuis le haut vers le bas, de 0 à 3;
@@ -16,8 +18,9 @@ class Tree {
 	 * Constructeur public
 	 * @param position
 	 */
-	public Tree ()
+	public Tree(Vec2 position)
 	{
+		super(position);
 		this.arrayFruit[0] = new Fruit(true);
 		this.arrayFruit[1] = new Fruit(true);
 		this.arrayFruit[2] = new Fruit(true);
@@ -79,5 +82,10 @@ class Tree {
 	public void setTaken()
 	{
 		this.taken = true;
+	}
+	
+	public Vec2 getPosition()
+	{
+		return position;
 	}
 }
