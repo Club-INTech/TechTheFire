@@ -30,12 +30,13 @@ public class ScriptFunnyAction extends Script {
 
 	@Override
 	public ArrayList<Integer> version(Robot robot, Table table) {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		return versionList;
 	}
 
 	@Override
-	protected Vec2 point_entree(int id) {
+	public Vec2 point_entree(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -57,6 +58,13 @@ public class ScriptFunnyAction extends Script {
 			throws MouvementImpossibleException, SerialException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public float proba_reussite()
+	{
+		// TODO
+		return 1;
 	}
 
 	@Override

@@ -40,7 +40,7 @@ public class ScriptFresque extends Script {
 	}
 
 	@Override
-	protected Vec2 point_entree(int id) {
+	public Vec2 point_entree(int id) {
 		return new Vec2(-150+id*150, 1700);
 	}
 
@@ -68,6 +68,13 @@ public class ScriptFresque extends Script {
 	@Override
 	protected void termine(Robot robot, Table table) {
 		// vide
+	}
+	
+	@Override
+	public float proba_reussite()
+	{
+		// TODO
+		return 1;
 	}
 	
 	public String toString()

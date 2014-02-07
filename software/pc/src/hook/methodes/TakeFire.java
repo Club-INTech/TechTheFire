@@ -27,5 +27,10 @@ public class TakeFire implements Executable {
 		}
 	}
 
+	@Override
+	public boolean bougeRobot() {
+		return true;
+	}	
+
 	
 }

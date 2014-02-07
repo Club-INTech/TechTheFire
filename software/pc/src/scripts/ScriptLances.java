@@ -23,8 +23,6 @@ import exception.MouvementImpossibleException;
  *
  */
 
-// TODO Guy
-
 public class ScriptLances extends Script {
 	
 
@@ -53,9 +51,8 @@ public class ScriptLances extends Script {
 	}
 
 	@Override
-	protected Vec2 point_entree(int id) {
+	public Vec2 point_entree(int id) {
 		// Les points d'entrées ne sont pas symétriques car le lanceur n'est que d'un seul côté
-		// TODO gérer couleur symétrie
 		if(couleur == "jaune")
 			return new Vec2(-400,1400);
 		else
@@ -77,16 +74,37 @@ public class ScriptLances extends Script {
 	@Override
 	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
 	{
+		// TODO: tester!
+		
 		robot.tourner((float)Math.PI, true);
 
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
 		Executable tirerballes = new TirerBalles(robot);
-		Hook hook = hookgenerator.hook_abscisse(950);
-		hook.ajouter_callback(new Callback(tirerballes, true));
-		hooks.add(hook);
+		
+		// Hook pour la 1ere balle
+		Hook hook1 = hookgenerator.hook_abscisse(950);
+		hook1.ajouter_callback(new Callback(tirerballes, true));
+		hooks.add(hook1);
+		
+		// Hook pour la 2e balle
+		Hook hook2 = hookgenerator.hook_abscisse(850);
+		hook2.ajouter_callback(new Callback(tirerballes, true));
+		hooks.add(hook2);
+		
+		// Hook pour la 3e balle
+		Hook hook3 = hookgenerator.hook_abscisse(750);
+		hook3.ajouter_callback(new Callback(tirerballes, true));
+		hooks.add(hook3);
 		
 		robot.set_vitesse_translation("vitesse_mammouth");
 		robot.avancer(800, hooks);
+	}
+
+	@Override
+	public float proba_reussite()
+	{
+		// TODO
+		return 1;
 	}
 
 	@Override
