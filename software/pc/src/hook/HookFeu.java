@@ -21,10 +21,14 @@ class HookFeu extends Hook {
 		this.capteur = capteur;
 	}
 	
-	public void evaluate(final Robot robot)
+	public boolean evaluate(final Robot robot)
 	{
-		if(capteur.isThereFire())
-			declencher();
+		if(capteur.isThereFireGauche() || capteur.isThereFireDroit()) // vérifier aussi que le robot n'en porte pas déjà un...
+		{
+			log.warning("Un feu a été détecté! Il est pris.", this);
+			return declencher();
+		}
+		return false;
 	}
 	
 }

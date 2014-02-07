@@ -1,5 +1,6 @@
 package robot.serial;
 
+import exception.SerialException;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
@@ -103,51 +104,12 @@ public class Serial implements SerialPortEventListener, Service
 	 * 					Nombre de lignes que l'avr va répondre (sans compter les acquittements)
 	 * @return
 	 * 					Un tableau contenant le message
+	 * @throws SerialException 
 	 */
-	public synchronized String[] communiquer(String message, int nb_lignes_reponse)
+	public String[] communiquer(String message, int nb_lignes_reponse) throws SerialException
 	{
-
-		message+="\r";
-		String inputLine[] = new String[nb_lignes_reponse];
-		char acquittement = ' ';
-
-		try
-		{
-			output.write(message.getBytes());
-			int nb_tests = 0;
-			while (acquittement != '_')
-			{
-				nb_tests++;
-				acquittement = input.readLine().charAt(0);
-				
-				if (acquittement != '_')
-				{
-					output.write(message.getBytes());
-				}
-				else if (nb_tests > 10)
-				{
-					log.critical("La série" + this.name + " ne répond pas après " + nb_tests + " tentatives", this);
-					break;
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			log.critical("Ne peut pas parler à la carte " + this.name, this);
-		}
-
-		try
-		{
-			for (int i = 0 ; i < nb_lignes_reponse; i++)
-			{
-				inputLine[i] = input.readLine();
-			}
-		}
-		catch (Exception e)
-		{
-			log.critical("Ne peut pas parler à la carte " + this.name, this);
-		}
-		return inputLine;
+		String[] messages = {message};
+		return communiquer(messages, nb_lignes_reponse);
 	}
 	
 	/**
@@ -158,64 +120,83 @@ public class Serial implements SerialPortEventListener, Service
 	 * 					Nombre de lignes que l'avr va répondre (sans compter les acquittements)
 	 * @return
 	 * 					Un tableau contenant le message
+	 * @throws SerialException 
 	 */
-	public synchronized String[] communiquer(String[] messages, int nb_lignes_reponse)
+	public String[] communiquer(String[] messages, int nb_lignes_reponse) throws SerialException
 	{
-
-		String inputLines[] = new String[nb_lignes_reponse];
-
-		try
+		long t1 = System.currentTimeMillis();
+		synchronized(output)
 		{
-			for (String m : messages)
+			long t2 = System.currentTimeMillis();
+			if(t2-t1 > 1000)
+				log.critical("Temps accès mutex "+name+": "+(t2-t1), this);
+			else if(t2-t1 > 100)
+				log.warning("Temps accès mutex "+name+": "+(t2-t1), this);
+
+			String inputLines[] = new String[nb_lignes_reponse];
+			try
 			{
-				m += "\r";
-				output.write(m.getBytes());
-				int nb_tests = 0;
-				char acquittement = ' ';
-
-				while (acquittement != '_')
+				for (String m : messages)
 				{
-					nb_tests++;
-					acquittement = input.readLine().charAt(0);
-
-					if (acquittement != '_')
+					m += "\r";
+					output.write(m.getBytes());
+					int nb_tests = 0;
+					char acquittement = ' ';
+	
+					while (acquittement != '_')
 					{
-						output.write(m.getBytes());
-					}
-					else if (nb_tests > 10)
-					{
-						log.critical("La série" + this.name + " ne répond pas après " + nb_tests + " tentatives", this);
-						break;
+						nb_tests++;
+						acquittement = input.readLine().charAt(0);
+						if (acquittement != '_')
+						{
+							output.write(m.getBytes());
+						}
+						if (nb_tests > 10)
+						{
+							log.critical("La série" + this.name + " ne répond pas après " + nb_tests + " tentatives", this);
+							break;
+						}
 					}
 				}
 			}
-		}
-		catch (Exception e)
-		{
-			log.critical("Ne peut pas parler à la carte " + this.name, this);
-		}
-
-		try
-		{
-			for (int i = 0 ; i < nb_lignes_reponse; i++)
+			catch (Exception e)
 			{
-				inputLines[i] = input.readLine();
+				e.printStackTrace();
+				log.critical("Ne peut pas parler à la carte " + this.name, this);
+				throw new SerialException();
 			}
-		}
-		catch (Exception e)
-		{
-			log.critical("Ne peut pas parler à la carte " + this.name, this);
-		}
+	
+			try
+			{
+				for (int i = 0 ; i < nb_lignes_reponse; i++)
+				{
+					inputLines[i] = input.readLine();
+				}
+			}
+			catch (Exception e)
+			{
+				log.critical("Ne peut pas parler à la carte " + this.name, this);
+				throw new SerialException();
+			}
+			
+		if(t2-t1 > 1000)
+			log.critical("Temps communiquer "+name+": "+(t2-t1), this);
+		else if(t2-t1 > 700)
+			log.warning("Temps communiquer "+name+": "+(t2-t1), this);
+			
 		return inputLines;
+		
+		}
 	}
 
 	/**
 	 * Doit être appelé quand on arrête de se servir de la série
 	 */
-	public synchronized void close()
+	public void close()
 	{
 		if (serialPort != null)
 		{
+			log.debug("Fermeture de "+name, this);
 			serialPort.close();
 		}
 	}
@@ -234,30 +215,31 @@ public class Serial implements SerialPortEventListener, Service
 	 */
 	synchronized String ping()
 	{
-		String ping = null;
-		try
-		{
-			//On vide le buffer de la serie cote PC
-			output.flush();
-
-			//On vide le buffer de la serie cote avr avec un texte random
-			output.write("çazç\r".getBytes());
-			input.readLine();
-
-			//ping
-			output.write("?\r".getBytes());
-			//evacuation de l'acquittement
-			input.readLine();
-
-			//recuperation de l'id de la carte
-			ping = input.readLine();
-
+		synchronized(output) {
+			String ping = null;
+			try
+			{
+				//On vide le buffer de la serie cote PC
+				output.flush();
+	
+				//On vide le buffer de la serie cote avr avec un texte random
+				output.write("çazç\r".getBytes());
+				input.readLine();
+	
+				//ping
+				output.write("?\r".getBytes());
+				//evacuation de l'acquittement
+				input.readLine();
+	
+				//recuperation de l'id de la carte
+				ping = input.readLine();
+	
+			}
+			catch (Exception e)
+			{
+			}
+			return ping;
 		}
-		catch (Exception e)
-		{
-			log.critical("Ne ping pas la carte " + this.name + ", après l'avoir trouvée dans " + serialPort.getName(), this);
-		}
-		return ping;
 	}
 
 }

@@ -4,16 +4,16 @@
  * Classe gérant les différentes constantes d'asservissement
  */
 
-#ifndef Asservissement_h
-#define Asservissement_h
+#ifndef ASSERVISSEMENT_H
+#define ASSERVISSEMENT_H
 
 #include <stdint.h>
-#include "serial/serial_0.hpp"
+#include <stdlib.h>
 
 class Asservissement {
 public:
 
-    Asservissement(float kp, float kd, float ki) : kp_(kp), kd_(kd), ki_(ki), valeur_bridage_(255) {}
+    Asservissement(float kp, float kd, float ki) : kp_(kp), kd_(kd), ki_(ki), valeur_bridage_(255), en_(0), enm1_(0), enm2_(0), consigne_(0) {}
 
     int16_t pwm(int32_t positionReelle, int32_t eps = 0) {
         enm2_ = enm1_;

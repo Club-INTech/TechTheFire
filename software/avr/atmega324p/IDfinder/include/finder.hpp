@@ -12,24 +12,24 @@ class Communication
 	typedef uart0 serial_pc;
 	typedef uart1 serial_ax12;
 	typedef AX<serial_ax12> Ax12;
-  Ax12 pince0 ;
-  Ax12 pince1 ;
-  Ax12 pince2 ;
-  Ax12 pince3 ;
-  Ax12 pince4 ;
-  Ax12 pince5 ;				
+  Ax12 ax12_0 ;
+  Ax12 ax12_1 ;
+  Ax12 ax12_2 ;
+  Ax12 ax12_3 ;
+  Ax12 ax12_4 ;
+  Ax12 ax12_5 ;				
 	
 	public:
 
 //constructeur
 
 	Communication():
-	  pince0 (0,1,1023),
-	  pince1 (1,1,1023),
-	  pince2 (2,1,1023),
-	  pince3 (3,1,1023),
-	  pince4 (4,1,1023),
-	  pince5 (5,1,1023)
+	  ax12_0 (0,1,1023),
+	  ax12_1 (1,1,1023),
+	  ax12_2 (2,1,1023),
+	  ax12_3 (3,1,1023),
+	  ax12_4 (4,1,1023),
+	  ax12_5 (5,1,1023)
 	{
 		serial_pc::init();
 		serial_pc::change_baudrate (9600);
@@ -44,7 +44,7 @@ class Communication
 	{
 	  if ( strcmp ( ordre , "?") == 0 )
 	    {
-	      serial_pc::printfln ( "2" );
+	      serial_pc::printfln ( "ID" );
 	    }
 	  else if (strcmp(ordre,"t")==0)
 	    {
@@ -79,57 +79,69 @@ serial_pc::printfln ( "5" );
 		this->fermer5();
 		_delay_ms(2000);
 	    }
+	  else if (strcmp(ordre, "test") ==0)
+	    {
+	      ax12_0.goToB(200);
+	      serial_pc::printfln ("ceci est un test");
+	    }
+	  else if (strcmp(ordre,"c")==0)
+	    {
+	      int nouveau=0;
+	      serial_pc::printfln ("nouvel id?");
+	      serial_pc::read (nouveau);
+	      ax12_0.initIDB (nouveau);
+	    }
 }
 
 //actions des ax12	
 	
 	void ouvrir0 ()
 	{
-		pince0.goTo (60);
+		ax12_0.goTo (60);
 	}
 	void fermer0 ()
 	{
-		pince0.goTo (240);
+		ax12_0.goTo (240);
 	}
 	void ouvrir1 ()
 	{
-		pince1.goTo (60);
+		ax12_1.goTo (60);
 	}
 	void fermer1 ()
 	{
-		pince1.goTo (240);
+		ax12_1.goTo (240);
 	}	
         void ouvrir2 ()
 	{
-		pince2.goTo (60);
+		ax12_2.goTo (60);
 	}
 	void fermer2 ()
 	{
-		pince2.goTo (240);
+		ax12_2.goTo (240);
 	}
 	void ouvrir3 ()
 	{
-		pince3.goTo (60);
+		ax12_3.goTo (60);
 	}
 	void fermer3 ()
 	{
-		pince3.goTo (240);
+		ax12_3.goTo (240);
 	}
 	void ouvrir4 ()
 	{
-		pince4.goTo (60);
+		ax12_4.goTo (60);
 	}
 	void fermer4 ()
 	{
-		pince4.goTo (240);
+		ax12_4.goTo (240);
 	}
  	void ouvrir5 ()
 	{
-		pince5.goTo (60);
+		ax12_5.goTo (60);
 	}
 	void fermer5 ()
 	{
-		pince5.goTo (240);
+		ax12_5.goTo (240);
 	}
 };
 

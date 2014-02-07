@@ -1,19 +1,26 @@
 package scripts;
+
 import pathfinding.Pathfinding;
 import smartMath.Vec2;
+import hook.Callback;
+import hook.Executable;
+import hook.Hook;
 import hook.HookGenerator;
 import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotVrai;
 import table.Table;
-import threads.ThreadTimer;
 import utils.Log;
 import utils.Read_Ini;
 import container.Service;
+import hook.methodes.TakeFire;
 
 import java.util.ArrayList;
 
+import exception.ConfigException;
 import exception.MouvementImpossibleException;
+import exception.ScriptException;
+import exception.SerialException;
 /**
  * Classe abstraite dont hériteront les différents scripts. S'occupe le robotvrai et robotchrono de manière à ce que ce soit transparent pour les différents scripts
  * @author pf
@@ -21,33 +28,58 @@ import exception.MouvementImpossibleException;
 
 public abstract class Script implements Service {
 
-	// Ces services resteront toujours les mêmes, ont les factorise avec un static
-	protected static ThreadTimer threadtimer;
+	// Ces services resteront toujours les mêmes, on les factorise avec un static
 	protected static HookGenerator hookgenerator;
 	protected static Read_Ini config;
 	protected static Log log;
-	protected static Pathfinding pathfinding;
+	private static Pathfinding pathfinding;
 	
-	public Script(Pathfinding pathfinding, ThreadTimer threadtimer, HookGenerator hookgenerator, Read_Ini config, Log log) {
+	protected static ArrayList<Hook> hookfeu = new ArrayList<Hook>();
+	
+	protected String couleur; 
+	
+	public Script(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
+	{
 		Script.pathfinding = pathfinding;
-		Script.threadtimer = threadtimer;
 		Script.hookgenerator = hookgenerator;
 		Script.config = config;
 		Script.log = log;
+		Executable takefire = new TakeFire(robotvrai);
+		Hook hook = hookgenerator.hook_feu();
+		hook.ajouter_callback(new Callback(takefire, true));		
+		hookfeu.add(hook);
+
+		try {
+			couleur = config.get("couleur");
+		} catch (ConfigException e) {
+			e.printStackTrace();
+		}
 	}
 		
 	/**
 	 * Exécute vraiment un script
 	 */
-	public void agit(int id_version, RobotVrai robotvrai, Table table)
+	public void agit(int id_version, RobotVrai robotvrai, Table table, boolean retenter_si_blocage) throws ScriptException
 	{
+		Vec2 point_entree = point_entree(id_version);
+
+		robotvrai.set_vitesse_translation("entre_scripts");
+		robotvrai.set_vitesse_rotation("entre_scripts");
+
+		ArrayList<Vec2> chemin = pathfinding.chemin(robotvrai.getPosition(), point_entree);
+
 		try
 		{
+			log.debug("A", this);
+			robotvrai.suit_chemin(chemin, hookfeu, retenter_si_blocage);
+			log.debug("B", this);
 			execute(id_version, robotvrai, table);
+			log.debug("C", this);
 		}
 		catch (Exception e)
 		{
-			System.err.println(e.toString());
+			// Si on rencontre un obstacle en allant exécuter un script et qu'il reste d'autres scripts, alors on change de script
+			throw new ScriptException();
 		}
 		finally
 		{
@@ -60,9 +92,16 @@ public abstract class Script implements Service {
 	 * Calcule le temps d'exécution de ce script (grâce à robotChrono)
 	 * @return le temps d'exécution
 	 */
-	public long calcule(int id_version, RobotChrono robotchrono, Table table)
+	public long calcule(int id_version, RobotChrono robotchrono, Table table, boolean use_cache)
 	{
-		robotchrono.reset_compteur();
+		Vec2 point_entree = point_entree(id_version);
+		robotchrono.set_vitesse_translation("entre_scripts");
+		robotchrono.set_vitesse_rotation("entre_scripts");
+		
+		pathfinding.setUseCache(use_cache);
+		robotchrono.initialiser_compteur(pathfinding.distance(robotchrono.getPosition(), point_entree));
+		robotchrono.setPosition(point_entree);
+
 		try {
 			execute(id_version, robotchrono, table);
 		}
@@ -84,7 +123,7 @@ public abstract class Script implements Service {
 	 * @param id de la version
 	 * @return la position du point d'entrée
 	 */
-	public abstract Vec2 point_entree(int id, final Robot robot, final Table table);
+	public abstract Vec2 point_entree(int id);
 	
 	/**
 	 * Renvoie le score que peut fournir un script
@@ -99,13 +138,21 @@ public abstract class Script implements Service {
 	public abstract int poids(final Robot robot, final Table table);
 
 	/**
-	 * Exécute le script
+ 	 * Donne la probabilité que le script réussisse
+	 * @return la proba que la script réussisse, en supposant que l'ennemi n'y soit pas
 	 */
-	abstract protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException;
+	public abstract float proba_reussite();
+
+	/**
+	 * Exécute le script
+	 * @throws SerialException 
+	 */
+	abstract protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException, SerialException;
 
 	/**
 	 * Méthode toujours appelée à la fin du script (via un finally). Repli des actionneurs.
 	 */
 	abstract protected void termine(Robot robot, Table table);
+	
 	
 }

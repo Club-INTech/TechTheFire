@@ -18,7 +18,7 @@ class Communication
 	public:
 
 	Communication():
-		ax12(0,1,1023)
+		ax12(1,1,1023)
 	{
 		serial_pc::init();
 		serial_pc::change_baudrate(9600);
@@ -29,7 +29,7 @@ class Communication
 	{
 		if (strcmp(ordre,"?") == 0)
 		{
-			serial_pc::printfln("3");
+			serial_pc::printfln("reanim");
 		}
 		else if (strcmp(ordre,"angle") == 0)
 		{
@@ -39,11 +39,17 @@ class Communication
 		}
 		else if (strcmp(ordre,"pompe") == 0)
 		{
-			ax12.goTo(90);
+			ax12.goToB(90);
 			_delay_ms(750);
-			ax12.goTo(250);
+			ax12.goToB(250);
 			_delay_ms(750);
 		}
+		else if(strcmp(ordre,"reanim")==0)
+		  {
+		    serial_pc::printfln("Réanim en cours");
+		    ax12.reanimationMode(9600);
+		    serial_pc::printfln("Reanim finie");
+		  }
 	}
 };
 

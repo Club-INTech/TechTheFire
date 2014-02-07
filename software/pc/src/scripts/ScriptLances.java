@@ -4,16 +4,15 @@ import hook.Callback;
 import hook.Executable;
 import hook.Hook;
 import hook.HookGenerator;
-import hook.methodes.LeverRateau;
 import hook.methodes.TirerBalles;
 
 import java.util.ArrayList;
 
 import pathfinding.Pathfinding;
 import robot.Robot;
+import robot.RobotVrai;
 import smartMath.Vec2;
 import table.Table;
-import threads.ThreadTimer;
 import utils.Log;
 import utils.Read_Ini;
 import exception.MouvementImpossibleException;
@@ -24,14 +23,12 @@ import exception.MouvementImpossibleException;
  *
  */
 
-// TODO Guy
-
-class ScriptLances extends Script {
+public class ScriptLances extends Script {
 	
 
-	public ScriptLances(Pathfinding pathfinding, ThreadTimer threadtimer, HookGenerator hookgenerator, Read_Ini config, Log log)
+	public ScriptLances(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
 	{
-		super(pathfinding, threadtimer, hookgenerator, config, log);
+		super(pathfinding, hookgenerator, config, log, robotvrai);
 	}
 
 	/*
@@ -43,8 +40,8 @@ class ScriptLances extends Script {
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		// En fait, si j'ai bien compris, les versions représentent en fait
-		// le nombre de lances pouvant être lancées, dans la limite de 4.
+		// En fait, si j'ai bien compris, les versions reprÔøΩsentent en fait
+		// le nombre de lances pouvant ÔøΩtre lancÔøΩes, dans la limite de 4.
 		// J'ai bon ?
 		if (robot.getNbrLances() > 0) {
 			versionList.add(0);
@@ -54,10 +51,12 @@ class ScriptLances extends Script {
 	}
 
 	@Override
-	public Vec2 point_entree(int id, final Robot robot, final Table table) {
-		// A modifier, la position devant le mammouth
-		// Note à moi-même : demander à Ngoné ou Alexandre pour la distance
-		return new Vec2(0,0);
+	public Vec2 point_entree(int id) {
+		// Les points d'entr√©es ne sont pas sym√©triques car le lanceur n'est que d'un seul c√¥t√©
+		if(couleur == "jaune")
+			return new Vec2(-400,1400);
+		else
+			return new Vec2(-1200,1400);
 	}
 
 	@Override
@@ -75,17 +74,37 @@ class ScriptLances extends Script {
 	@Override
 	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
 	{
-		// ajuster l'orientation du robot (objet robot)
-		robot.tourner(0);
-		// tirer (objet robot)
+		// TODO: tester!
+		
+		robot.tourner((float)Math.PI, true);
+
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
 		Executable tirerballes = new TirerBalles(robot);
-		Hook hook = hookgenerator.hook_abscisse(0); // modifier abscisse
-		hook.ajouter_callback(new Callback(tirerballes, true));		
-		hooks.add(hook);
+		
+		// Hook pour la 1ere balle
+		Hook hook1 = hookgenerator.hook_abscisse(950);
+		hook1.ajouter_callback(new Callback(tirerballes, true));
+		hooks.add(hook1);
+		
+		// Hook pour la 2e balle
+		Hook hook2 = hookgenerator.hook_abscisse(850);
+		hook2.ajouter_callback(new Callback(tirerballes, true));
+		hooks.add(hook2);
+		
+		// Hook pour la 3e balle
+		Hook hook3 = hookgenerator.hook_abscisse(750);
+		hook3.ajouter_callback(new Callback(tirerballes, true));
+		hooks.add(hook3);
 		
 		robot.set_vitesse_translation("vitesse_mammouth");
-		robot.avancer(50, hooks); // modifier distance
+		robot.avancer(800, hooks);
+	}
+
+	@Override
+	public float proba_reussite()
+	{
+		// TODO
+		return 1;
 	}
 
 	@Override
@@ -93,4 +112,9 @@ class ScriptLances extends Script {
 		// vide
 	}
 	
+	public String toString()
+	{
+		return "ScriptLances";
+	}
+
 }

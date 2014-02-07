@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import robot.serial.Serial;
 import utils.*;
 import container.Service;
+import exception.SerialException;
 
 /**
  *  Service de déplacements bas niveau. Méthodes non bloquantes.
@@ -64,10 +65,17 @@ public class Deplacements implements Service {
 		{
 			if(enCoursDeBlocage)
 			{
-				if(System.currentTimeMillis() - debut_timer_blocage > 500)
+                // la durée de tolérance au patinage est fixée ici 
+				if(System.currentTimeMillis() - debut_timer_blocage > 200)
 				{
 					log.warning("le robot a dû s'arrêter suite à un patinage.", this);
-					stopper();
+					try {
+						stopper();
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
+					}
 					blocage = true;
 				}
 			}
@@ -110,7 +118,7 @@ public class Deplacements implements Service {
 	 * Fait avancer le robot. Méthode non bloquante
 	 * @param distance
 	 */
-	public void avancer(float distance)
+	public void avancer(float distance) throws SerialException
 	{
 		String chaines[] = {"d", Float.toString(distance)};
 		serie.communiquer(chaines, 0);
@@ -120,7 +128,7 @@ public class Deplacements implements Service {
 	 * Fait tourner le robot. Méthode non bloquante
 	 * @param angle
 	 */
-	public void tourner(float angle)
+	public void tourner(float angle) throws SerialException
 	{
 		String chaines[] = {"t", Float.toString(angle)};
 		serie.communiquer(chaines, 0);		
@@ -129,7 +137,7 @@ public class Deplacements implements Service {
 	/**
 	 * Arrête le robot
 	 */
-	public void stopper()
+	public void stopper() throws SerialException
 	{
 		serie.communiquer("stop", 0);
 	}
@@ -138,7 +146,7 @@ public class Deplacements implements Service {
 	 * Ecrase la position x du robot au niveau de la carte
 	 * @param x
 	 */
-	public void set_x(int x)
+	public void set_x(int x) throws SerialException
 	{
 		String chaines[] = {"cx", Integer.toString(x)};
 		serie.communiquer(chaines, 0);
@@ -148,7 +156,7 @@ public class Deplacements implements Service {
 	 * Ecrase la position y du robot au niveau de la carte
 	 * @param y
 	 */
-	public void set_y(int y)
+	public void set_y(int y) throws SerialException
 	{
 		String chaines[] = {"cy", Integer.toString(y)};
 		serie.communiquer(chaines, 0);	
@@ -158,16 +166,16 @@ public class Deplacements implements Service {
 	 * Ecrase l'orientation du robot au niveau de la carte
 	 * @param orientation
 	 */
-	public void set_orientation(int orientation)
+	public void set_orientation(float orientation) throws SerialException
 	{
-		String chaines[] = {"co", Integer.toString(orientation)};
+		String chaines[] = {"co", Float.toString(orientation)};
 		serie.communiquer(chaines, 0);
 	}
 	
 	/**
 	 * Active l'asservissement en translation du robot
 	 */
-	public void activer_asservissement_translation()
+	public void activer_asservissement_translation() throws SerialException
 	{
 		serie.communiquer("ct1", 0);
 	}
@@ -175,7 +183,7 @@ public class Deplacements implements Service {
 	/**
 	 * Active l'asservissement en rotation du robot
 	 */
-	public void activer_asservissement_rotation()
+	public void activer_asservissement_rotation() throws SerialException
 	{
 		serie.communiquer("cr1", 0);
 	}
@@ -183,7 +191,7 @@ public class Deplacements implements Service {
 	/**
 	 * Désactive l'asservissement en translation du robot
 	 */
-	public void desactiver_asservissement_translation()
+	public void desactiver_asservissement_translation() throws SerialException
 	{
 		serie.communiquer("ct0", 0);
 	}
@@ -191,7 +199,7 @@ public class Deplacements implements Service {
 	/**
 	 * Désactive l'asservissement en rotation du robot
 	 */
-	public void desactiver_asservissement_rotation()
+	public void desactiver_asservissement_rotation() throws SerialException
 	{
 		serie.communiquer("cr0", 0);
 	}
@@ -200,7 +208,7 @@ public class Deplacements implements Service {
 	 * Modifie la vitesse en translation
 	 * @param pwm_max
 	 */
-	public void set_vitesse_translation(int pwm_max)
+	public void set_vitesse_translation(int pwm_max) throws SerialException
 	{
 		double kp, kd;
 		if(pwm_max > 120)
@@ -227,7 +235,7 @@ public class Deplacements implements Service {
 	 * Modifie la vitesse en rotation
 	 * @param pwm_max
 	 */
-	public void set_vitesse_rotation(int pwm_max)
+	public void set_vitesse_rotation(int pwm_max) throws SerialException
 	{
 		double kp, kd;
 		if(pwm_max > 155)
@@ -253,9 +261,9 @@ public class Deplacements implements Service {
 	/**
 	 * Met à jour PWMmoteurGauche, PWMmoteurDroit, erreur_rotation, erreur_translation, derivee_erreur_rotation, derivee_erreur_translation
 	 */
-	public Hashtable<String, Integer> maj_infos_stoppage_enMouvement()
+	public Hashtable<String, Integer> maj_infos_stoppage_enMouvement() throws SerialException
 	{
-		String[] infos_string = serie.communiquer("?info", 4);
+		String[] infos_string = serie.communiquer("?infos", 4);
 		int[] infos_int = new int[4];
 
 		for(int i = 0; i < 4; i++)
@@ -278,7 +286,7 @@ public class Deplacements implements Service {
 	 * Renvoie x, y et orientation du robot
 	 * @return un tableau de 3 cases: [x, y, orientation]
 	 */
-	public float[] get_infos_x_y_orientation()
+	public float[] get_infos_x_y_orientation() throws SerialException
 	{
 		String[] infos_string = serie.communiquer("?xyo", 3);
 		float[] infos_float = new float[3];
@@ -286,6 +294,7 @@ public class Deplacements implements Service {
 		for(int i = 0; i < 3; i++)
 			infos_float[i] = Float.parseFloat(infos_string[i]);
 
+//		log.debug(infos_float[1], this);
 		return infos_float;
 	}
 

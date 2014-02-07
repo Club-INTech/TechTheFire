@@ -1,12 +1,12 @@
 package scripts;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Set;
 
 import pathfinding.Pathfinding;
+import robot.RobotVrai;
 import hook.HookGenerator;
-import threads.ThreadTimer;
 import utils.Log;
 import utils.Read_Ini;
 import container.Service;
@@ -23,17 +23,40 @@ public class ScriptManager implements Service {
 
 	private Map<String,Script> instancesScripts = new Hashtable<String,Script>();
 
-	public ScriptManager(Pathfinding pathfinding, ThreadTimer threadtimer, HookGenerator hookgenerator, Read_Ini config, Log log) {
+	private ArrayList<String> scripts_robot0;
+	private ArrayList<String> scripts_robot1;
+	
+	public ScriptManager(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
+	{
 		this.log = log;
 		
-		instancesScripts.put("ScriptTree", new ScriptTree(pathfinding, threadtimer, hookgenerator, config, log));
-		instancesScripts.put("ScriptLances", new ScriptTree(pathfinding, threadtimer, hookgenerator, config, log));
+		instancesScripts.put("ScriptTree", new ScriptTree(pathfinding, hookgenerator, config, log, robotvrai));
+		instancesScripts.put("ScriptLances", new ScriptLances(pathfinding, hookgenerator, config, log, robotvrai));
+		instancesScripts.put("ScriptDeposerFeu", new ScriptDeposerFeu(pathfinding, hookgenerator, config, log, robotvrai));
+		instancesScripts.put("ScriptTorche", new ScriptTorche(pathfinding, hookgenerator, config, log, robotvrai));
+		instancesScripts.put("ScriptFresque", new ScriptFresque(pathfinding, hookgenerator, config, log, robotvrai));
+		instancesScripts.put("ScriptDeposerFruits", new ScriptDeposerFruits(pathfinding, hookgenerator, config, log, robotvrai));
+		instancesScripts.put("ScriptFunnyAction", new ScriptFunnyAction(pathfinding, hookgenerator, config, log, robotvrai));
 		
+		scripts_robot0 = new ArrayList<String>();
+		scripts_robot0.add("ScriptTree");
+		scripts_robot0.add("ScriptLances");
+		scripts_robot0.add("ScriptFresque");
+		scripts_robot0.add("ScriptTorche");
+		scripts_robot0.add("ScriptDeposerFruits");
+		scripts_robot0.add("ScriptFunnyAction");
+		scripts_robot0.add("ScriptDeposerFeu");
+
+		scripts_robot1 = new ArrayList<String>();
 	}
 	
-	public Set<String> getNomsScripts()
+	public ArrayList<String> getNomsScripts(int id_robot)
 	{
-		return instancesScripts.keySet();
+		// if assez moche, il faudrait chercher à passer outre
+		if(id_robot == 0)
+			return scripts_robot0;
+		else
+			return scripts_robot1;
 	}
 
 	public Script getScript(String nom) throws ScriptException

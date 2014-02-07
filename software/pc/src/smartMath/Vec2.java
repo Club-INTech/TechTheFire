@@ -10,7 +10,16 @@
 /*
  *	TODO : 	Implement Matrix product, String conversion and parsing
  */
+
 package smartMath;
+
+/**
+ * Classe de calcul de vecteurs de dimension 2
+ * @author martial
+ * @author pf
+ *
+ */
+
 public class Vec2
 {
 
@@ -50,18 +59,30 @@ public class Vec2
 	
 
 	// build a new Vec2 by summing the calling Vec2 and the one in args
-	public Vec2 Plus(Vec2 other)
+	public Vec2 PlusNewVector(Vec2 other)
 	{
 		return new Vec2(x + other.x, y + other.y);
 	}
 	
 	// build a new Vec2 with the value obtained by decrementing the
 	// calling Vec2 by the provided Vec2 in args
-	public Vec2 Minus(Vec2 other)
+	public Vec2 MinusNewVector(Vec2 other)
 	{
 		return new Vec2(x - other.x, y - other.y);
 	}
+
+	public void Plus(Vec2 other)
+	{
+		x += other.x;
+		y += other.y;
+	}
 	
+	public void Minus(Vec2 other)
+	{
+		x -= other.x;
+		y -= other.y;
+	}
+
 	public Vec2 clone()
 	{
 		return new Vec2(this.x, this.y);
@@ -80,6 +101,11 @@ public class Vec2
 	public String toString()
 	{
 		return "("+x+","+y+")";
+	}
+	
+	public boolean equals(Vec2 other)
+	{
+		return x == other.x && y == other.y;
 	}
 	
 }

@@ -19,9 +19,9 @@ public class SerialManager
 	private Log log;
 
 	//Series a instancier
-	public Serial serieAsservissement;
-	public Serial serieCapteursActionneurs;
-	public Serial serieLaser;
+	public Serial serieAsservissement = null;
+	public Serial serieCapteursActionneurs = null;
+	public Serial serieLaser = null;
 	
 	//On stock les series dans une liste
 	private Hashtable<String, Serial> series = new Hashtable<String, Serial>();
@@ -92,24 +92,28 @@ public class SerialManager
 		int id = -1;
 		//Liste des series deja attribues
 		ArrayList<Integer> deja_attribues = new ArrayList<Integer>();
-		String pings[] = new String[5];
+		String pings[] = new String[20];
 		for (int baudrate : this.baudrate)
 		{
-			System.out.println("liste des pings pour le baudrate " + baudrate);
+			log.debug("liste des pings pour le baudrate " + baudrate, this);
 
 			for(int k = 0; k < this.connectedSerial.size(); k++)
 			{
 				if (!deja_attribues.contains(k))
 				{
 					//Creation d'une serie de test
-					Serial serialTest = new Serial(log, "carte de test");
+					Serial serialTest = new Serial(log, "carte de test de ping");
 
 					serialTest.initialize(this.connectedSerial.get(k), baudrate);
-
-					id = Integer.parseInt(serialTest.ping());
-					if(!isKnownPing(id))
+					
+					if (serialTest.ping() != null)
+						id = Integer.parseInt(serialTest.ping());
+					else 
 						continue;
 
+					if(!isKnownPing(id))
+						continue;
+					
 					//On stock le port de la serie (connectedSerial) dans le tabeau à la case [id]
 					pings[id] = this.connectedSerial.get(k);
 
@@ -136,12 +140,12 @@ public class SerialManager
 			else if(serial.id == 3 && pings[serial.id] != null)
 			{
 				this.serieCapteursActionneurs.initialize(pings[serial.id], serial.baudrate);
-			}
+			}	
 			else if(serial.id == 4 && pings[serial.id] != null)
 			{
 				this.serieLaser.initialize(pings[serial.id], serial.baudrate);
 			}
-			
+
 			if (pings[serial.id] == null)
 			{
 				log.critical("La carte " + serial.name + " n'est pas détectée", this);
@@ -181,6 +185,8 @@ public class SerialManager
 		else
 		{
 			log.critical("Aucune série du nom : " + name + " n'existe", this);
+			log.critical("Vérifiez les branchements ou l'interface+simulateur (redémarrez si besoin).", this);
+			log.critical("Vérifiez aussi que tous les processus Java exécutant ce code sont éteints.", this);
 			throw new SerialManagerException("serie non trouvée");
 		}
 	}
