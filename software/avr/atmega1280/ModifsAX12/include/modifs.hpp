@@ -14,11 +14,13 @@ class Communication
 	typedef uart1 serial_ax12;
 	typedef AX<serial_ax12> Ax12;
 	Ax12 ax12;
+  Ax12 axSansLimites;
 	
 	public:
 
 	Communication():
-		ax12(3,1,1023)
+	  ax12(10,1,1023),
+		axSansLimites(11)
 	{
 		serial_pc::init();
 		serial_pc::change_baudrate(9600);
@@ -52,9 +54,44 @@ class Communication
 		    serial_pc::read(nouveau);
 		    ax12.initIDB(nouveau);
 		  }		
+		else if (strcmp(ordre,"couple")==0)
+		  {
+		    int couple =1023;
+		    serial_pc::printfln("nouveau couple entre 0 et 1023");
+		    serial_pc::read(couple);
+		    ax12.changeCouple(couple);
+      		  }
+		else if (strcmp(ordre,"anglemin")==0)
+		  {
+		    int anglemin =0;
+		    serial_pc::printfln("angle minimum entre 0 et 1023");
+		    serial_pc::read(anglemin);
+		    ax12.changeAngleMIN(anglemin);
+		  }
+		else if (strcmp(ordre,"anglemax")==0)
+		  {
+		    int anglemax = 1023;
+		    serial_pc::printfln("angle maximum entre 0 et 1023");
+		    serial_pc::read(anglemax);
+		    ax12.changeAngleMAX(anglemax);
+		  }
+		else if (strcmp(ordre,"angle")==0)
+		  {
+		    int angle = 150;
+		    serial_pc::printfln("angle voulu ?");
+		    serial_pc::read(angle);
+		    ax12.goTo(angle);
+		  }
+		else if(strcmp(ordre,"nolim")==0)
+		  {
+		    int angle = 150;
+		    serial_pc::printfln(" angle du sans lim ?");
+		    serial_pc::read(angle);
+		    axSansLimites.goTo(angle);
+		  }
 	}
 
 };
-
+ 
 #endif
 
