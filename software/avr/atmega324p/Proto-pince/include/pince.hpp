@@ -192,8 +192,10 @@ class Communication
 	void hautGauche ()
 	{
 	  	positionGauche.goTo(240);
-		_delay_ms(600);
+		_delay_ms(300);
 		orientationGauche.goTo(30);
+		_delay_ms(200);
+		orientationGauche.goTo(120); //cet ajout a pour but de mettre la pince verticale, qu'elle prenne moins de place.
 	}
   void retournerGauche ()
   {
@@ -205,14 +207,14 @@ class Communication
   }
 	void ouvrirDroite ()
 	{
-		pinceDroite.goTo (180);
+		pinceDroite.goTo (150);
 	}
 	void fermerDroite ()
 	{
-	  uint16_t positionPrecedente = (pinceDroite.getPosition_0_1023());
-	  uint16_t positionActuelle = positionPrecedente ;
-	  pinceDroite.goTo(90);
-	  for(int i=0; i<7; i++)
+	  /*  uint16_t positionPrecedente = (pinceDroite.getPosition_0_1023());
+	      uint16_t positionActuelle = positionPrecedente ; */
+	  pinceDroite.goTo(85);
+	  /* for(int i=0; i<7; i++)
 	      {
 		_delay_ms(100);
 		positionActuelle = (pinceDroite.getPosition_0_1023());
@@ -220,7 +222,7 @@ class Communication
 		  pinceDroite.goTo(positionActuelle);//Dans ce cas on bloque l'ax12 là où il est
 		else // on est encore en mouvement, donc on actualise la position
 		 positionPrecedente = positionActuelle ;
-	      }
+		 } */
 	}
 	void basDroite ()
 	{
@@ -229,14 +231,16 @@ class Communication
 	}
 	void milieuDroite ()
 	{
-		orientationDroite.goTo(185);
+		orientationDroite.goTo(180);
 		positionDroite.goTo(150);
 	}
 	void hautDroite ()
 	{
 	  	positionDroite.goTo(240);
-		_delay_ms(600);
-		orientationDroite.goTo(100);
+		_delay_ms(300);
+		orientationDroite.goTo(90);
+		_delay_ms(200);
+		orientationDroite.goTo(180);
 	} 
   void retournerDroite ()
   {
