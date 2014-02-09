@@ -51,7 +51,7 @@ public class ScriptLances extends Script {
 	}
 
 	@Override
-	protected Vec2 point_entree(int id) {
+	public Vec2 point_entree(int id) {
 		// Les points d'entrées ne sont pas symétriques car le lanceur n'est que d'un seul côté
 		if(couleur == "jaune")
 			return new Vec2(-400,1400);
@@ -98,6 +98,13 @@ public class ScriptLances extends Script {
 		
 		robot.set_vitesse_translation("vitesse_mammouth");
 		robot.avancer(800, hooks);
+	}
+
+	@Override
+	public float proba_reussite()
+	{
+		// TODO
+		return 1;
 	}
 
 	@Override

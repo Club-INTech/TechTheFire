@@ -36,7 +36,7 @@ public class ScriptDeposerFruits extends Script {
 	}
 
 	@Override
-	protected Vec2 point_entree(int id) {
+	public Vec2 point_entree(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -63,7 +63,14 @@ public class ScriptDeposerFruits extends Script {
 	@Override
 	protected void termine(Robot robot, Table table) {
 		// TODO Auto-generated method stub
-		
 	}
+	
+	@Override
+	public float proba_reussite()
+	{
+		// TODO
+		return 1;
+	}
+
 
 }
