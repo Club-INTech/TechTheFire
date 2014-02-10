@@ -425,7 +425,6 @@ class AX
 			readData(regstart, reglength, answer);
 		}
   
-  void 
 };
 
 #endif
