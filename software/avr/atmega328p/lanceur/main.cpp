@@ -12,7 +12,7 @@ int main ()
 	typedef D6 pwm;
 
 	dir::output();
-	dir::low();//définit à l'état bas
+	dir::high();//définit à l'état haut
 	pwm::output();
 	timer0::mode(timer0::MODE_PWM);
 	timer0::set_prescaler(timer0::prescaler::PRESCALER_1); // comptage à 20Mhz
@@ -34,5 +34,6 @@ int main ()
 		else if (!strcmp(order,"l_off")){
 			timer0::pwm::pwm_a(0); // iil n'y aura que des états bas
 		}
+
 	}
 }
