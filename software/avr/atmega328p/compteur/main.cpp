@@ -9,6 +9,7 @@
 #define IGNORE_PCINT0_vect
 #define IGNORE_PCINT2_vect
 #define IGNORE_USART_RX_vect
+#include <libintech/interrupt_manager.hpp>
 #include <libintech/isr.hpp>
 #include <libintech/gpio.hpp>
 
