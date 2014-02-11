@@ -9,7 +9,6 @@ import robot.RobotVrai;
 import scripts.Script;
 import scripts.ScriptManager;
 import table.Table;
-import threads.ThreadAnalyseEnnemi;
 import threads.ThreadTimer;
 import utils.Log;
 import utils.Read_Ini;
@@ -17,7 +16,6 @@ import utils.Sleep;
 import container.Service;
 import exception.ScriptException;
 import smartMath.Vec2;
-import robot.cartes.Laser;
 
 /**
  * Classe qui prend les décisions et exécute les scripts
@@ -29,7 +27,6 @@ public class Strategie implements Service {
 
 	// Dépendances
 	private MemoryManager memorymanager;
-	private ThreadAnalyseEnnemi threadanalyseennemi;
 	private ThreadTimer threadtimer;
 	private ScriptManager scriptmanager;
 	private Table table;
@@ -50,10 +47,9 @@ public class Strategie implements Service {
 	// Prochain script à exécuter si l'actuel se passe bien
 	private NoteScriptVersion prochainScript;
 	
-	public Strategie(MemoryManager memorymanager, ThreadAnalyseEnnemi threadanalyseennemi, ThreadTimer threadtimer, ScriptManager scriptmanager, Table table, RobotVrai robotvrai, Read_Ini config, Log log)
+	public Strategie(MemoryManager memorymanager, ThreadTimer threadtimer, ScriptManager scriptmanager, Table table, RobotVrai robotvrai, Read_Ini config, Log log)
 	{
 		this.memorymanager = memorymanager;
-		this.threadanalyseennemi = threadanalyseennemi;
 		this.threadtimer = threadtimer;
 		this.scriptmanager = scriptmanager;
 		this.table = table;
@@ -127,6 +123,29 @@ public class Strategie implements Service {
 	 */
 	public void analyse_ennemi(Vec2[] positionsfreeze, long[] date_freeze)
 	{
+				
+		/*Si ça n'a pas été vraiment codé, c'est parce qu'il faut utiliser Container (ou pas) et on sait pas encore comment
+		 * Pour chaque feu 
+		 * si rayon_feu +rayon_robot_adverse > distance(feu, robot_adverse) et duree_freeze > duree_prise_feu_generique alors
+		 *	feu pris
+		 *Pour chaque arbre 
+		 *si rayon_arbre +rayon_robot_adverse > distance(arbre, robot_adverse) et duree_freeze > duree_prise_feu_generique alors
+		 *	fruits pris
+		 *Pour chaque bac
+		 *si dimensions_bac +rayon_robot_adverse > distance(bac, robot_adverse) et duree_freeze_depot > duree_prise_feu_generique alors
+		 *	fruits déposés
+		 *On prend pas en compte le lancer de balles
+		 *
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 */
+		
 		
 		// modificiation de la table en conséquence
 		/*
@@ -207,6 +226,9 @@ public class Strategie implements Service {
 			RobotChrono robotchrono_version = memorymanager.getCloneRobotChrono(profondeur);
 			ArrayList<Integer> versions = script.version(robotchrono_version, table_version);
 
+			// TODO corriger les scripts pour que ça n'arrive pas
+			if(versions == null)
+				break;
 			for(int id : versions)
 			{
 				try
@@ -215,11 +237,11 @@ public class Strategie implements Service {
 					RobotChrono cloned_robotchrono = memorymanager.getCloneRobotChrono(profondeur);
 					int score = script.score(id, cloned_robotchrono, cloned_table);
 					int duree_script = (int)script.calcule(id, cloned_robotchrono, cloned_table, duree_totale > duree_connaissances);
-					log.debug("Durée de "+script+" "+id+": "+duree_script, this);
+					//log.debug("Durée de "+script+" "+id+": "+duree_script, this);
 					cloned_table.supprimer_obstacles_perimes(date+duree_script);
-					log.debug("Score de "+script+" "+id+": "+score, this);
+					//log.debug("Score de "+script+" "+id+": "+score, this);
 					float noteScript = calculeNote(score, duree_script, id, script);
-					log.debug("Note de "+script+" "+id+": "+noteScript, this);
+					//log.debug("Note de "+script+" "+id+": "+noteScript, this);
 					NoteScriptVersion out = _evaluation(date + duree_script, duree_script, profondeur-1, id_robot);
 					out.note += noteScript;
 

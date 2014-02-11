@@ -17,7 +17,7 @@ public class ThreadAnalyseEnnemi extends AbstractThread  {
 	Strategie strategie;
 	
 	long[] date_freeze = new long[2];
-	Vec2[] positionsfreeze = new Vec2[2];
+	public Vec2[] positionsfreeze = new Vec2[2];
 	int tolerance = 1000;
 	
 	public ThreadAnalyseEnnemi(Table table, ThreadTimer threadtimer, Strategie strategie)
@@ -61,8 +61,7 @@ public class ThreadAnalyseEnnemi extends AbstractThread  {
 				{
 					date_freeze[i] = System.currentTimeMillis();
 					positionsfreeze[i] = positionsEnnemi[i];
-				}
-			
+				}			
 			}
 			
 			strategie.analyse_ennemi(positionsfreeze, date_freeze);
