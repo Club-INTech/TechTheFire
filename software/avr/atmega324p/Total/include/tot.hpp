@@ -15,15 +15,15 @@ class Communication
 	Ax12 pinceGauche; //ax12 de la pince gauche
 	Ax12 orientationGauche;
 	Ax12 positionGauche;
- Ax12 retourneurGauche;
-  Ax12 pinceDroite; //ax12 de la pince droite
-  Ax12 orientationDroite;
-  Ax12 positionDroite; 
- Ax12 retourneurDroite ;
-  Ax12 rateauG;	
-  Ax12 rateauD;						//ax12 du rateau
-  Ax12 bac;
-						//ax12 du bac
+ 	Ax12 retourneurGauche;
+ 	Ax12 pinceDroite; //ax12 de la pince droite
+	Ax12 orientationDroite;
+	Ax12 positionDroite; 
+	Ax12 retourneurDroite ;
+  	Ax12 rateauG; //ax12 du rateau gauche	
+  	Ax12 rateauD; //ax12 du rateau droit
+	Ax12 bac; //ax12 du bac
+	Ax12 chargeur; //ax12 du chargeur
 	
 	public:
 
@@ -58,7 +58,7 @@ class Communication
 		{
 			serial_pc::printfln ( "3" );
 		}
-		else if ( strcmp ( ordre , "og" ) == 0 )			//o = ouvrir
+		else if ( strcmp ( ordre , "og" ) == 0 )  //o = ouvrir
 		{
 			this->ouvrirGauche ();
 		}
@@ -66,7 +66,7 @@ class Communication
 		{
 			this->ouvrirDroite ();
 		}
-		else if ( strcmp ( ordre , "fg" ) == 0 )			//f = fermer
+		else if ( strcmp ( ordre , "fg" ) == 0 )  //f = fermer
 		{
 			this->fermerGauche ();
 		}
@@ -74,7 +74,7 @@ class Communication
 		{
 			this->fermerDroite ();
 		}
- 		else if ( strcmp ( ordre , "ag" ) == 0 )			//a = angle
+ 		else if ( strcmp ( ordre , "ag" ) == 0 )  //a = angle
 		{
 			serial_pc::printfln ( "angle?" );			
 			uint16_t i;
@@ -88,18 +88,15 @@ class Communication
 			serial_pc::read (i);
 			pinceDroite.goTo (i);
 		}
-		else if ( strcmp ( ordre , "bg" ) == 0)
-// b = position basse
+		else if ( strcmp ( ordre , "bg" ) == 0)  // b = position basse
 		{
 			this -> basGauche ();
 		}
-		else if ( strcmp ( ordre , "tg" ) == 0)
-// retourner un feu
+		else if ( strcmp ( ordre , "tg" ) == 0)  // retourner un feu
 		{
 			this -> retournerGauche ();
 		}
-		else if ( strcmp ( ordre , "rg" ) == 0)
-// remettre en position initiale niveau rotation
+		else if ( strcmp ( ordre , "rg" ) == 0)  // remettre en position initiale niveau rotation
 		{
 			this -> retablirGauche ();
 		}
@@ -107,8 +104,7 @@ class Communication
 		{
 			this -> basDroite ();
 		}
-		else if ( strcmp (ordre , "mg" ) == 0)
-// m = milieu 
+		else if ( strcmp (ordre , "mg" ) == 0)  // m = milieu 
 		{
 			this -> milieuGauche ();
 		}
@@ -129,49 +125,58 @@ class Communication
 		  {
 		    this -> test ();
 		  }
-		else if ( strcmp ( ordre , "bb" ) == 0 )			//bb = bac bas
+		else if ( strcmp ( ordre , "bb" ) == 0 )  //bb = bac bas
 		{
 			this->bacBas ();
 		}
-		else if ( strcmp ( ordre , "bh" ) == 0 )			//bh = bacHaut
+		else if ( strcmp ( ordre , "bh" ) == 0 )  //bh = bacHaut
 		{
 			this->bacHaut ();
 		}
- 		else if ( strcmp ( ordre , "rrd" ) == 0 )			//rrd = rangerRateaud
+ 		else if ( strcmp ( ordre , "rrd" ) == 0 )  //rrd = rangerRateaud
 		{
 			this->rangerRateaud ();
 		}
-		else if ( strcmp ( ordre , "rbd" ) == 0 )			//rbd = rateauBasd
+		else if ( strcmp ( ordre , "rbd" ) == 0 )  //rbd = rateauBasd
 		{
 			this->rateauBasd ();
 		}
-		else if ( strcmp ( ordre , "rhd" ) == 0 )			//rhd = rateauHautd
+		else if ( strcmp ( ordre , "rhd" ) == 0 )  //rhd = rateauHautd
 		{
 			this->rateauHautd ();
 		}
-		else if ( strcmp ( ordre , "rbbd" ) == 0 )			//rbbd = rateauBasBasd
+		else if ( strcmp ( ordre , "rbbd" ) == 0 )  //rbbd = rateauBasBasd
 		{
 			this->rateauBasBasd ();
 		}
-		else if ( strcmp ( ordre , "rrg" ) == 0 )			//rrg = rangerRateaug
+		else if ( strcmp ( ordre , "rrg" ) == 0 )  //rrg = rangerRateaug
 		{
 			this->rangerRateaug ();
 		}
-		else if ( strcmp ( ordre , "rbg" ) == 0 )			//rbg = rateauBasg
+		else if ( strcmp ( ordre , "rbg" ) == 0 )  //rbg = rateauBasg
 		{
 			this->rateauBasg ();
 		}
-		else if ( strcmp ( ordre , "rhg" ) == 0 )			//rhg = rateauHautg
+		else if ( strcmp ( ordre , "rhg" ) == 0 )  //rhg = rateauHautg
 		{
 			this->rateauHautg ();
 		}
-		else if ( strcmp ( ordre , "rbbg" ) == 0 )			//rbbg = rateauBasBasg
+		else if ( strcmp ( ordre , "rbbg" ) == 0 )  //rbbg = rateauBasBasg
 		{
 			this->rateauBasBasg ();
 		}
+		else if ( strcmp ( ordre , "tourne" ) == 0 )  
+		{
+			this->tourner (a);
+		}
+		else if ( strcmp ( ordre , "reload" ) == 0 )  
+		{
+			this->reload ();
+		}
 	}
 
-//actions de la pince		
+
+//actions de la pince gauche		
 	
 	void ouvrirGauche ()
 	{
@@ -217,6 +222,10 @@ void retournerGauche ()
   {
     retourneurGauche.goTo (240);
   }
+
+
+//actions de la pince droite
+
 	void ouvrirDroite ()
 	{
 		pinceDroite.goTo (180);
@@ -265,6 +274,9 @@ void retournerGauche ()
     positionDroite.goToB(200);
   }
 
+
+//action du bac
+
 	void bacBas ()
 	{
 		bac.goTo (60);
@@ -273,6 +285,7 @@ void retournerGauche ()
 	{
 		bac.goTo (110);
 	}
+
 
 //actions du rateau droit
 
@@ -294,6 +307,7 @@ void retournerGauche ()
 		rateauD.goTo (95);
 	}
 
+
 //actions du rateau gauche
 
 	void rangerRateaug ()
@@ -314,6 +328,28 @@ void retournerGauche ()
 		rateauG.goTo (205);
 	}	
 };
+
+//actions du chargeur
+
+	void tourner ()
+	{
+		static int a=0;
+		if (a=300)
+		{
+			a=0;
+		}
+		else
+		{
+			a+=60;
+		}
+		chargeur.goTo (a);	
+	}
+	void reload ()
+	{
+		chargeur.goTo (0);
+	}
+	
+	
 
 
 #endif
