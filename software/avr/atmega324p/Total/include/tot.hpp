@@ -267,11 +267,11 @@ void retournerGauche ()
 
 	void bacBas ()
 	{
-		bac.goTo (70);
+		bac.goTo (60);
 	}
 	void bacHaut ()
 	{
-		bac.goTo (120);
+		bac.goTo (110);
 	}
 
 //actions du rateau droit
@@ -286,18 +286,19 @@ void retournerGauche ()
 	}
 	void rateauBasBasd ()
 	{
+		bac.goTo (50);
 		rateauD.goTo (170);		
 	}	
 	void rateauHautd ()
 	{
-		rateauD.goTo (110);
+		rateauD.goTo (95);
 	}
 
 //actions du rateau gauche
 
 	void rangerRateaug ()
 	{
-		rateauG.goTo (60);
+		rateauG.goTo (240);
 	}
 	void rateauBasg ()
 	{
@@ -305,11 +306,12 @@ void retournerGauche ()
 	}
 	void rateauBasBasg ()
 	{
-		rateauG.goTo (170);		
+		bac.goTo (50);	
+		rateauG.goTo (130);		
 	}	
 	void rateauHautg ()
 	{
-		rateauG.goTo (110);
+		rateauG.goTo (205);
 	}	
 };
 
