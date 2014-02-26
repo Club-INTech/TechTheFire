@@ -24,7 +24,7 @@ class Communication
   	Ax12 rateauD; //ax12 du rateau droit
 	Ax12 bac; //ax12 du bac
 	Ax12 chargeur; //ax12 du chargeur
-	
+        Ax12 filet; //ax12 du lance-filet
 	public:
 
 //constructeur
@@ -40,7 +40,9 @@ class Communication
 		retourneurDroite (7,1,1023),
 		rateauG (8,1,1023),
 		rateauD (9,1,1023),
-		bac (10,1,1023)
+		bac (10,1,1023),
+		chargeur (11,1,1023),
+		filet (12,1,1023)
 
 	{
 		serial_pc::init();
@@ -165,14 +167,14 @@ class Communication
 		{
 			this->rateauBasBasg ();
 		}
-		else if ( strcmp ( ordre , "tourne" ) == 0 )  
+		/*		else if ( strcmp ( ordre , "tourne" ) == 0 )  
 		{
-			this->tourner (a);
+			this->tourner();
 		}
 		else if ( strcmp ( ordre , "reload" ) == 0 )  
 		{
-			this->reload ();
-		}
+			this->reload();
+			}*/
 	}
 
 
@@ -330,7 +332,7 @@ void retournerGauche ()
 };
 
 //actions du chargeur
-
+/*
 	void tourner ()
 	{
 		static int a=0;
@@ -349,7 +351,7 @@ void retournerGauche ()
 		chargeur.goTo (0);
 	}
 	
-	
+*/	
 
 
 #endif
