@@ -6,6 +6,7 @@ import java.util.Iterator;
 import robot.Orientation;
 import smartMath.Vec2;
 import container.Service;
+import exception.ConfigException;
 import utils.*;
 
 public class Table implements Service {
@@ -23,8 +24,10 @@ public class Table implements Service {
 	
 	private int hashFire;
 	private int hashTree;
-	private int hashTorch;
 	private int hashObstacles;
+	
+	private Fresco[] list_fresco_pos;
+	private boolean[] list_fresco_hanged;
 
 	// Dépendances
 	private Log log;
@@ -53,10 +56,10 @@ public class Table implements Service {
 		arrayFire[9] = new Fire(new Vec2(-1485,1200), 15, 0, Orientation.XPLUS, Colour.YELLOW);
 
 		// Initialisation des arbres
-		arrayTree[0] = new Tree();
-		arrayTree[1] = new Tree();
-		arrayTree[2] = new Tree();
-		arrayTree[3] = new Tree();
+		arrayTree[0] = new Tree(new Vec2(1500,700));
+		arrayTree[1] = new Tree(new Vec2(800,0));
+		arrayTree[2] = new Tree(new Vec2(-800,0));
+		arrayTree[3] = new Tree(new Vec2(-1500,700));
 
 		// Initialisation des torches
 		Fire feu0 = new Fire(new Vec2(600,900), 3, 1, Orientation.GROUND, Colour.YELLOW);
@@ -89,20 +92,28 @@ public class Table implements Service {
 		listObstaclesFixes.add(new ObstacleCirculaire(new Vec2(-1500,700), 150));
 
 		int rayon_robot_adverse = 230;
-		try {
-			rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
-		}
-		catch(Exception e)
-		{
-			log.warning(e, this);
-		}
+			try {
+				rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
+			} catch (NumberFormatException | ConfigException e) {
+				e.printStackTrace();
+			}
 		robots_adverses[0] = new ObstacleCirculaire(new Vec2(0,0), rayon_robot_adverse);
 		robots_adverses[1] = new ObstacleCirculaire(new Vec2(0,0), rayon_robot_adverse);
 		
 		hashFire = 0;
 		hashTree = 0;
-		hashTorch = 0;
 		hashObstacles = 0;
+		
+		//Gestion des fresques
+		list_fresco_pos[0] = new Fresco(new Vec2(0,0));
+		list_fresco_pos[1] = new Fresco(new Vec2(0,0));
+		list_fresco_pos[2]= new Fresco(new Vec2(0,0));
+		//false -> aucune fresque
+		//true -> fresque accrochée
+		list_fresco_hanged[0] = false;
+		list_fresco_hanged[1] = false;
+		list_fresco_hanged[2] = false;
+		
 	}
 	
 	/*
@@ -114,14 +125,16 @@ public class Table implements Service {
 		Vec2 position_sauv = position.clone();
 		int rayon_robot_adverse = 0;
 		long duree = 0;
-		try {
-			rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
-			duree = Integer.parseInt(config.get("duree_peremption_obstacles"));
-		}
-		catch(Exception e)
-		{
-			this.log.critical(e, this);
-		}
+			try {
+				rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
+			} catch (NumberFormatException | ConfigException e) {
+				e.printStackTrace();
+			}
+			try {
+				duree = Integer.parseInt(config.get("duree_peremption_obstacles"));
+			} catch (NumberFormatException | ConfigException e) {
+				e.printStackTrace();
+			}
 		
 		Obstacle obstacle = new ObstacleProximite(position_sauv, rayon_robot_adverse, System.currentTimeMillis()+duree);
 		synchronized(listObstacles)
@@ -175,15 +188,32 @@ public class Table implements Service {
 		    if (obstacle.position.SquaredDistance(centre_detection) < distance*distance)
 		    	return true;
 		}	
+		iterator = listObstaclesFixes.iterator();
+		while ( iterator.hasNext() )
+		{
+		    Obstacle obstacle = iterator.next();
+		    if (obstacle.position.SquaredDistance(centre_detection) < distance*distance)
+		    	return true;
+		}
+		
+		return robots_adverses[0].position.SquaredDistance(centre_detection) < distance*distance
+				|| robots_adverses[1].position.SquaredDistance(centre_detection) < distance*distance;
+	}	
 
-		return false;
-	}
-
+	/**
+	 * Utilisé par le thread de laser
+	 * @param i
+	 * @param position
+	 */
     public void deplacer_robot_adverse(int i, Vec2 position)
     {
     	robots_adverses[i].position = position.clone();
     }
 	
+    /**
+     * Utilisé par le thread de stratégie
+     * @return
+     */
     public Vec2[] get_positions_ennemis()
     {
     	Vec2[] positions =  new Vec2[2];
@@ -215,8 +245,27 @@ public class Table implements Service {
 		hashFire = indice++;
 	}
 	
+	public float distanceFire(Vec2 position, int i)
+	{
+		return position.distance(arrayFire[i].position);
+	}
+	
 	// Arbres
 	
+	public int nearestTree (Vec2 position)
+	{
+		int min = 0;
+		for (int i = 0; i < 4; i++)
+			if (arrayTree[i].getPosition().SquaredDistance(position) < arrayTree[min].getPosition().SquaredDistance(position))
+				min = i;
+		return min;
+	}
+	
+	public float distanceTree(Vec2 position, int i)
+	{
+		return position.distance(arrayTree[i].position);
+	}
+
 	public void pickTree (int id)
 	{
 		arrayTree[id].setTaken();
@@ -242,7 +291,7 @@ public class Table implements Service {
 	{
 		return arrayTree[tree_id].isTaken();
 	}
-		
+	
 	//Torches
 	
 	public int nearestTorch (Vec2 position)
@@ -252,36 +301,41 @@ public class Table implements Service {
 		else
 			return 1;
 	}
-			
+
+	public float distanceTorch(Vec2 position, int i)
+	{
+		return position.distance(arrayTorch[i].position);
+	}
+
+	/**
+	 * La table en argument deviendra la copie de this (this reste inchangé)
+	 * @param ct
+	 */
 	public void clone(Table ct)
 	{
-		if(ct.hashFire != hashFire)
+		if(!equals(ct))
 		{
-			for(int i = 0; i < 10; i++)
-				arrayFire[i].clone(ct.arrayFire[i]);
-			ct.hashFire = hashFire;
-		}
-
-		if(ct.hashTree != hashTree)
-		{
-			for(int i = 0; i < 4; i++)		
-				arrayTree[i].clone(ct.arrayTree[i]);
-			ct.hashTree = hashTree;
-		}
-
-		if(ct.hashTorch != hashTorch)
-		{
-			for(int i = 0; i < 2; i++)		
-				arrayTorch[i].clone(ct.arrayTorch[i]);
-			ct.hashTorch = hashTorch;
-		}
-
-		if(ct.hashObstacles != hashObstacles)
-		{
-			ct.listObstacles.clear();
-			for(Obstacle item: listObstacles)
-				ct.listObstacles.add(item.clone());
-			ct.hashObstacles = hashObstacles;
+			if(ct.hashFire != hashFire)
+			{
+				for(int i = 0; i < 10; i++)
+					arrayFire[i].clone(ct.arrayFire[i]);
+				ct.hashFire = hashFire;
+			}
+	
+			if(ct.hashTree != hashTree)
+			{
+				for(int i = 0; i < 4; i++)		
+					arrayTree[i].clone(ct.arrayTree[i]);
+				ct.hashTree = hashTree;
+			}
+	
+			if(ct.hashObstacles != hashObstacles)
+			{
+				ct.listObstacles.clear();
+				for(Obstacle item: listObstacles)
+					ct.listObstacles.add(item.clone());
+				ct.hashObstacles = hashObstacles;
+			}
 		}
 	}
 	
@@ -292,5 +346,55 @@ public class Table implements Service {
 		return cloned_table;
 	}
 
+	/**
+	 * Utilisé par les tests unitaires uniquement. Vérifie que les hash sont bien mis à jour
+	 * @return
+	 */
+	public int hashTable()
+	{
+		return hashFire + hashTree + hashObstacles;
+	}
+
+	/**
+	 * Utilisé pour les tests
+	 * @param other
+	 * @return
+	 */
+	public boolean equals(Table other)
+	{
+		return 	hashFire == other.hashFire
+				&& hashTree == other.hashTree
+				&& hashObstacles == other.hashObstacles;
+	}
+	
+	/**
+	 * Utilisé pour les tests
+	 * @return le nombre d'obstacles mobiles détectés
+	 */
+	public int nb_obstacles()
+	{
+		return listObstacles.size();
+	}
+	
+	public int nearestFreeFresco(Vec2 position)
+	{
+		int min = 0;
+		for (int i = 0; i < list_fresco_hanged.length ; i++)
+			if (!(list_fresco_hanged[i]) && list_fresco_pos[i].getPosition().SquaredDistance(position) < list_fresco_pos[min].getPosition().SquaredDistance(position))
+				min = i;
+		return min;
+	}
+	public void appendFresco(int i)
+	//ça ajoute une fresque par rapport à la position
+	//on utilisera nearestFrescoFree pour trouver i
+	{
+		list_fresco_hanged[i] = true;
+	}
+	public float distanceFresco(Vec2 position, int i)
+	{
+		return position.distance(list_fresco_pos[i].getPosition());		
+	}
+	//Il faudra faire gaffe à la différence entre les distance et les squaredDistance quand on les compare avec des constantes ! Achtung !!!
+	
 }
 

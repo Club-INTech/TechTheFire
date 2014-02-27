@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <libintech/interrupt_manager.hpp>
 #include <libintech/isr.hpp>
-#include "comm.hpp"
+#include "pince.hpp"
 
 INITIALISE_INTERRUPT_MANAGER();
 

@@ -39,7 +39,7 @@ import robot.serial.Serial;
  * RobotVrai
  * ScriptManager
  * Strategie
- * thread* (threadTimer, threadPosition, threadStrategie, threadCapteurs, threadLaser)
+ * thread* (threadTimer, threadStrategie, threadCapteurs, threadLaser)
  * Pathfinding
  * MemoryManager
  * Laser
@@ -55,32 +55,59 @@ public class Container {
 	private Map<String,Service> services = new Hashtable<String,Service>();
 	private SerialManager serialmanager = null;
 	private ThreadManager threadmanager = null;
+	private Log log = null;
+	private Read_Ini config = null;
+
+	public void destructeur()
+	{
+		arreteThreads();
+		Sleep.sleep(700);
+		if(serialmanager != null)
+		{
+			if(serialmanager.serieAsservissement != null)
+				serialmanager.serieAsservissement.close();
+			if(serialmanager.serieCapteursActionneurs != null)
+				serialmanager.serieCapteursActionneurs.close();
+			if(serialmanager.serieLaser != null)
+				serialmanager.serieLaser.close();
+		}
+		log.destructeur();
+	}
 	
+	public Container() throws ContainerException
+	{
+		try {
+			services.put("Read_Ini", (Service)new Read_Ini("../pc/config/"));
+			config = (Read_Ini)services.get("Read_Ini");
+			services.put("Log", (Service)new Log(config));
+			log = (Log)services.get("Log");
+		}
+		catch(Exception e)
+		{
+			throw new ContainerException();
+		}
+		threadmanager = new ThreadManager(config, log);
+	}
+
 	public Service getService(String nom) throws ContainerException, ThreadException, ConfigException, SerialManagerException
 	{
 		if(services.containsKey(nom));
-		else if(nom == "Read_Ini")
-		{
-			services.put(nom, (Service)new Read_Ini("../pc/config/"));
-		}
-		else if(nom == "Log")
-			services.put(nom, (Service)new Log(	(Read_Ini)getService("Read_Ini")));
 		else if(nom == "Table")
 		{
 			services.put(nom, (Service)new Table(	(Log)getService("Log"),
 													(Read_Ini)getService("Read_Ini")));
-			((Table) services.get(nom)).initialise();
+			((Table) services.get(nom)).initialise(); // N'est pas mis dans le constructeur car ne doit être appelé que pour la toute première instance
 		}
 		else if(nom.length() > 4 && nom.substring(0,5).equals("serie"))
 		{
-				if(serialmanager == null)
-					serialmanager = new SerialManager((Log)getService("Log"));
-				services.put(nom, (Service)serialmanager.getSerial(nom));
+			if(serialmanager == null)
+				serialmanager = new SerialManager(log);
+			services.put(nom, (Service)serialmanager.getSerial(nom));
 		}
 		else if(nom == "Deplacements")
 			services.put(nom, (Service)new Deplacements((Log)getService("Log"),
 														(Serial)getService("serieAsservissement")));
-		else if(nom == "Capteur")
+		else if(nom == "Capteur" || nom == "Capteurs")
 			services.put(nom, (Service)new Capteurs(	(Read_Ini)getService("Read_Ini"),
 													(Log)getService("Log"),
 													(Serial)getService("serieCapteursActionneurs")));
@@ -108,22 +135,41 @@ public class Container {
 															(RobotVrai)getService("RobotVrai")));
 		else if(nom == "Strategie")
 			services.put(nom, (Service)new Strategie(	(MemoryManager)getService("MemoryManager"),
-														(ThreadAnalyseEnnemi)getService("threadAnalyseEnnemi"),
 														(ThreadTimer)getService("threadTimer"),
 														(ScriptManager)getService("ScriptManager"),
 														(Table)getService("Table"),
 														(RobotVrai)getService("RobotVrai"),
 														(Read_Ini)getService("Read_Ini"),
-														(Log)getService("Log")));			 
-		else if(nom.length() > 5 && nom.substring(0,6).equals("thread"))
-		{
-			if(threadmanager == null)
-			{
-				threadmanager = new ThreadManager(	(Read_Ini)getService("Read_Ini"),
-													(Log)getService("Log"));
-			}
-				services.put(nom, (Service)threadmanager.getThread(nom));
-		}
+														(Log)getService("Log")));
+		else if(nom == "threadTimer")
+			services.put(nom, (Service)threadmanager.getThreadTimer(	(Table)getService("Table"),
+																		(Capteurs)getService("Capteur"),
+																		(Deplacements)getService("Deplacements")));
+		else if(nom == "threadPosition")
+			services.put(nom, (Service)threadmanager.getThreadPosition(	(RobotVrai)getService("RobotVrai"),
+																		(ThreadTimer)getService("threadTimer")));
+		else if(nom == "threadCapteurs")
+			services.put(nom, (Service)threadmanager.getThreadCapteurs(	(RobotVrai)getService("RobotVrai"),
+																		(Pathfinding)getService("Pathfinding"),
+																		(ThreadTimer)getService("threadTimer"),
+																		(Table)getService("Table"),
+																		(Capteurs)getService("Capteur")));
+
+		else if(nom == "threadStrategie")
+			services.put(nom, (Service)threadmanager.getThreadStrategie((Strategie)getService("Strategie"),
+																		(Table)getService("Table"),
+																		(RobotVrai)getService("RobotVrai"),
+																		(MemoryManager)getService("MemoryManager"),
+																		(ThreadTimer)getService("threadTimer")));
+		else if(nom == "threadLaser")
+			services.put(nom, (Service)threadmanager.getThreadLaser(	(Laser)getService("Laser"),
+																		(Table)getService("Table"),
+																		(ThreadTimer)getService("threadTimer"),
+																		(FiltrageLaser)getService("FiltrageLaser")));
+		else if(nom == "threadAnalyseEnnemi")
+			services.put(nom, (Service)threadmanager.getThreadAnalyseEnnemi(	(Table)getService("Table"),
+																				(ThreadTimer)getService("threadTimer"),
+																				(Strategie)getService("Strategie")));
 		else if(nom == "Pathfinding")
 			services.put(nom, (Service)new Pathfinding(	(Table)getService("Table"),
 														(Read_Ini)getService("Read_Ini"),
@@ -146,11 +192,43 @@ public class Container {
 													(RobotVrai)getService("RobotVrai")));
 		else
 		{
-			System.out.println("Erreur de getService pour le service: "+nom);
+			log.critical("Erreur de getService pour le service: "+nom, this);
 			throw new ContainerException();
 		}
 		return services.get(nom);
+	}	
+		
+	/**
+	 * Demande au thread manager de démarrer les threads enregistrés
+	 */
+	public void demarreThreads()
+	{
+		threadmanager.demarreThreads();
 	}
 
+	/**
+	 * Demande au thread manager de démarrer tous les threads
+	 */
+	public void demarreTousThreads()
+	{
+		try {
+			getService("threadAnalyseEnnemi");
+			getService("threadLaser");
+			getService("threadStrategie");
+			getService("threadCapteurs");
+			getService("threadPosition");
+			getService("threadTimer");
+		} catch (Exception e) {
+		}
+		threadmanager.demarreThreads();
+	}
+
+	/**
+	 * Demande au thread manager d'arrêter les threads
+	 */
+	public void arreteThreads()
+	{
+		threadmanager.arreteThreads();
+	}
 	
 }

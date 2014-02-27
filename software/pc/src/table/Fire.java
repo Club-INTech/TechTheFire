@@ -25,6 +25,7 @@ class Fire extends Game_Element {
 		this.height = height;
 //		this.orientation = orientation;
 //		this.colour = couleur;		
+		//pourquoi retiré?
 	}
 	
 	public void pickFire()
@@ -32,11 +33,12 @@ class Fire extends Game_Element {
 		this.taken = true;
 	}
 	
-	public boolean isTaken()
+/*	public boolean isTaken()
 	{
 		return taken;
 	}
-	
+	*/
+	//pourquoi retiré?
 	public void ejectFire()
 	{
 		this.onFireplace = true;

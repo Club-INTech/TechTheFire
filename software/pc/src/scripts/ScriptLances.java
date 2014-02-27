@@ -23,8 +23,6 @@ import exception.MouvementImpossibleException;
  *
  */
 
-// TODO Guy
-
 public class ScriptLances extends Script {
 	
 
@@ -53,10 +51,12 @@ public class ScriptLances extends Script {
 	}
 
 	@Override
-	protected Vec2 point_entree(int id, final Robot robot, final Table table) {
-		// A modifier, la position devant le mammouth
-		// Note � moi-m�me : demander � Ngon� ou Alexandre pour la distance
-		return new Vec2(1000,1500);
+	public Vec2 point_entree(int id) {
+		// Les points d'entrées ne sont pas symétriques car le lanceur n'est que d'un seul côté
+		if(couleur == "jaune")
+			return new Vec2(-400,1400);
+		else
+			return new Vec2(-1200,1400);
 	}
 
 	@Override
@@ -74,17 +74,37 @@ public class ScriptLances extends Script {
 	@Override
 	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
 	{
-		// ajuster l'orientation du robot (objet robot)
-		robot.tourner(0);
-		// tirer (objet robot)
+		// TODO: tester!
+		
+		robot.tourner((float)Math.PI, true);
+
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
 		Executable tirerballes = new TirerBalles(robot);
-		Hook hook = hookgenerator.hook_abscisse(0); // modifier abscisse
-		hook.ajouter_callback(new Callback(tirerballes, true));
-		hooks.add(hook);
+		
+		// Hook pour la 1ere balle
+		Hook hook1 = hookgenerator.hook_abscisse(950);
+		hook1.ajouter_callback(new Callback(tirerballes, true));
+		hooks.add(hook1);
+		
+		// Hook pour la 2e balle
+		Hook hook2 = hookgenerator.hook_abscisse(850);
+		hook2.ajouter_callback(new Callback(tirerballes, true));
+		hooks.add(hook2);
+		
+		// Hook pour la 3e balle
+		Hook hook3 = hookgenerator.hook_abscisse(750);
+		hook3.ajouter_callback(new Callback(tirerballes, true));
+		hooks.add(hook3);
 		
 		robot.set_vitesse_translation("vitesse_mammouth");
-		robot.avancer(50, hooks); // modifier distance
+		robot.avancer(800, hooks);
+	}
+
+	@Override
+	public float proba_reussite()
+	{
+		// TODO
+		return 1;
 	}
 
 	@Override

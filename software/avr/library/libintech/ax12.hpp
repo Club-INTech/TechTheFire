@@ -133,7 +133,6 @@ class AX
 			if (reglength > 1) {data[2] = (value&0xFF00)>>8;}
 			sendPacket(reglength+1, AX_WRITE_DATA, data);
 		}
-
 		void static writeDataB(uint8_t regstart, uint8_t reglength, uint16_t value) {
 			uint8_t data [reglength+1];
 			data[0] = regstart;
@@ -150,22 +149,22 @@ class AX
 
 			Serial_AX12::disable_tx();                   //désactiver la série sortante
 			Serial_AX12::enable_rx();                   //activer la série entrante
-			answer[0] = 0;
-			while (answer[0] != 255) 
+			unsigned char buffer = 0;
+			while (buffer != 255) 
 			{
-				Serial_AX12::read_char(answer[0], 100); //attente du séparateur de trame 0xFF
+				Serial_AX12::read_char(buffer, 100); //attente du séparateur de trame 0xFF
 			}
-			while (answer[0] == 255) 
+			while (buffer == 255) 
 			{
-				Serial_AX12::read_char(answer[0], 100); //évacuation du séparateur et de l'id
+				Serial_AX12::read_char(buffer, 100); //évacuation du séparateur et de l'id
 			}
-			Serial_AX12::read_char(answer[0], 100);     //taille des données restantes à lire (nbDonnéesDemandées + 2 : avec toss_error et checksum)
-			uint8_t length = answer[0] - 2;             //taille des données utiles            
-			Serial_AX12::read_char(answer[0], 100);     //évacuation du toss_error
+			Serial_AX12::read_char(buffer, 100);     //taille des données restantes à lire (nbDonnéesDemandées + 2 : avec toss_error et checksum)
+			uint8_t length = buffer - 2;             //taille des données utiles            
+			Serial_AX12::read_char(buffer, 100);     //évacuation du toss_error
 			for (uint8_t f=0; f<length; f++) {
 				Serial_AX12::read_char(answer[f], 100); //lecture des données
 			}    
-			Serial_AX12::read_char(answer[0], 100);     //évacuation du checksum
+			Serial_AX12::read_char(buffer, 100);     //évacuation du checksum
 			Serial_AX12::disable_rx();                  //désactiver la série entrante
 			Serial_AX12::enable_tx();                   //réactiver la série sortante
 		}
@@ -363,6 +362,16 @@ class AX
 			writeDataB(AX_DOWN_LIMIT_VOLTAGE, 1, volt);
 		}
 
+		// Changement du couple
+		void changeCouple(uint16_t couple)
+		{
+			writeData(AX_MAX_TORQUE_L, 2, couple);
+		}
+
+		void static changeCoupleB(uint16_t couple)
+		{
+			writeDataB(AX_MAX_TORQUE_L, 2, couple);
+		}
 
 		// LEDs d'alarme
 		void led(uint8_t type)
@@ -415,6 +424,7 @@ class AX
 		{
 			readData(regstart, reglength, answer);
 		}
+  
 };
 
 #endif

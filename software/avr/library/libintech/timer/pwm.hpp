@@ -21,22 +21,22 @@ public:
 public:
     static inline TimerSize pwm_a()
     {
-        TimerRegisters::pwm_a();
+        return TimerRegisters::pwm_a();
     }
 
     static inline void pwm_a(TimerSize value)
     {
-        return TimerRegisters::pwm_a(value);
+        TimerRegisters::pwm_a(value);
     }
 
     static inline TimerSize pwm_b()
     {
-        TimerRegisters::pwm_b();
+        return TimerRegisters::pwm_b();
     }
 
     static inline void pwm_b(TimerSize value)
     {
-        return TimerRegisters::pwm_b(value);
+        TimerRegisters::pwm_b(value);
     }
 
     static inline void waveform_mode(const PwmMode mode)

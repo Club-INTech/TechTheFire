@@ -25,13 +25,14 @@ public class ScriptDeposerFeu extends Script {
 	}
 
 	@Override
-	public ArrayList<Integer> version(Robot robot, Table table) {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<Integer> version(final Robot robot, final Table table) {
+		// TODO
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		return versionList;
 	}
 
 	@Override
-	protected Vec2 point_entree(int id, Robot robot, Table table) {
+	public Vec2 point_entree(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -49,8 +50,8 @@ public class ScriptDeposerFeu extends Script {
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table)
-			throws MouvementImpossibleException {
+	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
+	{
 		// TODO Auto-generated method stub
 		
 	}
@@ -59,6 +60,13 @@ public class ScriptDeposerFeu extends Script {
 	protected void termine(Robot robot, Table table) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public float proba_reussite()
+	{
+		// TODO
+		return 1;
 	}
 	
 	public String toString()

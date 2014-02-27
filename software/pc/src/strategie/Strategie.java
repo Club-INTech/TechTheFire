@@ -1,18 +1,21 @@
 package strategie;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map;
 
 import robot.RobotChrono;
 import robot.RobotVrai;
 import scripts.Script;
 import scripts.ScriptManager;
 import table.Table;
-import threads.ThreadAnalyseEnnemi;
 import threads.ThreadTimer;
 import utils.Log;
 import utils.Read_Ini;
+import utils.Sleep;
 import container.Service;
 import exception.ScriptException;
+import smartMath.Vec2;
 
 /**
  * Classe qui prend les décisions et exécute les scripts
@@ -24,7 +27,6 @@ public class Strategie implements Service {
 
 	// Dépendances
 	private MemoryManager memorymanager;
-	private ThreadAnalyseEnnemi threadanalyseennemi;
 	private ThreadTimer threadtimer;
 	private ScriptManager scriptmanager;
 	private Table table;
@@ -32,25 +34,22 @@ public class Strategie implements Service {
 	private Read_Ini config;
 	private Log log;
 	
-	public Script scriptEnCours;
-	public int versionScriptEnCours;
+	private Map<String,Integer> echecs = new Hashtable<String,Integer>();
+
+	private NoteScriptVersion scriptEnCours;
 	
 	public int TTL;
-	
+
 	// TODO initialisations des variables = première action
 	// Prochain script à exécuter si on est interrompu par l'ennemi
-	public Script prochainScriptEnnemi;
-	public Integer versionProchainScriptEnnemi;
+	private NoteScriptVersion prochainScriptEnnemi;
 	
 	// Prochain script à exécuter si l'actuel se passe bien
-	public Script prochainScript;
-	public int versionProchainScript;
-
+	private NoteScriptVersion prochainScript;
 	
-	public Strategie(MemoryManager memorymanager, ThreadAnalyseEnnemi threadanalyseennemi, ThreadTimer threadtimer, ScriptManager scriptmanager, Table table, RobotVrai robotvrai, Read_Ini config, Log log)
+	public Strategie(MemoryManager memorymanager, ThreadTimer threadtimer, ScriptManager scriptmanager, Table table, RobotVrai robotvrai, Read_Ini config, Log log)
 	{
 		this.memorymanager = memorymanager;
-		this.threadanalyseennemi = threadanalyseennemi;
 		this.threadtimer = threadtimer;
 		this.scriptmanager = scriptmanager;
 		this.table = table;
@@ -64,34 +63,54 @@ public class Strategie implements Service {
 	 */
 	public void boucle_strategie()
 	{
+		while(!threadtimer.match_demarre)
+			Sleep.sleep(20);
+
+		log.debug("Stratégie lancée", this);
 		while(!threadtimer.fin_match)
 		{
-			while(prochainScript == null)
+			synchronized(prochainScript)
 			{
-				synchronized(versionProchainScriptEnnemi)
+				if(prochainScript != null)
 				{
-					synchronized(prochainScript)
-					{
-						scriptEnCours = prochainScript;
-						versionScriptEnCours = versionProchainScriptEnnemi;
-						prochainScript = null;
-					}
+					scriptEnCours = prochainScript.clone();
+					prochainScript = null;
 				}
-				if(scriptEnCours == null)
+				else
+					scriptEnCours = null;
+			}
+
+			if(scriptEnCours != null)
+			{
+				boolean dernier = (nbScriptsRestants() == 1);
+				log.debug("Stratégie fait: "+scriptEnCours+", dernier: "+dernier, this);
+				// le dernier argument, retenter_si_blocage, est vrai si c'est le dernier script. Sinon, on change de script sans attendre
+				try {
+					scriptEnCours.script.agit(scriptEnCours.version, robotvrai, table, dernier);
+				}
+				catch(Exception e)
 				{
-					log.warning("Aucun ordre n'est à disposition.", this);
-					try {
-						Thread.sleep(500);
-					}
-					catch(Exception e)
+					// enregistrement de l'erreur
+					String nom = scriptEnCours.script.toString();
+					if(echecs.containsKey(nom))
 					{
-						System.out.println(e);
+						int nb = echecs.get(nom);
+						echecs.put(nom, nb+1);
 					}
+					else
+						echecs.put(nom, 1);
 				}
 			}
-	
-			log.debug("Stratégie fait: "+scriptEnCours.toString()+", version "+Integer.toString(versionScriptEnCours), this);
-			scriptEnCours.agit(versionScriptEnCours, robotvrai, table);
+			else
+			{
+				log.critical("Aucun ordre n'est à disposition. Attente.", this);
+				Sleep.sleep(25);/**
+				 * Méthode qui, à partir de la durée de freeze et de l'emplacement des ennemis, tire des conclusions.
+				 * Exemples: l'ennemi vide cet arbre, il a posé sa fresque ici, ...
+				 * Modifie aussi la variable TTL Time To Live!
+				 */
+			}
+
 		}
 		log.debug("Arrêt de la stratégie", this);
 		
@@ -100,11 +119,88 @@ public class Strategie implements Service {
 	/**
 	 * Méthode qui, à partir de la durée de freeze et de l'emplacement des ennemis, tire des conclusions.
 	 * Exemples: l'ennemi vide cet arbre, il a posé sa fresque ici, ...
-	 * Modifie aussi la variable TTL!
+	 * Modifie aussi la variable TTL!long
 	 */
-	public void analyse_ennemi()
+	public void analyse_ennemi(Vec2[] positionsfreeze, int[] duree_freeze)
+	//en fait on n'a pas besoin de la date des freezes mais de la durée des freeze
 	{
-		int[] duree_freeze = threadanalyseennemi.duree_freeze();
+		//
+		int distance_influence = 500; //50 cm
+		int duree_standard = 3000; //3 secondes
+		int duree_blocage = 10000; //10 secondes
+		//int larg_max = 100; //10 cm est la largeur maximale de la fresque
+		//valeur amenée à être modifiée
+		//inutile en fait
+		for(int i = 0; i <2; i++)
+		{
+			/*
+			 * Je mets en garde contre la façon dont peut être utilisé positionsfreeze
+			 * en effet, une fois que le robot adverse a été considéré commme preneur
+			 * de feu ou de fruit, alors il faut remettre à 0 le compteurmais si on fait ça, 
+			 * on ne se prémunit pas, entre autre, contre les freezes
+			 * 			 * 
+			 */
+			int i_min_fire = table.nearestFire(positionsfreeze[i]);
+			int i_min_tree = table.nearestTree(positionsfreeze[i]);
+			int i_min_fresco = table.nearestFreeFresco(positionsfreeze[i]);
+			
+			if (duree_freeze[i] > duree_blocage)
+			{
+				//Il y a un blocage de l'ennemi, réfléchissons un peu et agissons optimalement
+			}
+			if (table.distanceTree(positionsfreeze[i], i_min_fire) < distance_influence && duree_freeze[i] > duree_standard)
+			{
+				table.pickTree(i_min_tree);
+			}
+			if(table.distanceFire(positionsfreeze[i], i_min_tree) < distance_influence && duree_freeze[i] > duree_standard)
+			{
+				table.pickFire(i_min_fire);
+			}
+			if(table.distanceFresco(positionsfreeze[i], i_min_tree) < distance_influence && duree_freeze[i] > duree_standard)
+			{
+				table.appendFresco(i_min_fresco);
+			}
+			
+			
+		
+			//il faudrait ajouter la gestion des fresques
+			//Il faudrait l'ajouter dans Table.java
+			/*
+			 * 
+			 * 
+			 * else if(table.distanceFresque(positionsfreeze[i], i_min_tree) < distance_influence && duree_freeze[i] > duree_standard)
+				{
+				table.putOnFresque(larg_max);
+				
+				}
+			 * 
+			 * 
+			 */
+			 
+			
+		}
+		/*Si ça n'a pas été vraiment codé, c'est parce qu'il faut utiliser Container (ou pas) et on sait pas encore comment
+		 * Pour chaque feu 
+		 * si rayon_feu +rayon_robot_adverse > distance(feu, robot_adverse) et duree_freeze > duree_prise_feu_generique alors
+		 *	feu pris
+		 *Pour chaque arbre 
+		 *si rayon_arbre +rayon_robot_adverse > distance(arbre, robot_adverse) et duree_freeze > duree_prise_feu_generique alors
+		 *	fruits pris
+		 *Pour chaque bac
+		 *si dimensions_bac +rayon_robot_adverse > distance(bac, robot_adverse) et duree_freeze_depot > duree_prise_feu_generique alors
+		 *	fruits déposés
+		 *On prend pas en compte le lancer de balles
+		 *
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 */
+		
 		
 		// modificiation de la table en conséquence
 		/*
@@ -112,31 +208,69 @@ public class Strategie implements Service {
 		 * Où l'ennemi dépose-t-il sa fresque?
 		 * Quel arbre récupère-t-il?
 		 * Quelle torche vide-t-il?
+		 * Où tire-t-il ses balles? (tirer au moins une balle là où il a tiré)
 		 */
+		
+		// Plus le robot ennemi reste fixe, plus le TTL doit être grand.
+		// Le TTL est une durée en ms sur laquelle on estime que le robot demeurera immobile
+		
 	}
 
 	/**
-	 * La note d'un script est fonction de son score, de sa durée, de la distance de l'ennemi
+	 * La note d'un script est fonction de son score, de sa durée, de la distance de l'ennemi à l'action 
 	 * @param score
 	 * @param duree
 	 * @param id
+	 * @param script
 	 * @return
 	 */
-	private float calculeNote(int score, int duree, int id)
+	private float calculeNote(int score, int duree, int id, Script script)
 	{
-		return 0;
+		// TODO
+		int A = 1;
+		int B = 1;
+		float prob = script.proba_reussite();
+		
+		//abandon de prob_deja_fait
+		Vec2[] position_ennemie = table.get_positions_ennemis();
+		float pos = (float)1.0 - (float)(Math.exp(-Math.pow((double)(script.point_entree(id).distance(position_ennemie[0])),(double)2.0)));
+		// pos est une valeur qui décroît de manière exponentielle en fonction de la distance entre le robot adverse et là où on veut aller
+		float note = (score*A*prob/duree+pos*B)*prob;
+		
+		log.debug((float)(Math.exp(-Math.pow((double)(script.point_entree(id).distance(position_ennemie[0])),(double)2.0))), this);
+		
+		return note;
 	}
 
+	/**
+	 * Evaluation des scripts pour un robot et une certaine profondeur
+	 * @param profondeur
+	 * @param id_robot
+	 * @return le meilleur triplet NoteScriptVersion
+	 * @throws ScriptException
+	 */
 	public NoteScriptVersion evaluation(int profondeur, int id_robot) throws ScriptException
 	{
 		return _evaluation(System.currentTimeMillis(), 0, profondeur, id_robot);
 	}
-	
+
+	/**
+	 * Evaluation des scripts pour un robot et une certaine profondeur, à partir d'une date future
+	 * @param date
+	 * @param profondeur
+	 * @param id_robot
+	 * @return le meilleur triplet NoteScriptVersion
+	 * @throws ScriptException
+	 */
+	public NoteScriptVersion evaluation(long date, int profondeur, int id_robot) throws ScriptException
+	{
+		return _evaluation(date, 0, profondeur, id_robot);
+	}
+
 	private NoteScriptVersion _evaluation(long date, int duree_totale, int profondeur, int id_robot) throws ScriptException
 	{
 		if(profondeur == 0)
 			return new NoteScriptVersion();
-		table.supprimer_obstacles_perimes(date);
 		NoteScriptVersion meilleur = new NoteScriptVersion(-1, null, -1);
 		int duree_connaissances = TTL;
 		
@@ -147,6 +281,9 @@ public class Strategie implements Service {
 			RobotChrono robotchrono_version = memorymanager.getCloneRobotChrono(profondeur);
 			ArrayList<Integer> versions = script.version(robotchrono_version, table_version);
 
+			// TODO corriger les scripts pour que ça n'arrive pas
+			if(versions == null)
+				break;
 			for(int id : versions)
 			{
 				try
@@ -155,7 +292,11 @@ public class Strategie implements Service {
 					RobotChrono cloned_robotchrono = memorymanager.getCloneRobotChrono(profondeur);
 					int score = script.score(id, cloned_robotchrono, cloned_table);
 					int duree_script = (int)script.calcule(id, cloned_robotchrono, cloned_table, duree_totale > duree_connaissances);
-					float noteScript = calculeNote(score, duree_script, id);
+					//log.debug("Durée de "+script+" "+id+": "+duree_script, this);
+					cloned_table.supprimer_obstacles_perimes(date+duree_script);
+					//log.debug("Score de "+script+" "+id+": "+score, this);
+					float noteScript = calculeNote(score, duree_script, id, script);
+					//log.debug("Note de "+script+" "+id+": "+noteScript, this);
 					NoteScriptVersion out = _evaluation(date + duree_script, duree_script, profondeur-1, id_robot);
 					out.note += noteScript;
 
@@ -168,10 +309,78 @@ public class Strategie implements Service {
 				}
 				catch(Exception e)
 				{
-					log.critical(e, this);
+					e.printStackTrace();
 				}
 			}
 		}
 		return meilleur;
 	}
+
+	/**
+	 * Renvoie le nombre de scripts qui peuvent encore être exécutés (indépendamment de leur nombre de version)
+	 * @return
+	 */
+	private int nbScriptsRestants()
+	{
+		int compteur = 0;
+		for(String nom_script : scriptmanager.getNomsScripts(0))
+		{
+			try {
+				Script script = scriptmanager.getScript(nom_script);
+				RobotChrono robotchrono = new RobotChrono(config, log);
+				if(script.version(robotchrono, table).size() >= 1)
+					compteur++;		
+			} catch (ScriptException e) {
+				e.printStackTrace();
+			}
+		}
+		return compteur;
+	}
+	
+	/*
+	 * GETTERS AND SETTERS
+	 */
+	
+	/**
+	 * Permet au thread de stratégie de définir le script à exécuter en cas de rencontre avec l'ennemi
+	 * @param prochainScriptEnnemi
+	 */
+	public void setProchainScriptEnnemi(NoteScriptVersion prochainScriptEnnemi)
+	{
+		synchronized(this.prochainScriptEnnemi)
+		{
+			this.prochainScriptEnnemi = prochainScriptEnnemi;
+		}
+	}
+
+	/**
+	 * Permet au thread de stratégie de définir le prochain script à faire
+	 * @param prochainScript
+	 */
+	public void setProchainScript(NoteScriptVersion prochainScript)
+	{
+		synchronized(this.prochainScript)
+		{
+			this.prochainScript = prochainScript;
+		}
+	}
+	
+	public boolean besoin_ProchainScript()
+	{
+		synchronized(prochainScript)
+		{
+			return prochainScript == null;
+		}
+	}
+	
+	public NoteScriptVersion getScriptEnCours()
+	{
+		synchronized(scriptEnCours)
+		{
+			return scriptEnCours.clone();
+		}
+	}
+
+
 }
+
