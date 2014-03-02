@@ -11,11 +11,13 @@ typedef ring_buffer<uint16_t, 4> ringBufferC;
 
 INITIALISE_INTERRUPT_MANAGER();
 
-ringBufferC ringBufferValeursR, ringBufferValeursB, ringBufferValeursG;
+ringBufferC ringBufferValeursRG, ringBufferValeursRD, ringBufferValeursBG, ringBufferValeursBD, ringBufferValeursVG, ringBufferValeursVD;
 int flag = 0;
-uint16_t counterD = 0, countDR = 0, countDG = 0, countDB = 0, medDR, medDG, medDB;
+uint16_t counterG = 0, counterD = 0, countRG = 0, countRD = 0, countVG = 0,countVD = 0, countBG = 0,countBD = 0, medRG, medRD, medVG, medVD, medBG, medBD;
+
 void interruption_timer();
 void interruption_int0();
+void interruption_int1();
 
 int main() {
 
@@ -24,6 +26,7 @@ int main() {
   D4::output();
   D7::output();
   D2::input();
+  D3::input();
 
   uart0::init();
   uart0::change_baudrate(9600); // vitesse de connection: 9600
@@ -43,30 +46,53 @@ int main() {
   int0::attach(interruption_int0);
   int0::enable();
 
+  int1::mode(int1::LOW_LEVEL);
+  int1::attach(interruption_int1);
+  int1::enable();
+
   char buffer[17];  
 
   while(1){
     uart0::read(buffer);
     if(!strcmp(buffer,"?")){
       
-      ringBufferValeursR.append(countR);
-      medR = mediane(ringBufferValeursR);
+      ringBufferValeursRG.append(countRG);
+      medRG = mediane(ringBufferValeursRG);
 
-      ringBufferValeursB.append(countB);
-      medB = mediane(ringBufferValeursB);
+      ringBufferValeursRD.append(countRD);
+      medRD = mediane(ringBufferValeursRD);
 
-      ringBufferValeursG.append(countG);
-      medG = mediane(ringBufferValeursG);
+      ringBufferValeursBG.append(countBG);
+      medBG = mediane(ringBufferValeursBG);
 
-      if(medR/medG == 0)
-	uart0::printfln("ROUGE g=%d b=%d r=%d",medG,medB,medR);
+      ringBufferValeursBD.append(countBD);
+      medBD = mediane(ringBufferValeursBD);
+
+      ringBufferValeursVG.append(countVG);
+      medVG = mediane(ringBufferValeursVG);
+
+      ringBufferValeursVD.append(countVD);
+      medVD = mediane(ringBufferValeursVD);
+
+      if(medRG/medVG == 0)
+	uart0::printfln("ROUGE g=%d b=%d r=%d et ",medVG,medBG,medRG);
       else{
-      if(medR/medG == 1)
-	uart0::printfln("JAUNE g=%d b=%d r=%d",medG,medB,medR);
+      if(medRG/medVG == 1)
+	uart0::printfln("JAUNE g=%d b=%d r=%d et ",medVG,medBG,medRG);
       else
-	uart0::printfln("? g=%d %d r=%d",medG,medB,medR);
+	uart0::printfln("? g=%d %d r=%d et",medVG,medBG,medRG);
       }
-uart0::printfln("red = %d, blue = %d, green = %d", medR/100, medB/100, medG/100);
+      //uart0::printfln("red = %d, blue = %d, green = %d", medR/100, medB/100, medG/100);
+
+      if(medRD/medVD == 0)
+	uart0::printfln("ROUGE g=%d b=%d r=%d",medVD,medBD,medRD);
+      else{
+	if(medRD/medVD == 1)
+	  uart0::printfln("JAUNE g=%d b=%d r=%d",medVD,medBD,medRD);
+	else
+	  uart0::printfln("? g=%d %d r=%d",medVD,medBD,medRD);
+      }
+      //uart0::printfln("red = %d, blue = %d, green = %d", medR/100, medB/100, medG/100);
     }
   }
 }
@@ -77,15 +103,17 @@ void interruption_timer()
 	flag++;
 	if(flag == 1)
 	{
-		countR = counter;
-		D4::high(); //DD5
-		D7::high(); //D6
+		countRG = counterG;
+		countRD = counterD;
+		D4::high(); 
+		D7::high();
 
 	}
 	else if(flag == 2)
 	{
 
-		countG = counter;
+		countVG = counterG;
+		countVD = counterD;
 		D4::low();
 		D7::high();
 
@@ -93,7 +121,8 @@ void interruption_timer()
 	else if(flag == 3)
 	{
 
-		countB = counter;
+		countBG = counterG;
+		countBD = counterD;
 		D4::low();
 		D7::low();
 	}
@@ -102,12 +131,18 @@ void interruption_timer()
 
 		flag = 0;
 	}
-	counter = 0;
+	counterG = 0;
+	counterD = 0;
 }
 
 void interruption_int0()
 {
-	counter++;
+  counterG++;
+}
+
+void interruption_int1(){
+
+  counterD++;
 }
 
 /*Cablage: s0 = D6
