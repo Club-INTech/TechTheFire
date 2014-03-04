@@ -15,7 +15,7 @@ import utils.Read_Ini;
 
 /**
  * Script de dépose de fruits
- * @author pf
+ * @author pf, raspbeguy, krissprolls 
  *
  */
 
@@ -25,26 +25,27 @@ public class ScriptDeposerFruits extends Script {
 			HookGenerator hookgenerator, Read_Ini config, Log log,
 			RobotVrai robotvrai) {
 		super(pathfinding, hookgenerator, config, log, robotvrai);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public ArrayList<Integer> version(Robot robot, Table table) {
-		// TODO
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		if (robot.get_nombre_fruits_bac() >0)
+		{
+			versionList.add(0);
+			versionList.add(1);
+		}		
 		return versionList;
 	}
 
 	@Override
 	public Vec2 point_entree(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Vec2(-600-300*id, 1200);
 	}
 
 	@Override
 	public int score(int id_version, Robot robot, Table table) {
-		// TODO Auto-generated method stub
-		return 0;
+		return robot.get_nombre_fruits_bac();
 	}
 
 	@Override
@@ -52,25 +53,32 @@ public class ScriptDeposerFruits extends Script {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
 	@Override
 	protected void execute(int id_version, Robot robot, Table table)
 			throws MouvementImpossibleException, SerialException {
-		// TODO Auto-generated method stub
+		robot.tourner((float)-Math.PI/2);
+		robot.avancer(-482);
+		robot.bac_haut();
 		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		robot.bac_bas();
+		robot.avancer(482);
 	}
-
 	@Override
 	protected void termine(Robot robot, Table table) {
-		// TODO Auto-generated method stub
+		try {
+			robot.bac_bas();
+		} catch (SerialException e) {
+			e.printStackTrace();
+		}
 	}
-	
 	@Override
 	public float proba_reussite()
 	{
-		// TODO
 		return 1;
 	}
-
-
 }
