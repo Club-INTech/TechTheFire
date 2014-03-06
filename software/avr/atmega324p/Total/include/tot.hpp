@@ -4,6 +4,9 @@
 #include <libintech/ax12.hpp>
 #include <libintech/uart.hpp>
 #include <util/delay.h>
+#include "capteurs.h"
+
+
 
 class Communication
 {
@@ -348,7 +351,77 @@ void retournerGauche ()
 	{
 		chargeur.goTo (0);
 	}
-	
+
+//capteurs
+
+
+Capteurs::Capteurs()
+{
+    timer_capteur_us::init();
+    timer_refresh::init();
+    
+    for(uint8_t i=0; i<TAILLE_BUFFER_ASC; i++)
+    {
+        contactGauche[i]=0;
+        contactMilieu[i]=0;
+	contactDroit[i]=0;
+    }
+
+}
+
+void Capteurs::maj()
+{
+    uint8_t retenueAvant = rbi(PINC,PINC0);
+    for(uint8_t i=0; i<TAILLE_BUFFER_ASC; i++)
+    {
+        uint8_t retenueApres = bufferAscenseurAvant[i]&(1<<7)>>7;
+        contactDroit[i] <<= 1;
+        contactDroit[i] += retenueAvant;
+        retenueAvant = retenueApres;
+    }
+
+    retenueAvant = rbi(PINC,PINC1);
+    for(uint8_t i=0; i<TAILLE_BUFFER_ASC; i++)
+    {
+        uint8_t retenueApres = bufferAscenseurArriere[i]&(1<<7)>>7;
+        contactMilieu[i] <<= 1;
+        contactMilieu[i] += retenueAvant;
+        retenueAvant = retenueApres;
+    }
+
+    retenueAvant = rbi(PINC,PINC1);
+    for(uint8_t i=0; i<TAILLE_BUFFER_ASC; i++)
+    {
+        uint8_t retenueApres = bufferAscenseurArriere[i]&(1<<7)>>7;
+        contactGauche[i] <<= 1;
+        contactGauche[i] += retenueAvant;
+        retenueAvant = retenueApres;
+    }
+}
+
+uint8_t Capteurs::contactDroit()
+{
+    uint8_t etat = 0;
+    for(uint8_t i=0; i<TAILLE_BUFFER_ASC; i++)
+        etat |= contactDroit[i];
+    return etat;
+}
+
+uint8_t Capteurs::contactMilieu()
+{
+    uint8_t etat = 0;
+    for(uint8_t i=0; i<TAILLE_BUFFER_ASC; i++)
+        etat |= contactMilieu[i];
+    return etat;
+}	
+
+uint8_t Capteurs::contactGauche()
+{
+    uint8_t etat = 0;
+    for(uint8_t i=0; i<TAILLE_BUFFER_ASC; i++)
+        etat |= contactGauche[i];
+    return etat;
+}	
 	
 
 
