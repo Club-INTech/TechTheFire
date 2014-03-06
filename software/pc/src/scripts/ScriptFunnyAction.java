@@ -25,51 +25,49 @@ public class ScriptFunnyAction extends Script {
 			HookGenerator hookgenerator, Read_Ini config, Log log,
 			RobotVrai robotvrai) {
 		super(pathfinding, hookgenerator, config, log, robotvrai);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public ArrayList<Integer> version(Robot robot, Table table) {
 		// TODO
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		versionList.add(0);
+		//0 c'est devant le mammouth de droitz
 		return versionList;
 	}
 
 	@Override
 	public Vec2 point_entree(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Vec2(700,1300 );
 	}
 
 	@Override
 	public int score(int id_version, Robot robot, Table table) {
-		// TODO Auto-generated method stub
-		return 0;
+		// Point si ça marche
+		return 6;
 	}
 
 	@Override
 	public int poids(Robot robot, Table table) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	protected void execute(int id_version, Robot robot, Table table)
 			throws MouvementImpossibleException, SerialException {
-		// TODO Auto-generated method stub
-		
+		robot.tourner((float)(Math.PI));
+		robot.lancerFilet();
 	}
 
 	@Override
 	public float proba_reussite()
 	{
-		// TODO
 		return 1;
 	}
 
 	@Override
 	protected void termine(Robot robot, Table table) {
-		// TODO Auto-generated method stub
+		// rien à faire, la partie est finie et rien n'est dérangé.
 		
 	}
 
