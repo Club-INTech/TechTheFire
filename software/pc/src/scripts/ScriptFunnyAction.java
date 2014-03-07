@@ -15,7 +15,7 @@ import utils.Read_Ini;
 
 /**
  * Script de la funny action (se met juste en position)
- * @author pf
+ * @author pf, krissprolls, rasbeguy
  *
  */
 
