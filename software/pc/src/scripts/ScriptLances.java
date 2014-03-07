@@ -32,17 +32,18 @@ public class ScriptLances extends Script {
 	}
 
 	/*
-	 * Le script lance 4 balles sur le côté droit
-	 * Le script donne un point d'entrée
+	 * Le script lance 4 balles sur le c��t�� droit
+	 * Le script donne un point d'entr��e
 	 */
 	
 
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		// En fait, si j'ai bien compris, les versions repr�sentent en fait
-		// le nombre de lances pouvant �tre lanc�es, dans la limite de 4.
+		// En fait, si j'ai bien compris, les versions repr���sentent en fait
+		// le nombre de lances pouvant ���tre lanc���es, dans la limite de 4.
 		// J'ai bon ?
+		// EDIT : Bon ben en fait non, j'ai l'impression qu'ici les versions ne servent à rien.
 		if (robot.getNbrLances() > 0) {
 			versionList.add(0);
 			versionList.add(1);
@@ -52,7 +53,7 @@ public class ScriptLances extends Script {
 
 	@Override
 	public Vec2 point_entree(int id) {
-		// Les points d'entrées ne sont pas symétriques car le lanceur n'est que d'un seul côté
+		// Les points d'entr��es ne sont pas sym��triques car le lanceur n'est que d'un seul c��t��
 		if(couleur == "jaune")
 			return new Vec2(-400,1400);
 		else
