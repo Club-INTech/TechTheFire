@@ -40,7 +40,7 @@ public class ScriptDeposerFruits extends Script {
 
 	@Override
 	public Vec2 point_entree(int id) {
-		return new Vec2(-600-300*id, 1200);
+		return new Vec2(-600-300*id, 1500);
 	}
 
 	@Override
@@ -57,16 +57,18 @@ public class ScriptDeposerFruits extends Script {
 	protected void execute(int id_version, Robot robot, Table table)
 			throws MouvementImpossibleException, SerialException {
 		robot.tourner((float)-Math.PI/2);
-		robot.avancer(-320);
+		robot.avancer(-20);
+		robot.bac_haut();	// histoire d'être sûr qu'il y arrive bien
+		robot.bac_haut();
 		robot.bac_haut();
 		
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		robot.bac_bas();
-		robot.avancer(320);
+		robot.avancer(20);
 	}
 	@Override
 	protected void termine(Robot robot, Table table) {
