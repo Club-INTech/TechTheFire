@@ -41,23 +41,23 @@ public class ScriptDeposerFeu extends Script {
 
 	@Override
 	public Vec2 point_entree(int id) {
-		if (id==0)
+		if(id == 0)
 		{
 			return new Vec2(-1150,233);			
 		}
-		if(id == 1)
+		else if(id == 1)
 		{
 			return new Vec2(1150,233);
 		}
-		if(id == 2)
+		else if(id == 2)
 		{
-			return new Vec2(0, 1470);
+			return new Vec2(0, 1270);
 		}
-		if(id == 3)
+		else if(id == 3)
 		{
 			return new Vec2(-391, 739);
 		}
-		if(id == 4)
+		else if(id == 4)
 		{
 			return new Vec2(391, 739);
 		}
@@ -89,7 +89,7 @@ public class ScriptDeposerFeu extends Script {
 		else if(id_version == 1)
 			robot.tourner((float)(-Math.atan(2/3)));
 		else if(id_version == 2)
-			robot.tourner((float)(-Math.PI));
+			robot.tourner((float)(-Math.PI/2));
 		else if(id_version == 3)
 			robot.tourner((float)(Math.atan(2/3)));
 		else if(id_version == 4)
