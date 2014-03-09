@@ -167,14 +167,14 @@ class Communication
 		{
 			this->rateauBasBasg ();
 		}
-		/*		else if ( strcmp ( ordre , "tourne" ) == 0 )  
+		else if ( strcmp ( ordre , "tourne" ) == 0 )  
 		{
 			this->tourner();
 		}
 		else if ( strcmp ( ordre , "reload" ) == 0 )  
 		{
 			this->reload();
-			}*/
+		}
 	}
 
 
@@ -329,14 +329,13 @@ void retournerGauche ()
 	{
 		rateauG.goTo (205);
 	}	
-};
 
 //actions du chargeur
-/*
+
 	void tourner ()
 	{
 		static int a=0;
-		if (a=300)
+		if (a==300)
 		{
 			a=0;
 		}
@@ -351,7 +350,7 @@ void retournerGauche ()
 		chargeur.goTo (0);
 	}
 	
-*/	
+};
 
 
 #endif
