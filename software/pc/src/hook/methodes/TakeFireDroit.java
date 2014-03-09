@@ -10,18 +10,18 @@ import hook.Executable;
  *
  */
 
-public class TakeFire implements Executable {
+public class TakeFireDroit implements Executable {
 
 	private Robot robot;
 	
-	public TakeFire(Robot robot)
+	public TakeFireDroit(Robot robot)
 	{
 		this.robot = robot;
 	}
 
 	public void execute() {
 		try {
-			robot.takefire();
+			robot.takefiredroit();
 		} catch (SerialException e) {
 			e.printStackTrace();
 		}
