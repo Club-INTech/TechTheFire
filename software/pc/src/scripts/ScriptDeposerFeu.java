@@ -97,7 +97,7 @@ public class ScriptDeposerFeu extends Script {
 
 		if(robot.isTient_feu_gauche())
 		{
-			if(robot.isFireRedGauche() ^ couleur == "rouge")
+			if(robot.isFeu_tenu_gauche_rouge() ^ couleur == "rouge")
 				robot.poserFeuEnRetournantGauche();
 			else
 				robot.poserFeuBonCoteGauche();
@@ -105,7 +105,7 @@ public class ScriptDeposerFeu extends Script {
 		
 		if(robot.isTient_feu_droite())
 		{
-			if(robot.isFireRedDroite() ^ couleur == "rouge")
+			if(robot.isFeu_tenu_gauche_rouge() ^ couleur == "rouge")
 				robot.poserFeuEnRetournantDroit();
 			else
 				robot.poserFeuBonCoteDroit();
