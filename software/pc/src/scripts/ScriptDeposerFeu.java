@@ -28,11 +28,14 @@ public class ScriptDeposerFeu extends Script {
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		versionList.add(0);
-		versionList.add(1);
-		versionList.add(2);
-		versionList.add(3);
-		versionList.add(4);
+		if(robot.isTient_feu_droite() || robot.isTient_feu_gauche())
+		{
+			versionList.add(0);
+			versionList.add(1);
+			versionList.add(2);
+			versionList.add(3);
+			versionList.add(4);
+		}
 		return versionList;
 	}
 
@@ -64,26 +67,11 @@ public class ScriptDeposerFeu extends Script {
 	@Override
 	public int score(int id_version, Robot robot, Table table) 
 	{
-		//En effet, quand on pose un feu 
-		try{
-		if(robot.isThereFireGauche() && robot.isThereFireDroite())
-		{
+		if(robot.isTient_feu_droite() && robot.isTient_feu_gauche())
 			return 4;
-		}
-		else if(robot.isThereFireGauche() && robot.isThereFireDroite())
-		{
+		else if(robot.isTient_feu_droite() || robot.isTient_feu_gauche())
 			return 2;
-		}
-		else
-		{
-			return 0;
-		}
-		}
-		catch(SerialException e) {
-			e.printStackTrace();
-			return 0;
-		}
-		
+		return 0;		
 	}
 
 	@Override
@@ -95,44 +83,34 @@ public class ScriptDeposerFeu extends Script {
 	@Override
 	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException, SerialException
 	{
-		//Suivant là où onva poser, on doit se positionner différemment
+		//Suivant là où on va poser, on doit se positionner différemment
 		if (id_version == 0)
-		{
 			robot.tourner((float)(Math.PI+Math.atan(2/3)));
-		}
-		if(id_version == 1)
-		{
+		else if(id_version == 1)
 			robot.tourner((float)(-Math.atan(2/3)));
-		}
-		if(id_version == 2)
-		{
+		else if(id_version == 2)
 			robot.tourner((float)(-Math.PI));
-		}
-		if(id_version == 3)
-		{
+		else if(id_version == 3)
 			robot.tourner((float)(Math.atan(2/3)));
-		}
-		if(id_version == 4)
-		{
+		else if(id_version == 4)
 			robot.tourner((float)(Math.PI-Math.atan(2/3)));
-		}
-		if((couleur.equals("rouge") && robot.isFireRedGauche())|| couleur.equals("jaune")&& ! robot.isFireRedGauche())
+
+		if(robot.isTient_feu_gauche())
 		{
-			robot.poserFeuBonCoteGauche();
+			if(robot.isFireRedGauche() ^ couleur == "rouge")
+				robot.poserFeuEnRetournantGauche();
+			else
+				robot.poserFeuBonCoteGauche();
 		}
-		else
+		
+		if(robot.isTient_feu_droite())
 		{
-			robot.poserFeuEnRetournantGauche();
+			if(robot.isFireRedDroite() ^ couleur == "rouge")
+				robot.poserFeuEnRetournantDroit();
+			else
+				robot.poserFeuBonCoteDroit();
 		}
-		//On s'occupe de retourner ou non les pinces gauche et droite, de poser le feu et de remonter
-		if((couleur.equals("rouge") && robot.isFireRedDroite()) || (couleur.equals("jaune")&& ! robot.isFireRedDroite()))
-		{
-			robot.poserFeuBonCoteDroit();
-		}
-		else
-		{
-			robot.poserFeuEnRetournantDroit();
-		}
+		
 		robot.avancer(-50);
 		
 	}

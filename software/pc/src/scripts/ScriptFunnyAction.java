@@ -29,16 +29,14 @@ public class ScriptFunnyAction extends Script {
 
 	@Override
 	public ArrayList<Integer> version(Robot robot, Table table) {
-		// TODO
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		versionList.add(0);
-		//0 c'est devant le mammouth de droitz
 		return versionList;
 	}
 
 	@Override
 	public Vec2 point_entree(int id) {
-		return new Vec2(700,1300 );
+		return new Vec2(700,1300); // pourquoi se mettre si loin?
 	}
 
 	@Override
@@ -55,7 +53,7 @@ public class ScriptFunnyAction extends Script {
 	@Override
 	protected void execute(int id_version, Robot robot, Table table)
 			throws MouvementImpossibleException, SerialException {
-		robot.tourner((float)(Math.PI));
+		robot.tourner((float)(Math.PI), true);	// pas de symétrie
 		robot.lancerFilet();
 	}
 
