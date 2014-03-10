@@ -82,8 +82,6 @@ public class ScriptTorche extends Script {
 
 	@Override
 	public int score(int id_version, Robot robot, Table table) {
-		// Ici, se pose une question : doit-on, mettre les points potentiels ou les points effectifs
-		//0, 1 ou 2?, moi (krissprolls) je laisserais en 0
 		return 0;
 	}
 
@@ -267,7 +265,6 @@ public class ScriptTorche extends Script {
 
 	@Override
 	protected void termine(Robot robot, Table table) {
-
 		try
 		{
 			robot.lever_pince_droite();
