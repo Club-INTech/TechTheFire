@@ -15,7 +15,7 @@ import utils.Read_Ini;
 
 /**
  * Script de récupération de feux sur les torches mobiles et les feux debout
- * @author pf
+ * @author pf, krissprolls
  *
  */
 public class ScriptTorche extends Script {
@@ -105,7 +105,7 @@ public class ScriptTorche extends Script {
 		{
 			robot.tourner((float)Math.PI/2);
 		}			
-		else if(id_version ==2)
+		else /*if(id_version ==2)
 			//Vec2(-1100, 900);
 		{
 			robot.tourner((float)Math.PI/2);
@@ -125,7 +125,8 @@ public class ScriptTorche extends Script {
 		{
 			robot.tourner((float)Math.PI);
 		}	
-		else if(id_version ==6)
+		else*/
+		if(id_version ==6)
 			// Vec2(-1500,1200);
 		{
 			robot.tourner((float)Math.PI);
@@ -144,7 +145,8 @@ public class ScriptTorche extends Script {
 			// Vec2(200, 0);
 		{
 			robot.tourner((float)(3*Math.PI/2));
-		}	
+		}
+		/*
 		else if(id_version ==10)
 			// Vec2(-600, 1400);
 		{
@@ -154,12 +156,13 @@ public class ScriptTorche extends Script {
 			// Vec2(600, 1400);
 		{
 			robot.tourner((float)0);			
-		}
+		}*/
 		if(!robot.isTient_feu_gauche())
 		{
-			if(id_version == 2  && id_version == 3 && id_version == 4 && id_version == 5 && id_version == 10 && id_version == 11)
+			/*if(id_version == 2  && id_version == 3 && id_version == 4 && id_version == 5 && id_version == 10 && id_version == 11)
 			{
 				//Pour les feux à pousser
+				/*
 				try {
 				robot.milieu_pince_gauche();
 				robot.avancer(10);
@@ -175,7 +178,8 @@ public class ScriptTorche extends Script {
 				}
 				
 			}
-			else if(id_version == 0 && id_version == 1)
+			else */
+			if(id_version == 0 && id_version == 1)
 			{
 				//Pour les feux à ramasser dans les torches
 				try {
