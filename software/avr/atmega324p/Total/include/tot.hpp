@@ -4,6 +4,9 @@
 #include <libintech/ax12.hpp>
 #include <libintech/uart.hpp>
 #include <util/delay.h>
+#include "capteurs.hpp"
+
+
 
 class Communication
 {
@@ -24,7 +27,10 @@ class Communication
   	Ax12 rateauD; //ax12 du rateau droit
 	Ax12 bac; //ax12 du bac
 	Ax12 chargeur; //ax12 du chargeur
+	Capteurs capteurs;
         Ax12 filet; //ax12 du lance-filet
+
+
 	public:
 
 //constructeur
@@ -102,6 +108,14 @@ class Communication
 		{
 			this -> retablirGauche ();
 		}
+		else if ( strcmp ( ordre , "td" ) == 0)  // retourner un feu à droite
+		{
+			this -> retournerDroite ();
+		}
+		else if ( strcmp ( ordre , "rd" ) == 0)  // remettre en position initiale niveau rotation à droite
+		{
+			this -> retablirDroite ();
+		}
 		else if ( strcmp ( ordre , "bd" ) == 0)
 		{
 			this -> basDroite ();
@@ -122,7 +136,16 @@ class Communication
 		{
        	       		this -> hautDroite ();
 		}
-
+		/*
+		  else if (strcmp (ordre, "hrd") ==0)
+		  {
+		    this -> remonterEtRetablirDroite ();
+		  }
+		else if (strcmp (ordre, "hrg") ==0)
+		  {
+		    this -> remonterEtRetablirGauche ();
+		  }
+		*/
 		else if (strcmp (ordre, "test")==0)
 		  {
 		    this -> test ();
@@ -175,6 +198,39 @@ class Communication
 		{
 			this->reload();
 		}
+	        // infrarouge
+	        else if (strcmp(ordre, "ir_av")==0)
+	        {
+	            serial_pc::print(capteurs.inf1.value());
+	        }
+	
+	        // Ultrasons SRF05
+	        else if (strcmp(ordre, "us_av")==0)
+	        {
+	            serial_pc::print(capteurs.us1.value());
+	        }
+	        
+	        // JUMPER DE DÉBUT DE MATCH
+        	else if (strcmp(ordre, "j") == 0)
+        	{
+        	    serial_pc::print(C2::read());
+        	}
+	
+		// CAPTEURS ASCENSEURS
+        	else if (strcmp(ordre, "cg") == 0)
+        	{
+        	    serial_pc::print(capteurs.contactGauche());
+        	}
+	
+        	else if (strcmp(ordre, "cm") == 0)
+        	{
+        	    serial_pc::print(capteurs.contactMilieu());
+        	}
+		        else if (strcmp(ordre, "cd") == 0)
+        	{
+        	    serial_pc::print(capteurs.contactDroit());
+        	}
+	
 	}
 
 
@@ -218,25 +274,34 @@ class Communication
 	}
 void retournerGauche ()
   {
-    retourneurGauche.goTo (60);
+    retourneurGauche.goTo (240);
   }
   void retablirGauche ()
   {
-    retourneurGauche.goTo (240);
+    retourneurGauche.goTo (60);
   }
-
-
+  /*
+  void remonterEtRetablirGauche ()
+  {
+    orientationGauche.goTo(120);
+	positionGauche.goTo(120);
+	_delay_ms(500);
+	retourneurGauche.goTo (60);
+	hautGauche();
+  }
+  inutile pour l'instant
+  */
 //actions de la pince droite
 
 	void ouvrirDroite ()
 	{
-		pinceDroite.goTo (180);
+		pinceDroite.goTo (200);
 	}
 	void fermerDroite ()
 	{
 //	  uint16_t positionPrecedente = (pinceDroite.getPosition_0_1023());
 //	  uint16_t positionActuelle = positionPrecedente ;
-	  pinceDroite.goTo(90);
+	  pinceDroite.goTo(145);
 /*	  for(int i=0; i<7; i++)
 	      {
 		_delay_ms(100);
@@ -249,19 +314,21 @@ void retournerGauche ()
 	}
 	void basDroite ()
 	{
-		orientationDroite.goTo(270);
-		positionDroite.goTo(60);
+		orientationDroite.goTo(60);
+		positionDroite.goTo(240);
 	}
 	void milieuDroite ()
 	{
-		orientationDroite.goTo(185);
+		orientationDroite.goTo(145);
 		positionDroite.goTo(150);
 	}
 	void hautDroite ()
 	{
-	  	positionDroite.goTo(240);
-		_delay_ms(600);
-		orientationDroite.goTo(100);
+	  	positionDroite.goTo(60);
+		_delay_ms(300);
+		orientationDroite.goTo(240);
+		_delay_ms(200);
+		orientationDroite.goTo(145);
 	}
  void retournerDroite ()
   {
@@ -271,6 +338,17 @@ void retournerGauche ()
   {
     retourneurDroite.goTo (240);
   }
+  /* void remonterEtRetablirDroite ()
+  {
+    	orientationDroite.goTo(145);
+	positionDroite.goTo(180);
+	_delay_ms(500);
+	retourneurDroite.goTo (240);
+	hautDroite();
+  }
+  inutile pour le moment
+  */
+  // test généralisé
   void test ()
   {
     positionDroite.goToB(200);
@@ -330,6 +408,7 @@ void retournerGauche ()
 		rateauG.goTo (205);
 	}	
 
+
 //actions du chargeur
 
 	void tourner ()
@@ -349,8 +428,7 @@ void retournerGauche ()
 	{
 		chargeur.goTo (0);
 	}
-	
-};
 
+};
 
 #endif

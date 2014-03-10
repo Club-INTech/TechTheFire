@@ -1,5 +1,6 @@
 package hook;
 
+import robot.Cote;
 import robot.Robot;
 import robot.cartes.Capteurs;
 import utils.Log;
@@ -14,18 +15,24 @@ import utils.Read_Ini;
 class HookFeu extends Hook {
 
 	private Capteurs capteur;
+	Cote cote;
 	
-	public HookFeu(Read_Ini config, Log log, Capteurs capteur)
+	public HookFeu(Read_Ini config, Log log, Capteurs capteur, Cote cote)
 	{
 		super(config, log);
 		this.capteur = capteur;
+		this.cote = cote;
 	}
 	
 	public boolean evaluate(final Robot robot)
 	{
-		if(capteur.isThereFireGauche() || capteur.isThereFireDroit()) // vérifier aussi que le robot n'en porte pas déjà un...
+		// on regarde à gauche ou à droite selon la valeur de "gauche"
+		if(cote == Cote.GAUCHE && capteur.isThereFireGauche() || cote == Cote.DROIT && capteur.isThereFireDroit())
 		{
-			log.warning("Un feu a été détecté! Il est pris.", this);
+			if(cote == Cote.GAUCHE)
+				log.warning("Un feu a été détecté à gauche! Il est pris.", this);
+			else
+				log.warning("Un feu a été détecté à droite! Il est pris.", this);
 			return declencher();
 		}
 		return false;
