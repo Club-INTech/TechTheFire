@@ -3,6 +3,7 @@ package scripts;
 import java.util.ArrayList;
 
 import exception.MouvementImpossibleException;
+import exception.SerialException;
 import hook.HookGenerator;
 import pathfinding.Pathfinding;
 import robot.Robot;
@@ -28,18 +29,60 @@ public class ScriptTorche extends Script {
 	public ArrayList<Integer> version(Robot robot, Table table) {
 		// TODO
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		//Les feux dans les torches
+		//Ajouter une condition sur la présence de feux dans les torches
+		versionList.add(0);
+		versionList.add(1);
+		//Les feux verticaux
+		//Ajouter une condition pour chaque feu pour savoir s'il est toujours là ?
+		versionList.add(2);
+		versionList.add(3);
+		versionList.add(4);
+		versionList.add(5);
+		versionList.add(6);
+		versionList.add(7);
+		versionList.add(8);
+		versionList.add(9);
+		versionList.add(10);
+		versionList.add(11);
 		return versionList;
 	}
-
+	
 	@Override
 	public Vec2 point_entree(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		//Les coordonnées ont été prises à partir du réglement
+		if(id ==0)
+			return new Vec2(-600,700);
+		else if(id ==1)
+			return new Vec2(600,700);
+		else if(id ==2)
+			return new Vec2(-1100, 700);
+		else if(id ==3)
+			return new Vec2(1100,700);
+		else if(id ==4)
+			return new Vec2(-400, 400);
+		else if(id ==5)
+			return new Vec2(400,400);
+		else if(id ==6)
+			return new Vec2(-1500,1000);
+		else if(id ==7)
+			return new Vec2(1500, 1000);
+		else if(id ==8)
+			return new Vec2(-200, 200);
+		else if(id ==9)
+			return new Vec2(200, 200);
+		else if(id ==10)
+			return new Vec2(-400, 1400);
+		else if(id ==11)
+			return new Vec2(400, 1400);
+		else
+			return null;		
 	}
 
 	@Override
 	public int score(int id_version, Robot robot, Table table) {
-		// TODO Auto-generated method stub
+		// Ici, se pose une question : doit-on, mettre les points potentiels ou les points effectifs
+		//0, 1 ou 2?, moi (krissprolls) je laisserais en 0
 		return 0;
 	}
 
@@ -52,14 +95,83 @@ public class ScriptTorche extends Script {
 	@Override
 	protected void execute(int id_version, Robot robot, Table table)
 			throws MouvementImpossibleException {
-		// TODO Auto-generated method stub
+		if(id_version ==0)
+		{
+			robot.tourner((float)Math.PI/2);
+			
+		}
+		else if(id_version ==1)
+			//Vec2(600,900);
+		{
+			robot.tourner((float)Math.PI/2);
+		}			
+		else if(id_version ==2)
+			//Vec2(-1100, 900);
+		{
+			robot.tourner((float)Math.PI/2);
+		}	
+		else if(id_version ==3)
+			// Vec2(1100,900);
+		{
+			robot.tourner((float)Math.PI/2);
+		}	
+		else if(id_version ==4)
+			// Vec2(-600, 400);
+		{
+			robot.tourner((float)Math.PI/2);
+		}	
+		else if(id_version ==5)
+			// Vec2(600,400);
+		{
+			robot.tourner((float)Math.PI/2);
+		}	
+		else if(id_version ==6)
+			// Vec2(-1500,1200);
+		{
+			robot.tourner((float)Math.PI/2);
+		}	
+		else if(id_version ==7)
+			// Vec2(1500, 1200);
+		{
+			robot.tourner((float)Math.PI/2);
+		}	
+		else if(id_version ==8)
+			// Vec2(-200, 0);
+		{
+			robot.tourner((float)Math.PI/2);
+		}	
+		else if(id_version ==9)
+			// Vec2(200, 0);
+		{
+			robot.tourner((float)Math.PI/2);
+		}	
+		else if(id_version ==10)
+			// Vec2(-600, 1400);
+		{
+			robot.tourner((float)Math.PI/2);
+		}	
+		else if(id_version ==11)
+			// Vec2(600, 1400);
+		{
+			robot.tourner((float)Math.PI/2);
+		}
+		
 		
 	}
 
 	@Override
 	protected void termine(Robot robot, Table table) {
-		// TODO Auto-generated method stub
-		
+
+		try
+		{
+			robot.lever_pince_droite();
+			robot.fermer_pince_droite();
+			robot.lever_pince_gauche();
+			robot.fermer_pince_gauche();
+		}
+		catch(SerialException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
