@@ -4,6 +4,9 @@
 #include <libintech/ax12.hpp>
 #include <libintech/uart.hpp>
 #include <util/delay.h>
+#include "capteurs.hpp"
+
+
 
 class Communication
 {
@@ -24,7 +27,10 @@ class Communication
   	Ax12 rateauD; //ax12 du rateau droit
 	Ax12 bac; //ax12 du bac
 	Ax12 chargeur; //ax12 du chargeur
+	Capteurs capteurs;
         Ax12 filet; //ax12 du lance-filet
+
+
 	public:
 
 //constructeur
@@ -175,6 +181,39 @@ class Communication
 		{
 			this->reload();
 		}
+	        // infrarouge
+	        else if (strcmp(ordre, "ir_av")==0)
+	        {
+	            serial_pc::print(capteurs.inf1.value());
+	        }
+	
+	        // Ultrasons SRF05
+	        else if (strcmp(ordre, "us_av")==0)
+	        {
+	            serial_pc::print(capteurs.us1.value());
+	        }
+	        
+	        // JUMPER DE DÉBUT DE MATCH
+        	else if (strcmp(ordre, "j") == 0)
+        	{
+        	    serial_pc::print(C2::read());
+        	}
+	
+		// CAPTEURS ASCENSEURS
+        	else if (strcmp(ordre, "cg") == 0)
+        	{
+        	    serial_pc::print(capteurs.contactGauche());
+        	}
+	
+        	else if (strcmp(ordre, "cm") == 0)
+        	{
+        	    serial_pc::print(capteurs.contactMilieu());
+        	}
+		        else if (strcmp(ordre, "cd") == 0)
+        	{
+        	    serial_pc::print(capteurs.contactDroit());
+        	}
+	
 	}
 
 
@@ -330,6 +369,7 @@ void retournerGauche ()
 		rateauG.goTo (205);
 	}	
 
+
 //actions du chargeur
 
 	void tourner ()
@@ -349,8 +389,7 @@ void retournerGauche ()
 	{
 		chargeur.goTo (0);
 	}
-	
-};
 
+};
 
 #endif
