@@ -35,16 +35,16 @@ public class ScriptTorche extends Script {
 		versionList.add(1);
 		//Les feux verticaux
 		//Ajouter une condition pour chaque feu pour savoir s'il est toujours là ?
-		versionList.add(2);
+		/*versionList.add(2);
 		versionList.add(3);
 		versionList.add(4);
-		versionList.add(5);
+		versionList.add(5);*/
 		versionList.add(6);
 		versionList.add(7);
 		versionList.add(8);
 		versionList.add(9);
-		versionList.add(10);
-		versionList.add(11);
+		/*versionList.add(10);
+		versionList.add(11);*/
 		return versionList;
 	}
 	
@@ -55,6 +55,7 @@ public class ScriptTorche extends Script {
 			return new Vec2(-600,700);
 		else if(id ==1)
 			return new Vec2(600,700);
+		/*
 		else if(id ==2)
 			return new Vec2(-1100, 700);
 		else if(id ==3)
@@ -62,7 +63,7 @@ public class ScriptTorche extends Script {
 		else if(id ==4)
 			return new Vec2(-400, 400);
 		else if(id ==5)
-			return new Vec2(400,400);
+			return new Vec2(400,400);*/
 		else if(id ==6)
 			return new Vec2(-1500,1000);
 		else if(id ==7)
@@ -71,10 +72,10 @@ public class ScriptTorche extends Script {
 			return new Vec2(-200, 200);
 		else if(id ==9)
 			return new Vec2(200, 200);
-		else if(id ==10)
+		/*else if(id ==10)
 			return new Vec2(-400, 1400);
 		else if(id ==11)
-			return new Vec2(400, 1400);
+			return new Vec2(400, 1400);*/
 		else
 			return null;		
 	}
