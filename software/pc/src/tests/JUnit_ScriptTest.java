@@ -167,8 +167,28 @@ public class JUnit_ScriptTest extends JUnit_Test {
 	@Test
 	public void test_ScriptDeposerFeu_versions() throws Exception
 	{
-		// TODO
 		s = (Script)scriptmanager.getScript("ScriptDeposerFeu");
+		Assert.assertTrue(s.version(robotvrai, table).size() == 0);
+		robotvrai.takefiregauche();
+		Assert.assertTrue(s.version(robotvrai, table).size() == 5);
+	}
+
+	@Test
+	public void test_ScriptDeposerFeu_agit() throws Exception
+	{
+		robotvrai.lever_pince_gauche();
+		robotvrai.lever_pince_droite();
+		robotvrai.takefiregauche();
+		s = (Script)scriptmanager.getScript("ScriptDeposerFeu");
+		s.agit(2, robotvrai, table, true);
+	}
+
+	@Test
+	public void test_ScriptTorche_agit() throws Exception
+	{
+		
+		s = (Script)scriptmanager.getScript("ScriptTorche");
+		s.agit(0, robotvrai, table, true);
 	}
 
 }

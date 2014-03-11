@@ -432,12 +432,19 @@ public class RobotVrai extends Robot {
 		nombre_lances--;
 	}
 	
-	@Override
-	public void takefire() {
-		stopper();
-		sleep(2000);
+
+
+	public void takefiregauche() {
+		// TODO
+		tient_feu_gauche = true;
+
 	}
-	
+
+	public void takefiredroit() {
+		// TODO
+		tient_feu_droite = true;
+	}
+
 	@Override
 	public void bac_bas() throws SerialException
 	{
@@ -481,7 +488,27 @@ public class RobotVrai extends Robot {
 	{
 		actionneurs.lancerFilet();
 	}
-
+	@Override
+	public void milieu_pince_gauche() throws SerialException
+	{
+		actionneurs.milieu_pince_gauche();
+	}
+	@Override
+	public void milieu_pince_droite() throws SerialException
+	{
+		actionneurs.milieu_pince_droite();
+	}
+	@Override
+	public void baisser_pince_gauche() throws SerialException
+	{
+		actionneurs.baisser_pince_gauche();
+	}
+	@Override
+	public void baisser_pince_droite() throws SerialException
+	{
+		actionneurs.baisser_pince_droite();
+	}
+	
 	@Override	
 	public void lever_pince_gauche() throws SerialException
 	{
@@ -493,7 +520,16 @@ public class RobotVrai extends Robot {
 	{
 		actionneurs.lever_pince_droite();
 	}
-
+	@Override
+	public void ouvrir_pince_gauche() throws SerialException
+	{
+		actionneurs.ouvrir_pince_gauche();
+	}
+	@Override
+	public void ouvrir_pince_droite() throws SerialException
+	{
+		actionneurs.ouvrir_pince_droite();
+	}
 	@Override	
 	public void fermer_pince_gauche() throws SerialException
 	{
@@ -509,16 +545,22 @@ public class RobotVrai extends Robot {
 	@Override	
 	public void poserFeuBonCoteGauche() throws SerialException
 	{
+		log.debug("On pose le feu gauche sans le retourner", this);
 		//Ca remonte la pince aussi !
-		actionneurs.baisser_pince_gauche();
+		actionneurs.milieu_pince_gauche();
+		sleep(1000);
 		actionneurs.ouvrir_pince_gauche();
+		sleep(1000);
 		actionneurs.lever_pince_gauche();
+		sleep(1000);
 		actionneurs.fermer_pince_gauche();
+		sleep(1000);
 	}
 
 	@Override	
 	public void poserFeuEnRetournantGauche() throws SerialException
 	{
+		log.debug("On pose le feu gauche en le retournant", this);
 		//Ca remonte la pince aussi !
 		actionneurs.baisser_pince_gauche();
 		actionneurs.tourner_pince_gauche();
@@ -530,6 +572,7 @@ public class RobotVrai extends Robot {
 	@Override	
 	public void poserFeuBonCoteDroit() throws SerialException
 	{
+		log.debug("On pose le feu droit sans le retourner", this);
 		//Ca remonte la pince aussi !
 		actionneurs.baisser_pince_droite();
 		actionneurs.ouvrir_pince_droite();
@@ -540,6 +583,7 @@ public class RobotVrai extends Robot {
 	@Override	
 	public void poserFeuEnRetournantDroit() throws SerialException
 	{
+		log.debug("On pose le feu droit en le retournant", this);
 		//Ca remonte la pince aussi !
 		actionneurs.baisser_pince_droite();
 		actionneurs.tourner_pince_droite();
@@ -668,10 +712,7 @@ public class RobotVrai extends Robot {
             // sans virage : la première rotation est blocante
 			tournerBasNiveau(angle);
 			// on n'avance pas si un obstacle est devant
-			if(distance >= 0)
-				detecter_collision(true);
-			else
-				detecter_collision(false);
+			detecter_collision();
 
 			try {
 				deplacements.avancer(distance);
@@ -685,10 +726,7 @@ public class RobotVrai extends Robot {
 			try {
 				deplacements.tourner(angle);
 				// on n'avance pas si un obstacle est devant
-				if(distance >= 0)
-					detecter_collision(true);
-				else
-					detecter_collision(false);
+				detecter_collision();
 				deplacements.avancer(distance);			
 			} catch (SerialException e) {
 				e.printStackTrace();
@@ -796,7 +834,8 @@ public class RobotVrai extends Robot {
 
 	private void detecter_collision(boolean devant) throws CollisionException
 	{
-		int signe = -1;
+		return; // TODO
+/*		int signe = -1;
 		if(devant)
 			signe = 1;
 		int rayon_detection = largeur_robot + distance_detection/2;
@@ -807,7 +846,7 @@ public class RobotVrai extends Robot {
 		{
 			log.warning("Ennemi détecté!", this);
 			throw new CollisionException();
-		}		
+		}*/		
 	}
 	
 	private void detecter_collision() throws CollisionException
