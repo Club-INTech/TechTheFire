@@ -49,7 +49,7 @@ typedef ring_buffer<uint16_t, NB_VALEURS_MEDIANE_SRF> ringBufferSRF;
  *  détecté.  
  */
 
-template< class Timer, class PinRegisterIn, class PinRegisterOut >  //in et out sont par rapport à l'avr, ils sont donc inversés par rapport à la doc du srf!
+template< class Timer, class PinRegisterIn, class PcintRegisterIn, class PinRegisterOut, class PcintRegisterOut >  //in et out sont par rapport à l'avr, ils sont donc inversés par rapport à la doc du srf!
 class CapteurSRF
 {
     uint16_t origineTimer;			//origine du timer afin de détecter une durée (le timer est une horloge)
@@ -61,10 +61,10 @@ class CapteurSRF
 	derniereDistance(0)
     {
 	   	origineTimer = 0;
-        PinRegisterOut::set_output();
-        PinRegisterIn::set_input();
-        PinRegisterOut::clear_interrupt();  //nos envois ne déclencheront pas d'interruption
-        PinRegisterIn::set_interrupt();     //au contraire des réponses
+        PinRegisterOut::output();
+        PinRegisterIn::input();
+        PcintRegisterOut::disable();  //nos envois ne déclencheront pas d'interruption
+        PcintRegisterIn::enable();     //au contraire des réponses
     }
 
     uint16_t value()
