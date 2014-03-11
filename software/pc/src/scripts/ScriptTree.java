@@ -91,24 +91,27 @@ public class ScriptTree extends Script{
 		robot.rateau(PositionRateau.BAS, Cote.GAUCHE);
 		// on avance et on rebaisse les rateaux au min
 		robot.avancer(-200);
-/*		robot.rateau(PositionRateau.SUPER_BAS, Cote.DROIT);
+		robot.rateau(PositionRateau.SUPER_BAS, Cote.DROIT);
 		robot.rateau(PositionRateau.SUPER_BAS, Cote.GAUCHE);
 		// on remonte les bras à mi-hauteur en fonction de la position du fruit pourri, tout en reculant
 		
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
+		
 		Executable remonteDroit = new LeverRateau(robot, Cote.DROIT);
-		double distance = 30; // dépend de fruitsdroite
-		Vec2 diff = new Vec2((float)(distance*Math.cos((double)robot.getOrientation())),(float)(distance*Math.sin((double)robot.getOrientation())));
-<		Hook hook = hookgenerator.hook_position(robot.getPosition().PlusNewVector(diff));
-		hook.ajouter_callback(new Callback(remonteDroit, true));
-		hooks.add(hook);
+		double distance = 30; //En cours de réflexion !
+		Vec2 diff_droit = new Vec2((float)(distance*Math.cos((double)robot.getOrientation())),(float)(distance*Math.sin((double)robot.getOrientation())));
+		Hook hook_droit = hookgenerator.hook_position(robot.getPosition().PlusNewVector(diff_droit));
+		hook_droit.ajouter_callback(new Callback(remonteDroit, true));
+		hooks.add(hook_droit);
 
 		Executable remonteGauche = new LeverRateau(robot, Cote.GAUCHE);
-		hook = hookgenerator.hook_position(new Vec2(0,0));
-		hook.ajouter_callback(new Callback(remonteGauche, true));
-		hooks.add(hook);
+		Vec2 diff_gauche = new Vec2((float)(distance*Math.cos((double)robot.getOrientation())),(float)(distance*Math.sin((double)robot.getOrientation())));
+		Hook hook_gauche = hookgenerator.hook_position(robot.getPosition().PlusNewVector(diff_gauche));
+		hook_gauche = hookgenerator.hook_position(new Vec2(0,0));
+		hook_gauche.ajouter_callback(new Callback(remonteGauche, true));
+		hooks.add(hook_gauche);
 		
-		robot.avancer(60, hooks);*/
+		robot.avancer(60, hooks);
 	}
 
 	@Override
