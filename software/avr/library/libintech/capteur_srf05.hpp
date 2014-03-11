@@ -127,12 +127,12 @@ class CapteurSRF
 
 };
 
-template< class Timer, class PinRegister >  //in et out sont par rapport à l'avr, ils sont donc inversés par rapport à la doc du srf!
+template< class Timer, class PinRegister, class PcintRegister>  //in et out sont par rapport à l'avr, ils sont donc inversés par rapport à la doc du srf!
 class CapteurSRFMono
 {
-    uint16_t origineTimer;			//origine du timer afin de détecter une durée (le timer est une horloge)
-    uint16_t derniereDistance;		//contient la dernière distance acquise, prête à être envoyée
     ringBufferSRF ringBufferValeurs;
+    uint16_t derniereDistance;		//contient la dernière distance acquise, prête à être envoyée
+    uint16_t origineTimer;			//origine du timer afin de détecter une durée (le timer est une horloge)
 
    public:	//constructeur
    CapteurSRFMono() :
@@ -150,21 +150,21 @@ class CapteurSRFMono
 
     void refresh()
     {
-        PinRegister::clear_interrupt();
+        PcintRegister::disable();
             // On met la pin en output
-        PinRegister::set_output();
+        PinRegister::output();
             // On met un zéro sur la pin pour 2 µs
-        PinRegister::clear();
+        PinRegister::low();
         _delay_us(2);
 
             // On met un "un" sur la pin pour 10 µs
-        PinRegister::set();
+        PinRegister::high();
         _delay_us(10);
 
-        PinRegister::clear();
+        PinRegister::low();
             // Le signal a été envoyé, maintenant on attend la réponse dans l'interruption
-        PinRegister::set_input();
-        PinRegister::set_interrupt();
+        PinRegister::input();
+        PcintRegister::enable();
     }
   
     /** Fonction appellée par l'interruption. S'occupe d'envoyer la valeur de la longueur
@@ -180,7 +180,7 @@ class CapteurSRFMono
         // Début de l'impulsion
         if (bit && bit!=ancienBit)
         {
-            origineTimer=Timer::value();  /*le timer est utilisé comme horloge (afin d'utiliser plusieurs capteurs)
+            origineTimer=Timer::counter::value();  /*le timer est utilisé comme horloge (afin d'utiliser plusieurs capteurs)
                                            On enregistre donc cette valeur et on fera la différence.*/
             ancienBit=bit;
         }
@@ -192,7 +192,7 @@ class CapteurSRFMono
             ancienBit=bit;
                 //Enregistrement de la dernière distance calculée, mais sans l'envoyer (l'envoi se fait par la méthode value)
 
-            temps_impulsion = (Timer::value() + 65535 - origineTimer) & 65535;
+            temps_impulsion = (Timer::counter::value() + 65535 - origineTimer) & 65535;
             ringBufferValeurs.append( temps_impulsion * (1700-0.0000325 * F_CPU) / 1800.);
                          /*interpolation linéaire entre deux valeurs
                          mesurées: 1050/1800 à 20MHz, 1180/1800 à 16MHz*/

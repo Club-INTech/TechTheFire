@@ -1,13 +1,20 @@
 #include <stdint.h>
 #include <libintech/interrupt_manager.hpp>
-#include <libintech/isr.hpp>
 #include "tot.hpp"
+#define IGNORE_TIMER1_OVF_vect
+#define IGNORE_TIMER2_OVF_vect
+#define IGNORE_TIMER0_OVF_vect
+#define IGNORE_PCINT0_vect
+#define IGNORE_PCINT1_vect
+#define IGNORE_PCINT2_vect
+#define IGNORE_PCINT3_vect
+#include <libintech/isr.hpp>
 
 INITIALISE_INTERRUPT_MANAGER();
-
+Communication communication;
 int main ()
 {
-	Communication communication;
+
 	char ordre[20];
 	
 	while (1)
@@ -23,7 +30,7 @@ int main ()
 // /!\ Interruption a debuguer !!!
 
 
-/*ISR (TIMER1_OVF_vect)
+ISR (TIMER1_OVF_vect)
 {
 }
 
@@ -36,13 +43,13 @@ ISR(TIMER0_OVF_vect) //overflow du timer 2, qui appelle le refresh d'un ou des c
     static uint8_t overflow=0;  //on appelle la fonction refresh qu'une fois sur 5 overflow (sinon les réponses des capteurs se superposent)
     if(overflow==0)
     {
-        communications.capteurs.us1.refresh();
-        communications.capteurs.inf1.refresh();
+        communication.capteurs.us1.refresh();
+        communication.capteurs.inf1.refresh();
     }
     overflow++;
     overflow%=5;
 
-    communications.capteurs.maj();
+    communication.capteurs.maj();
 }
 
 ISR(PCINT0_vect)
@@ -53,11 +60,12 @@ ISR(PCINT1_vect)
 {
 }
 
+
 ISR(PCINT2_vect)
 {
 }
 
 ISR(PCINT3_vect)
 {
-    communications.capteurs.us1.interruption();
-}*/
+    communication.capteurs.us1.interruption();
+}
