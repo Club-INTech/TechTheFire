@@ -157,7 +157,7 @@ public class ScriptTorche extends Script {
 		{
 			robot.tourner((float)0);			
 		}*/
-		if(!robot.isTient_feu_gauche())
+		if(!robot.isTient_feu(Cote.GAUCHE))
 		{
 			/*if(id_version == 2  && id_version == 3 && id_version == 4 && id_version == 5 && id_version == 10 && id_version == 11)
 			{
@@ -212,7 +212,7 @@ public class ScriptTorche extends Script {
 				}
 			}
 		}
-		else if(robot.isFeu_tenu_droite_rouge())
+		else if(robot.isFeu_tenu_rouge(Cote.DROIT))
 		{
 			if(id_version == 2  && id_version == 3 && id_version == 4 && id_version == 5 && id_version == 10 && id_version == 11)
 			{

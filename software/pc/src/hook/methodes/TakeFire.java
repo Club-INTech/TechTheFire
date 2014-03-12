@@ -1,6 +1,5 @@
 package hook.methodes;
 
-import exception.SerialException;
 import robot.Cote;
 import robot.Robot;
 import hook.Executable;

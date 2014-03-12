@@ -29,7 +29,7 @@ public class ScriptDeposerFeu extends Script {
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		if(robot.isTient_feu_droite() || robot.isTient_feu_gauche())
+		if(robot.isTient_feu(Cote.DROIT) || robot.isTient_feu(Cote.GAUCHE))
 		{
 			versionList.add(0);
 			versionList.add(1);
@@ -68,9 +68,9 @@ public class ScriptDeposerFeu extends Script {
 	@Override
 	public int score(int id_version, Robot robot, Table table) 
 	{
-		if(robot.isTient_feu_droite() && robot.isTient_feu_gauche())
+		if(robot.isTient_feu(Cote.DROIT) && robot.isTient_feu(Cote.GAUCHE))
 			return 4;
-		else if(robot.isTient_feu_droite() || robot.isTient_feu_gauche())
+		else if(robot.isTient_feu(Cote.DROIT) || robot.isTient_feu(Cote.GAUCHE))
 			return 2;
 		return 0;		
 	}
@@ -96,17 +96,17 @@ public class ScriptDeposerFeu extends Script {
 		else if(id_version == 4)
 			robot.tourner((float)(Math.PI-Math.atan(2/3)));
 
-		if(robot.isTient_feu_gauche())
+		if(robot.isTient_feu(Cote.GAUCHE))
 		{
-			if(robot.isFeu_tenu_gauche_rouge() ^ couleur == "rouge")
+			if(robot.isFeu_tenu_rouge(Cote.GAUCHE) ^ couleur == "rouge")
 				robot.poserFeuEnRetournant(Cote.GAUCHE);
 			else
 				robot.poserFeuBonCote(Cote.GAUCHE);
 		}
 		
-		if(robot.isTient_feu_droite())
+		if(robot.isTient_feu(Cote.DROIT))
 		{
-			if(robot.isFeu_tenu_gauche_rouge() ^ couleur == "rouge")
+			if(robot.isFeu_tenu_rouge(Cote.DROIT) ^ couleur == "rouge")
 				robot.poserFeuEnRetournant(Cote.DROIT);
 			else
 				robot.poserFeuBonCote(Cote.DROIT);
