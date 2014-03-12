@@ -61,12 +61,7 @@ public class ScriptDeposerFruits extends Script {
 		robot.bac_haut();	// histoire d'être sûr qu'il y arrive bien
 		robot.bac_haut();
 		robot.bac_haut();
-		
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		robot.sleep(500);
 		robot.bac_bas();
 		robot.avancer(20);
 	}

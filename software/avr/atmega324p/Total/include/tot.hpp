@@ -74,6 +74,10 @@ class Communication
 		{
 			this->ouvrirDroite ();
 		}
+        else if ( strcmp ( ordre , "obd" ) == 0 )		       
+		{
+			this->ouvrirBasDroite ();
+		}
 		else if ( strcmp ( ordre , "fg" ) == 0 )  //f = fermer
 		{
 			this->fermerGauche ();
@@ -81,6 +85,10 @@ class Communication
 		else if ( strcmp ( ordre , "fd" ) == 0 )			
 		{
 			this->fermerDroite ();
+		}
+		else if ( strcmp ( ordre , "pfd" ) == 0 )			
+		{
+			this->presqueFermerDroite ();
 		}
  		else if ( strcmp ( ordre , "ag" ) == 0 )  //a = angle
 		{
@@ -301,6 +309,8 @@ void retournerGauche ()
 	{
 //	  uint16_t positionPrecedente = (pinceDroite.getPosition_0_1023());
 //	  uint16_t positionActuelle = positionPrecedente ;
+	  pinceDroite.goTo(140);
+      _delay_ms(200);      
 	  pinceDroite.goTo(145);
 /*	  for(int i=0; i<7; i++)
 	      {
@@ -317,7 +327,15 @@ void retournerGauche ()
 		orientationDroite.goTo(60);
 		positionDroite.goTo(240);
 	}
-	void milieuDroite ()
+    void ouvrirBasDroite ()
+	{
+		orientationDroite.goTo(60);
+		positionDroite.goTo(240);
+        _delay_ms(250);
+        ouvrirDroite();
+	}
+		
+    void milieuDroite ()
 	{
 		orientationDroite.goTo(145);
 		positionDroite.goTo(150);
@@ -325,7 +343,7 @@ void retournerGauche ()
 	void hautDroite ()
 	{
 	  	positionDroite.goTo(60);
-		_delay_ms(300);
+		_delay_ms(450);
 		orientationDroite.goTo(240);
 		_delay_ms(200);
 		orientationDroite.goTo(145);
@@ -338,6 +356,10 @@ void retournerGauche ()
   {
     retourneurDroite.goTo (240);
   }
+	void presqueFermerDroite ()
+	{
+	  pinceDroite.goTo(160);
+	}
   /* void remonterEtRetablirDroite ()
   {
     	orientationDroite.goTo(145);

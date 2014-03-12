@@ -1,6 +1,6 @@
 package hook.methodes;
 
-import exception.SerialException;
+import robot.Cote;
 import robot.Robot;
 import hook.Executable;
 
@@ -10,19 +10,21 @@ import hook.Executable;
  *
  */
 
-public class TakeFireDroit implements Executable {
+public class TakeFire implements Executable {
 
 	private Robot robot;
+	private Cote cote;
 	
-	public TakeFireDroit(Robot robot)
+	public TakeFire(Robot robot, Cote cote)
 	{
 		this.robot = robot;
+		this.cote = cote;
 	}
 
 	public void execute() {
 		try {
-			robot.takefiredroit();
-		} catch (SerialException e) {
+			robot.takefire(cote);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

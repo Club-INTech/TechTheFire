@@ -6,6 +6,7 @@ import exception.MouvementImpossibleException;
 import exception.SerialException;
 import hook.HookGenerator;
 import pathfinding.Pathfinding;
+import robot.Cote;
 import robot.Robot;
 import robot.RobotVrai;
 import smartMath.Vec2;
@@ -28,7 +29,7 @@ public class ScriptDeposerFeu extends Script {
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		if(robot.isTient_feu_droite() || robot.isTient_feu_gauche())
+		if(robot.isTient_feu(Cote.DROIT) || robot.isTient_feu(Cote.GAUCHE))
 		{
 			versionList.add(0);
 			versionList.add(1);
@@ -67,9 +68,9 @@ public class ScriptDeposerFeu extends Script {
 	@Override
 	public int score(int id_version, Robot robot, Table table) 
 	{
-		if(robot.isTient_feu_droite() && robot.isTient_feu_gauche())
+		if(robot.isTient_feu(Cote.DROIT) && robot.isTient_feu(Cote.GAUCHE))
 			return 4;
-		else if(robot.isTient_feu_droite() || robot.isTient_feu_gauche())
+		else if(robot.isTient_feu(Cote.DROIT) || robot.isTient_feu(Cote.GAUCHE))
 			return 2;
 		return 0;		
 	}
@@ -95,20 +96,20 @@ public class ScriptDeposerFeu extends Script {
 		else if(id_version == 4)
 			robot.tourner((float)(Math.PI-Math.atan(2/3)));
 
-		if(robot.isTient_feu_gauche())
+		if(robot.isTient_feu(Cote.GAUCHE))
 		{
-			if(robot.isFeu_tenu_gauche_rouge() ^ couleur == "rouge")
-				robot.poserFeuEnRetournantGauche();
+			if(robot.isFeu_tenu_rouge(Cote.GAUCHE) ^ couleur == "rouge")
+				robot.poserFeuEnRetournant(Cote.GAUCHE);
 			else
-				robot.poserFeuBonCoteGauche();
+				robot.poserFeuBonCote(Cote.GAUCHE);
 		}
 		
-		if(robot.isTient_feu_droite())
+		if(robot.isTient_feu(Cote.DROIT))
 		{
-			if(robot.isFeu_tenu_gauche_rouge() ^ couleur == "rouge")
-				robot.poserFeuEnRetournantDroit();
+			if(robot.isFeu_tenu_rouge(Cote.DROIT) ^ couleur == "rouge")
+				robot.poserFeuEnRetournant(Cote.DROIT);
 			else
-				robot.poserFeuBonCoteDroit();
+				robot.poserFeuBonCote(Cote.DROIT);
 		}
 		
 		robot.avancer(-50);
@@ -120,10 +121,10 @@ public class ScriptDeposerFeu extends Script {
 	{
 		try
 		{
-			robot.lever_pince_droite();
-			robot.fermer_pince_droite();
-			robot.lever_pince_gauche();
-			robot.fermer_pince_gauche();
+			robot.lever_pince(Cote.DROIT);
+			robot.fermer_pince(Cote.DROIT);
+			robot.lever_pince(Cote.GAUCHE);
+			robot.fermer_pince(Cote.GAUCHE);
 		}
 		catch(SerialException e) {
 			e.printStackTrace();
