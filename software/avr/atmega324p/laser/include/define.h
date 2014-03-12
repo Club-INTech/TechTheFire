@@ -3,7 +3,7 @@
 
 #define MODE_XBEE_S8            0
 #define BALISE_BAUDRATE   		115200
-#define ROBOT_BAUDRATE    		38400
+#define ROBOT_BAUDRATE    		57600
 #define PING_ID           		4
 #define DEFAULT_SPEED_ORDER		15
 #define TIMEOUT			  		100
