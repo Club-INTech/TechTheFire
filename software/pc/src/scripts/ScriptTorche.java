@@ -6,6 +6,7 @@ import exception.MouvementImpossibleException;
 import exception.SerialException;
 import hook.HookGenerator;
 import pathfinding.Pathfinding;
+import robot.Cote;
 import robot.Robot;
 import robot.RobotVrai;
 import smartMath.Vec2;
@@ -182,10 +183,10 @@ public class ScriptTorche extends Script {
 			{
 				//Pour les feux à ramasser dans les torches
 				try {
-				robot.ouvrir_pince_gauche();
-				robot.milieu_pince_gauche();
-				robot.fermer_pince_gauche();
-				robot.lever_pince_gauche();
+				robot.ouvrir_pince(Cote.GAUCHE);
+				robot.milieu_pince(Cote.GAUCHE);
+				robot.fermer_pince(Cote.GAUCHE);
+				robot.lever_pince(Cote.GAUCHE);
 				} catch (SerialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -195,16 +196,16 @@ public class ScriptTorche extends Script {
 			{
 				//Pour les feux à tirer
 				try {
-				robot.milieu_pince_gauche();
-				robot.ouvrir_pince_gauche();
+				robot.milieu_pince(Cote.GAUCHE);
+				robot.ouvrir_pince(Cote.GAUCHE);
 				robot.avancer(10);
-				robot.fermer_pince_gauche();
+				robot.fermer_pince(Cote.GAUCHE);
 				robot.avancer(-10);
-				robot.ouvrir_pince_gauche();
-				robot.baisser_pince_gauche();
+				robot.ouvrir_pince(Cote.GAUCHE);
+				robot.baisser_pince(Cote.GAUCHE);
 				robot.avancer(5);
-				robot.fermer_pince_gauche();
-				robot.lever_pince_gauche();
+				robot.fermer_pince(Cote.GAUCHE);
+				robot.lever_pince(Cote.GAUCHE);
 				} catch (SerialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -216,13 +217,13 @@ public class ScriptTorche extends Script {
 			if(id_version == 2  && id_version == 3 && id_version == 4 && id_version == 5 && id_version == 10 && id_version == 11)
 			{
 				try {
-				robot.milieu_pince_droite();
+				robot.milieu_pince(Cote.DROIT);
 				robot.avancer(10);
 				robot.avancer(-10);
-				robot.baisser_pince_droite();
-				robot.ouvrir_pince_droite();
+				robot.baisser_pince(Cote.DROIT);
+				robot.ouvrir_pince(Cote.DROIT);
 				robot.avancer(10);
-				robot.fermer_pince_droite();
+				robot.fermer_pince(Cote.DROIT);
 				robot.avancer(-10);
 				} catch (SerialException e) {
 					// TODO Auto-generated catch block
@@ -233,10 +234,10 @@ public class ScriptTorche extends Script {
 			{
 				//Pour les feux à ramasser dans les torches
 				try {
-				robot.ouvrir_pince_droite();
-				robot.milieu_pince_droite();
-				robot.fermer_pince_droite();
-				robot.lever_pince_droite();
+				robot.ouvrir_pince(Cote.DROIT);
+				robot.milieu_pince(Cote.DROIT);
+				robot.fermer_pince(Cote.DROIT);
+				robot.lever_pince(Cote.DROIT);
 				} catch (SerialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -245,16 +246,16 @@ public class ScriptTorche extends Script {
 			else if(id_version == 6 && id_version == 7 && id_version == 8 && id_version ==9)
 			{
 				try {
-				robot.milieu_pince_droite();
-				robot.ouvrir_pince_droite();
+				robot.milieu_pince(Cote.DROIT);
+				robot.ouvrir_pince(Cote.DROIT);
 				robot.avancer(10);
-				robot.fermer_pince_droite();
+				robot.fermer_pince(Cote.DROIT);
 				robot.avancer(-10);
-				robot.ouvrir_pince_droite();
-				robot.baisser_pince_droite();
+				robot.ouvrir_pince(Cote.DROIT);
+				robot.baisser_pince(Cote.DROIT);
 				robot.avancer(5);
-				robot.fermer_pince_droite();
-				robot.lever_pince_droite();
+				robot.fermer_pince(Cote.DROIT);
+				robot.lever_pince(Cote.DROIT);
 				} catch (SerialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -267,10 +268,10 @@ public class ScriptTorche extends Script {
 	protected void termine(Robot robot, Table table) {
 		try
 		{
-			robot.lever_pince_droite();
-			robot.fermer_pince_droite();
-			robot.lever_pince_gauche();
-			robot.fermer_pince_gauche();
+			robot.lever_pince(Cote.DROIT);
+			robot.fermer_pince(Cote.DROIT);
+			robot.lever_pince(Cote.GAUCHE);
+			robot.fermer_pince(Cote.GAUCHE);
 		}
 		catch(SerialException e) {
 			e.printStackTrace();

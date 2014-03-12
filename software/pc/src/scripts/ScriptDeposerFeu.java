@@ -6,6 +6,7 @@ import exception.MouvementImpossibleException;
 import exception.SerialException;
 import hook.HookGenerator;
 import pathfinding.Pathfinding;
+import robot.Cote;
 import robot.Robot;
 import robot.RobotVrai;
 import smartMath.Vec2;
@@ -98,17 +99,17 @@ public class ScriptDeposerFeu extends Script {
 		if(robot.isTient_feu_gauche())
 		{
 			if(robot.isFeu_tenu_gauche_rouge() ^ couleur == "rouge")
-				robot.poserFeuEnRetournantGauche();
+				robot.poserFeuEnRetournant(Cote.GAUCHE);
 			else
-				robot.poserFeuBonCoteGauche();
+				robot.poserFeuBonCote(Cote.GAUCHE);
 		}
 		
 		if(robot.isTient_feu_droite())
 		{
 			if(robot.isFeu_tenu_gauche_rouge() ^ couleur == "rouge")
-				robot.poserFeuEnRetournantDroit();
+				robot.poserFeuEnRetournant(Cote.DROIT);
 			else
-				robot.poserFeuBonCoteDroit();
+				robot.poserFeuBonCote(Cote.DROIT);
 		}
 		
 		robot.avancer(-50);
@@ -120,10 +121,10 @@ public class ScriptDeposerFeu extends Script {
 	{
 		try
 		{
-			robot.lever_pince_droite();
-			robot.fermer_pince_droite();
-			robot.lever_pince_gauche();
-			robot.fermer_pince_gauche();
+			robot.lever_pince(Cote.DROIT);
+			robot.fermer_pince(Cote.DROIT);
+			robot.lever_pince(Cote.GAUCHE);
+			robot.fermer_pince(Cote.GAUCHE);
 		}
 		catch(SerialException e) {
 			e.printStackTrace();
