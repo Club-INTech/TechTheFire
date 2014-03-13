@@ -74,7 +74,7 @@ void maj()
         retenueAvant = retenueApres;
     }
 
-    retenueAvant = C2::read();
+    retenueAvant = C3::read();
     for(uint8_t i=0; i<TAILLE_BUFFER; i++)
     {
         uint8_t retenueApres = bufferContactGauche[i]&(1<<7)>>7;

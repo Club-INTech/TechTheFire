@@ -66,6 +66,8 @@ class Communication
 		{
 			serial_pc::printfln ( "3" );
 		}
+
+	//Actions pince gauche
 		else if ( strcmp ( ordre , "og" ) == 0 )  //o = ouvrir
 		{
 			this->ouvrirGauche ();
@@ -97,13 +99,6 @@ class Communication
 			serial_pc::read (i);
 			pinceGauche.goTo (i);
 		}
-		else if ( strcmp ( ordre , "ad" ) == 0 )		       
-		{
-			serial_pc::printfln ( "angle?" );			
-			uint16_t i;
-			serial_pc::read (i);
-			pinceDroite.goTo (i);
-		}
 		else if ( strcmp ( ordre , "bg" ) == 0)  // b = position basse
 		{
 			this -> basGauche ();
@@ -115,6 +110,31 @@ class Communication
 		else if ( strcmp ( ordre , "rg" ) == 0)  // remettre en position initiale niveau rotation
 		{
 			this -> retablirGauche ();
+		}
+		else if ( strcmp (ordre , "mg" ) == 0)  // m = milieu
+		{
+			this -> milieuGauche ();
+		}
+		else if (strcmp (ordre , "hg") ==0)
+		{
+       	       		this -> hautGauche ();
+		}
+
+	//Actions pinces droite
+		else if ( strcmp ( ordre , "od" ) == 0 )
+		{
+			this->ouvrirDroite ();
+		}
+		else if ( strcmp ( ordre , "fd" ) == 0 )
+		{
+			this->fermerDroite ();
+		}
+		else if ( strcmp ( ordre , "ad" ) == 0 )
+		{
+			serial_pc::printfln ( "angle?" );
+			uint16_t i;
+			serial_pc::read (i);
+			pinceDroite.goTo (i);
 		}
 		else if ( strcmp ( ordre , "td" ) == 0)  // retourner un feu à droite
 		{
@@ -128,17 +148,9 @@ class Communication
 		{
 			this -> basDroite ();
 		}
-		else if ( strcmp (ordre , "mg" ) == 0)  // m = milieu 
-		{
-			this -> milieuGauche ();
-		}
 		else if ( strcmp (ordre , "md" ) == 0)
 		{
 			this -> milieuDroite ();
-		}
-		else if (strcmp (ordre , "hg") ==0)
-		{
-       	       		this -> hautGauche ();
 		}
 		else if (strcmp (ordre , "hd") ==0)
 		{
@@ -158,6 +170,8 @@ class Communication
 		  {
 		    this -> test ();
 		  }
+
+	//Actions bac
 		else if ( strcmp ( ordre , "bb" ) == 0 )  //bb = bac bas
 		{
 			this->bacBas ();
@@ -166,7 +180,9 @@ class Communication
 		{
 			this->bacHaut ();
 		}
- 		else if ( strcmp ( ordre , "rrd" ) == 0 )  //rrd = rangerRateaud
+
+	//Actions rateau droit
+		else if ( strcmp ( ordre , "rrd" ) == 0 )  //rrd = rangerRateaud
 		{
 			this->rangerRateaud ();
 		}
@@ -182,6 +198,8 @@ class Communication
 		{
 			this->rateauBasBasd ();
 		}
+
+	//Actions rateau gauche
 		else if ( strcmp ( ordre , "rrg" ) == 0 )  //rrg = rangerRateaug
 		{
 			this->rangerRateaug ();
@@ -198,6 +216,8 @@ class Communication
 		{
 			this->rateauBasBasg ();
 		}
+
+	//Actions chargeur
 		else if ( strcmp ( ordre , "tourne" ) == 0 )  
 		{
 			this->tourner();
@@ -206,39 +226,48 @@ class Communication
 		{
 			this->reload();
 		}
-	        // infrarouge
-	        else if (strcmp(ordre, "ir_av")==0)
-	        {
-	            serial_pc::print(capteurs.inf1.value());
-	        }
-	
-	        // Ultrasons SRF05
-	        else if (strcmp(ordre, "us_av")==0)
-	        {
-	            serial_pc::print(capteurs.us1.value());
-	        }
+
+	//Actions ventilo
+        else if (strcmp(ordre, "von") == 0)
+        {
+        	D4::high();
+        }
+        else if (strcmp(ordre, "voff") ==0)
+        {
+        	D4::low();
+        }
+
+	// infrarouge
+        else if (strcmp(ordre, "ir_av")==0)
+        {
+            serial_pc::print(capteurs.inf1.value());
+        }
+
+	// Ultrasons SRF05
+        else if (strcmp(ordre, "us_av")==0)
+        {
+            serial_pc::print(capteurs.us1.value());
+        }
 	        
-	        // JUMPER DE DÉBUT DE MATCH
-        	else if (strcmp(ordre, "j") == 0)
-        	{
-        	    serial_pc::print(C2::read());
-        	}
+	// JUMPER DE DÉBUT DE MATCH
+       	else if (strcmp(ordre, "j") == 0)
+       	{
+       	    serial_pc::print(C2::read());
+       	}
 	
-		// CAPTEURS ASCENSEURS
-        	else if (strcmp(ordre, "cg") == 0)
-        	{
-        	    serial_pc::print(capteurs.contactGauche());
-        	}
-	
-        	else if (strcmp(ordre, "cm") == 0)
-        	{
-        	    serial_pc::print(capteurs.contactMilieu());
-        	}
-		        else if (strcmp(ordre, "cd") == 0)
-        	{
-        	    serial_pc::print(capteurs.contactDroit());
-        	}
-	
+	// CAPTEURS CONTACT
+       	else if (strcmp(ordre, "cg") == 0)
+       	{
+       	    serial_pc::print(capteurs.contactGauche());
+       	}
+       	else if (strcmp(ordre, "cm") == 0)
+       	{
+       	    serial_pc::print(capteurs.contactMilieu());
+       	}
+        else if (strcmp(ordre, "cd") == 0)
+       	{
+       	    serial_pc::print(capteurs.contactDroit());
+       	}
 	}
 
 
