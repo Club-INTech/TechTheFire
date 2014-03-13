@@ -95,30 +95,33 @@ public class ScriptTree extends Script{
 		robot.rateau(PositionRateau.BAS, Cote.GAUCHE);
 		
 		// on avance et on rebaisse les rateaux au min
-		robot.avancer(-200);
+		robot.avancer(-250);
 		robot.rateau(PositionRateau.SUPER_BAS, Cote.DROIT);
 		robot.rateau(PositionRateau.SUPER_BAS, Cote.GAUCHE);
+		//On remonte juste un peu pour éviter que les rateaux cognent sur le rebord de la table
+		robot.rateau(PositionRateau.BAS, Cote.DROIT);
+		robot.rateau(PositionRateau.BAS, Cote.GAUCHE);
 		// on remonte les bras à mi-hauteur en fonction de la position du fruit pourri, tout en reculant
 		
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
 		
 		Executable remonteDroit = new LeverRateau(robot, Cote.DROIT);
-		double distance_droite  = 0;
+		double distance_droite  = 300;
 		if(Fruitsdroite ==3)
 		{
 			distance_droite = 0;
 		}
 		else if(Fruitsdroite==2)
 		{
-			distance_droite = 100;
+			distance_droite = 50;
 		}
 		else if(Fruitsdroite == 1)
 		{
-			distance_droite = 200;
+			distance_droite = 100;
 		}
 		else if(Fruitsdroite == 0)
 		{
-			distance_droite = 350;
+			distance_droite = 150;
 		}
 		Vec2 diff_droit = new Vec2((float)(distance_droite*Math.cos((double)robot.getOrientation())),(float)(distance_droite*Math.sin((double)robot.getOrientation())));
 		Hook hook_droit = hookgenerator.hook_position(robot.getPosition().PlusNewVector(diff_droit));
@@ -126,29 +129,30 @@ public class ScriptTree extends Script{
 		hooks.add(hook_droit);
 		
 		Executable remonteGauche = new LeverRateau(robot, Cote.GAUCHE);
-		double distance_gauche = 0;
+		double distance_gauche =300;
 		if(Fruitsgauche ==3)
 		{
 			distance_gauche = 0;
 		}
 		else if(Fruitsgauche==2)
 		{
-			distance_gauche = 100;
+			distance_gauche = 50;
 		}
 		else if(Fruitsgauche == 1)
 		{
-			distance_gauche = 200;
+			distance_gauche = 100;
 		}
 		else if(Fruitsgauche == 0)
 		{
-			distance_gauche = 350;
+			distance_gauche = 150;
 		}
 		Vec2 diff_gauche = new Vec2((float)(distance_gauche*Math.cos((double)robot.getOrientation())),(float)(distance_gauche*Math.sin((double)robot.getOrientation())));
 		Hook hook_gauche = hookgenerator.hook_position(robot.getPosition().PlusNewVector(diff_gauche));
-		hook_gauche = hookgenerator.hook_position(new Vec2(0,0));
+//		hook_gauche = hookgenerator.hook_position(new Vec2(0,0));
 		hook_gauche.ajouter_callback(new Callback(remonteGauche, true));
 		hooks.add(hook_gauche);
-		
+		System.out.println(Fruitsgauche);
+		System.out.println(Fruitsdroite);
 		robot.avancer(350, hooks);
 		//je change 60 en 350
 	}
