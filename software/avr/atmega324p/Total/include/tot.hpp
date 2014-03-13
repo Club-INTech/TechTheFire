@@ -252,7 +252,7 @@ class Communication
 	{
 //	  uint16_t positionPrecedente = (pinceGauche.getPosition_0_1023());
 //	  uint16_t positionActuelle = positionPrecedente ;
-	  pinceGauche.goTo(65);
+	  pinceGauche.goTo(67);
 /*	  for(int i=0; i<7;i++)
 	      {
 		_delay_ms(100);
@@ -263,8 +263,8 @@ class Communication
 	}
 	void basGauche ()
 	{
-		positionGauche.goTo(60);
-		orientationGauche.goTo(210);
+		positionGauche.goTo(80);
+		orientationGauche.goTo(190);
 	}
 	void milieuGauche ()
 	{
@@ -278,7 +278,7 @@ class Communication
 		_delay_ms(300);
 		orientationGauche.goTo(30);
 		_delay_ms(200);
-		orientationGauche.goTo(120); //cet ajout a pour but de mettre la pince verticale, qu'elle prenne moins de place.
+		orientationGauche.goTo(135); //cet ajout a pour but de mettre la pince verticale, qu'elle prenne moins de place.
 	}
 void retournerGauche ()
   {
@@ -303,15 +303,15 @@ void retournerGauche ()
 
 	void ouvrirDroite ()
 	{
-		pinceDroite.goTo (200);
+		pinceDroite.goTo (170);
 	}
 	void fermerDroite ()
 	{
 //	  uint16_t positionPrecedente = (pinceDroite.getPosition_0_1023());
 //	  uint16_t positionActuelle = positionPrecedente ;
-	  pinceDroite.goTo(140);
+	  pinceDroite.goTo(119);
       _delay_ms(200);      
-	  pinceDroite.goTo(145);
+	  pinceDroite.goTo(125);
 /*	  for(int i=0; i<7; i++)
 	      {
 		_delay_ms(100);
@@ -324,13 +324,13 @@ void retournerGauche ()
 	}
 	void basDroite ()
 	{
-		orientationDroite.goTo(60);
-		positionDroite.goTo(240);
+		orientationDroite.goTo(70);
+		positionDroite.goTo(230);
 	}
     void ouvrirBasDroite ()
 	{
-		orientationDroite.goTo(60);
-		positionDroite.goTo(240);
+		orientationDroite.goTo(70);
+		positionDroite.goTo(230);
         _delay_ms(250);
         ouvrirDroite();
 	}
