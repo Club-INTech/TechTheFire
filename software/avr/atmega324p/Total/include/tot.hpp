@@ -252,7 +252,7 @@ class Communication
 	{
 //	  uint16_t positionPrecedente = (pinceGauche.getPosition_0_1023());
 //	  uint16_t positionActuelle = positionPrecedente ;
-	  pinceGauche.goTo(65);
+	  pinceGauche.goTo(67);
 /*	  for(int i=0; i<7;i++)
 	      {
 		_delay_ms(100);
@@ -309,9 +309,9 @@ void retournerGauche ()
 	{
 //	  uint16_t positionPrecedente = (pinceDroite.getPosition_0_1023());
 //	  uint16_t positionActuelle = positionPrecedente ;
-	  pinceDroite.goTo(125);
+	  pinceDroite.goTo(119);
       _delay_ms(200);      
-	  pinceDroite.goTo(118);
+	  pinceDroite.goTo(125);
 /*	  for(int i=0; i<7; i++)
 	      {
 		_delay_ms(100);
