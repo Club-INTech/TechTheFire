@@ -31,6 +31,7 @@ Balise::Balise():
     
     // Interruption sur front montant
     int2::mode(int2::RISING_EDGE);
+    int2::enable();
     
     // -----------------------
     // Moteur
@@ -67,6 +68,7 @@ Balise::Balise():
     B0::output();
     
     // Pin DIR pour alimenter les lasers
+    B4::output();
 	pwm_laser::pwm::waveform_mode(pwm_laser::pwm::PWM_FAST);
     pwm_laser::pwm::pwm_b(127);
 
@@ -74,7 +76,7 @@ Balise::Balise():
     // Diode debug
     // -----------------------
 
-    D7::output();
+    A0::output();
 
     // -----------------------
     // Interruptions

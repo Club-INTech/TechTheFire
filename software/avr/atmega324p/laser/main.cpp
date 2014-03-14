@@ -4,6 +4,15 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "balise.h"
+#define IGNORE_TIMER0_OVF_vect
+#define IGNORE_TIMER1_OVF_vect
+#define IGNORE_TIMER2_OVF_vect
+#define IGNORE_INT2_vect
+#define IGNORE_PCINT2_vect
+#include <libintech/interrupt_manager.hpp>
+#include <libintech/isr.hpp>
+
+INITIALISE_INTERRUPT_MANAGER();
 
 int main() 
 {
@@ -82,8 +91,8 @@ ISR(PCINT2_vect)
 	
 	Balise &balise = Balise::Instance();
 	
-	canal_a = C1::read();
-	canal_b = C2::read();
+	canal_a = C0::read();
+	canal_b = C1::read();
 	
 	// Vérification que l'on est sur un front (useless ?)
 	if (!(canal_a != previous_canal_a || canal_b != previous_canal_b)) return;
