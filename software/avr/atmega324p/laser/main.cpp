@@ -91,8 +91,8 @@ ISR(PCINT2_vect)
 	
 	Balise &balise = Balise::Instance();
 	
-	canal_a = C0::read();
-	canal_b = C1::read();
+	canal_a = C1::read();
+	canal_b = C0::read();
 	
 	// Vérification que l'on est sur un front (useless ?)
 	if (!(canal_a != previous_canal_a || canal_b != previous_canal_b)) return;

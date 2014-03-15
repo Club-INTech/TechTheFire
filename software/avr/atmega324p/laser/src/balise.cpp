@@ -70,6 +70,7 @@ Balise::Balise():
     // Pin DIR pour alimenter les lasers
     B4::output();
 	pwm_laser::pwm::waveform_mode(pwm_laser::pwm::PWM_FAST);
+	pwm_laser::pwm::output_mode_b(pwm_laser::pwm::OUTPUT_NON_INVERTING);
     pwm_laser::pwm::pwm_b(127);
 
     // -----------------------
