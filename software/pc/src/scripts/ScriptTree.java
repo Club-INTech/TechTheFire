@@ -77,9 +77,6 @@ public class ScriptTree extends Script{
 	@Override
 	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException, SerialException
 	{
-		int Fruitsgauche = table.nbrLeftTree(id_version) ;
-		int Fruitsdroite = table.nbrRightTree(id_version);
-		
 		// Orientation du robot, le rateau étant à l'arrière
 //		log.debug("I", this);
 		if (id_version == 0)
@@ -95,6 +92,7 @@ public class ScriptTree extends Script{
 		robot.rateau(PositionRateau.BAS, Cote.GAUCHE);
 		
 		// on avance et on rebaisse les rateaux au min
+		robot.set_vitesse_translation("arbre_arriere");
 		robot.avancer(-250);
 		robot.rateau(PositionRateau.SUPER_BAS, Cote.DROIT);
 		robot.rateau(PositionRateau.SUPER_BAS, Cote.GAUCHE);
@@ -105,56 +103,31 @@ public class ScriptTree extends Script{
 		
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
 		
-		Executable remonteDroit = new LeverRateau(robot, Cote.DROIT);
-		double distance_droite  = 300;
-		if(Fruitsdroite ==3)
-		{
-			distance_droite = 0;
-		}
-		else if(Fruitsdroite==2)
-		{
-			distance_droite = 50;
-		}
-		else if(Fruitsdroite == 1)
-		{
-			distance_droite = 100;
-		}
-		else if(Fruitsdroite == 0)
-		{
-			distance_droite = 150;
-		}
-		Vec2 diff_droit = new Vec2((float)(distance_droite*Math.cos((double)robot.getOrientation())),(float)(distance_droite*Math.sin((double)robot.getOrientation())));
-		Hook hook_droit = hookgenerator.hook_position(robot.getPosition().PlusNewVector(diff_droit));
-		hook_droit.ajouter_callback(new Callback(remonteDroit, true));
-		hooks.add(hook_droit);
-		
-		Executable remonteGauche = new LeverRateau(robot, Cote.GAUCHE);
-		double distance_gauche =300;
-		if(Fruitsgauche ==3)
-		{
-			distance_gauche = 0;
-		}
-		else if(Fruitsgauche==2)
-		{
-			distance_gauche = 50;
-		}
-		else if(Fruitsgauche == 1)
-		{
-			distance_gauche = 100;
-		}
-		else if(Fruitsgauche == 0)
-		{
-			distance_gauche = 150;
-		}
-		Vec2 diff_gauche = new Vec2((float)(distance_gauche*Math.cos((double)robot.getOrientation())),(float)(distance_gauche*Math.sin((double)robot.getOrientation())));
-		Hook hook_gauche = hookgenerator.hook_position(robot.getPosition().PlusNewVector(diff_gauche));
-//		hook_gauche = hookgenerator.hook_position(new Vec2(0,0));
-		hook_gauche.ajouter_callback(new Callback(remonteGauche, true));
-		hooks.add(hook_gauche);
-		System.out.println(Fruitsgauche);
-		System.out.println(Fruitsdroite);
-		robot.avancer(350, hooks);
-		//je change 60 en 350
+		Cote cote = Cote.GAUCHE;
+		do {
+			int nbFruits = table.nbrTree(id_version, cote) ;
+			Executable remonte = new LeverRateau(robot, cote);
+			double distance = 0;
+			if(nbFruits == 3)
+				distance = 10;
+			else if(nbFruits == 2)
+				distance = 30;
+			else if(nbFruits == 1)
+				distance = 50;
+			else if(nbFruits == 0)
+				distance = 70;
+			Vec2 diff = new Vec2((float)(distance*Math.cos((double)robot.getOrientation())),(float)(distance*Math.sin((double)robot.getOrientation())));
+			Hook hook = hookgenerator.hook_position(robot.getPosition().PlusNewVector(diff));
+			hook.ajouter_callback(new Callback(remonte, true));
+			hooks.add(hook);
+
+			if(cote == Cote.GAUCHE)
+				cote = Cote.DROIT;
+			else
+				cote = Cote.GAUCHE;
+		} while(cote == Cote.DROIT);
+		robot.set_vitesse_translation("arbre_avant");
+		robot.avancer(100, hooks);
 	}
 
 	@Override
