@@ -55,7 +55,7 @@ public class ScriptLances extends Script {
 	public Vec2 point_entree(int id) {
 		// Les points d'entr��es ne sont pas sym��triques car le lanceur n'est que d'un seul c��t��
 		if(couleur == "jaune")
-			return new Vec2(-400,1400);
+			return new Vec2(400,1400);
 		else
 			return new Vec2(-1200,1400);
 	}
@@ -77,7 +77,7 @@ public class ScriptLances extends Script {
 	{
 		// TODO: tester!
 		
-		robot.tourner((float)Math.PI, true);
+		robot.tourner(0, true);
 
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
 		Executable tirerballes = new TirerBalles(robot);
