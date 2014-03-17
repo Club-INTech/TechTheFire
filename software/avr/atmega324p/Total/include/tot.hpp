@@ -292,8 +292,8 @@ class Communication
 	}
 	void basGauche ()
 	{
-		positionGauche.goTo(80);
-		orientationGauche.goTo(190);
+		positionGauche.goTo(75);
+		orientationGauche.goTo(195);
 	}
 	void milieuGauche ()
 	{
@@ -307,7 +307,7 @@ class Communication
 		_delay_ms(300);
 		orientationGauche.goTo(30);
 		_delay_ms(200);
-		orientationGauche.goTo(135); //cet ajout a pour but de mettre la pince verticale, qu'elle prenne moins de place.
+		orientationGauche.goTo(140); //cet ajout a pour but de mettre la pince verticale, qu'elle prenne moins de place.
 	}
 void retournerGauche ()
   {
@@ -375,7 +375,7 @@ void retournerGauche ()
 		_delay_ms(450);
 		orientationDroite.goTo(240);
 		_delay_ms(200);
-		orientationDroite.goTo(145);
+		orientationDroite.goTo(130);
 	}
  void retournerDroite ()
   {
