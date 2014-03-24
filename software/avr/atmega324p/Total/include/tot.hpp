@@ -275,7 +275,7 @@ class Communication
 	
 	void ouvrirGauche ()
 	{
-		pinceGauche.goTo (0);
+		pinceGauche.goTo (20);
 	}
 	void fermerGauche ()
 	{
@@ -293,21 +293,21 @@ class Communication
 	void basGauche ()
 	{
 		positionGauche.goTo(75);
-		orientationGauche.goTo(195);
+		orientationGauche.goTo(225);
 	}
 	void milieuGauche ()
 	{
 		positionGauche.goTo(150);
-		orientationGauche.goTo(120);
+		orientationGauche.goTo(150);
 
 	}
 	void hautGauche ()
 	{
 	  	positionGauche.goTo(240);
 		_delay_ms(300);
-		orientationGauche.goTo(30);
+		orientationGauche.goTo(60);
 		_delay_ms(200);
-		orientationGauche.goTo(140); //cet ajout a pour but de mettre la pince verticale, qu'elle prenne moins de place.
+		orientationGauche.goTo(170); //cet ajout a pour but de mettre la pince verticale, qu'elle prenne moins de place.
 	}
 void retournerGauche ()
   {
@@ -464,8 +464,8 @@ void retournerGauche ()
 
 	void tourner ()
 	{
-		static int a=0;
-		if (a==300)
+		static int a=50;
+		if (a>=300)
 		{
 			a=0;
 		}
