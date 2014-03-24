@@ -93,9 +93,16 @@ public class ScriptTree extends Script{
 		
 		// on avance et on rebaisse les rateaux au min
 		robot.set_vitesse_translation("arbre_arriere");
-		robot.avancer(-250);
+		robot.avancer(-320);
 		robot.rateau(PositionRateau.SUPER_BAS, Cote.DROIT);
 		robot.rateau(PositionRateau.SUPER_BAS, Cote.GAUCHE);
+		robot.rateau(PositionRateau.SUPER_BAS, Cote.DROIT);
+		robot.rateau(PositionRateau.SUPER_BAS, Cote.GAUCHE);
+		robot.rateau(PositionRateau.SUPER_BAS, Cote.DROIT);
+		robot.rateau(PositionRateau.SUPER_BAS, Cote.GAUCHE);
+		robot.rateau(PositionRateau.SUPER_BAS, Cote.DROIT);
+		robot.rateau(PositionRateau.SUPER_BAS, Cote.GAUCHE);
+		//pour être sûr
 		//On remonte juste un peu pour éviter que les rateaux cognent sur le rebord de la table
 		robot.rateau(PositionRateau.BAS, Cote.DROIT);
 		robot.rateau(PositionRateau.BAS, Cote.GAUCHE);
@@ -111,11 +118,11 @@ public class ScriptTree extends Script{
 			if(nbFruits == 3)
 				distance = 0;
 			else if(nbFruits == 2)
-				distance = 30;
+				distance = 75;
 			else if(nbFruits == 1)
-				distance = 50;
+				distance = 200;
 			else if(nbFruits == 0)
-				distance = 70;
+				distance = 310;
 			Vec2 diff = new Vec2((float)(distance*Math.cos((double)robot.getOrientation())),(float)(distance*Math.sin((double)robot.getOrientation())));
 			Hook hook = hookgenerator.hook_position(robot.getPosition().PlusNewVector(diff));
 			hook.ajouter_callback(new Callback(remonte, true));
@@ -127,7 +134,8 @@ public class ScriptTree extends Script{
 				cote = Cote.GAUCHE;
 		} while(cote == Cote.DROIT);
 		robot.set_vitesse_translation("arbre_avant");
-		robot.avancer(100, hooks);
+		//robot.set_vitesse_translation("10");
+		robot.avancer(350, hooks);
 	}
 
 	@Override
