@@ -435,7 +435,7 @@ void retournerGauche ()
 	}	
 	void rateauHautd ()
 	{
-		rateauD.goTo (95);
+		rateauD.goTo (105);
 	}
 
 
@@ -456,7 +456,7 @@ void retournerGauche ()
 	}	
 	void rateauHautg ()
 	{
-		rateauG.goTo (205);
+		rateauG.goTo (195);
 	}	
 
 
