@@ -109,7 +109,7 @@ public class ScriptTree extends Script{
 			Executable remonte = new LeverRateau(robot, cote);
 			double distance = 0;
 			if(nbFruits == 3)
-				distance = 10;
+				distance = 0;
 			else if(nbFruits == 2)
 				distance = 30;
 			else if(nbFruits == 1)
