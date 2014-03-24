@@ -1,5 +1,5 @@
-#ifndef MODIFS_H
-#define MODIFS_H
+#ifndef MODIFS324_H
+#define MODIFS324_H
 
 #include <libintech/ax12.hpp>
 #include <libintech/uart.hpp>
