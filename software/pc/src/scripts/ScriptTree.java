@@ -45,13 +45,13 @@ public class ScriptTree extends Script{
 		Vec2 entree = null;
 
 		if (id_version == 0)
-			entree = new Vec2(1165, 700);
+			entree = new Vec2(1500, 700);
 		else if (id_version == 1)
 			entree = new Vec2(800, 500);
 		else if (id_version == 2)
 			entree = new Vec2(-800, 500);
 		else if (id_version == 3)
-			entree = new Vec2(-1165, 700);
+			entree = new Vec2(-1500, 700);
 		return entree;
 	}
 
