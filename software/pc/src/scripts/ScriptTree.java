@@ -135,7 +135,6 @@ public class ScriptTree extends Script{
 				cote = Cote.GAUCHE;
 		} while(cote == Cote.DROIT);
 		robot.set_vitesse_translation("arbre_avant");
-		//robot.set_vitesse_translation("10");
 		robot.avancer(350, hooks);
 	}
 
