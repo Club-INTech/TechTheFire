@@ -40,10 +40,6 @@ public class ScriptLances extends Script {
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		// En fait, si j'ai bien compris, les versions repr���sentent en fait
-		// le nombre de lances pouvant ���tre lanc���es, dans la limite de 4.
-		// J'ai bon ?
-		// EDIT : Bon ben en fait non, j'ai l'impression qu'ici les versions ne servent à rien.
 		if (robot.getNbrLances() > 0) {
 			versionList.add(0);
 			versionList.add(1);
@@ -53,11 +49,14 @@ public class ScriptLances extends Script {
 
 	@Override
 	public Vec2 point_entree(int id) {
-		// Les points d'entr��es ne sont pas sym��triques car le lanceur n'est que d'un seul c��t��
-		if(couleur == "jaune")
-			return new Vec2(400,1400);
+		// Les points d'entrée ne sont pas symétriques car le lanceur n'est que d'un seul c��t��
+		//if(couleur == "jaune")
+		if(id == 0)
+			//return new Vec2(400,1400);
+			return new Vec2(1000,1400);
 		else
-			return new Vec2(-1200,1400);
+			//return new Vec2(-1200,1400);
+			return new Vec2(-500,1400);
 	}
 
 	@Override
@@ -76,24 +75,42 @@ public class ScriptLances extends Script {
 	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
 	{
 		// TODO: tester!
+		int a1,a2,a3;
 		
-		robot.tourner(0, true);
-
+		
+		//robot.tourner(0, true);
+		robot.tourner((float)(Math.PI), true);
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
 		Executable tirerballes = new TirerBalles(robot);
-		
+		if(id_version ==  0)
+		{
+			//Il faut toujours que a1<a2<a3 car sinon, on recule et on risque de ne pas voir le robot adverse
+			//a1 = 950;
+			a1 = 650;
+			a2 = 750;
+			// a3 = 750;
+			a3 = 850;
+		}
+		else
+		{
+			// a1 = -650;
+			a1 = -850;
+			a2 = -750;
+			// a3 = -850;
+			a3 = -650;
+		}
 		// Hook pour la 1ere balle
-		Hook hook1 = hookgenerator.hook_abscisse(950);
+		Hook hook1 = hookgenerator.hook_abscisse(a1);
 		hook1.ajouter_callback(new Callback(tirerballes, true));
 		hooks.add(hook1);
 		
 		// Hook pour la 2e balle
-		Hook hook2 = hookgenerator.hook_abscisse(850);
+		Hook hook2 = hookgenerator.hook_abscisse(a2);
 		hook2.ajouter_callback(new Callback(tirerballes, true));
 		hooks.add(hook2);
 		
 		// Hook pour la 3e balle
-		Hook hook3 = hookgenerator.hook_abscisse(750);
+		Hook hook3 = hookgenerator.hook_abscisse(a3);
 		hook3.ajouter_callback(new Callback(tirerballes, true));
 		hooks.add(hook3);
 		
@@ -110,7 +127,7 @@ public class ScriptLances extends Script {
 
 	@Override
 	protected void termine(Robot robot, Table table) {
-		// vide
+		// vide car rien qui gène
 	}
 	
 	public String toString()
