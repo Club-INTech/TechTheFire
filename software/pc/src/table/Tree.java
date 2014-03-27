@@ -6,8 +6,8 @@ class Tree extends Game_Element {
 
 	// Indice dans arrayTree:
 	//depuis le haut vers le bas, de 0 à 3;
-	// 0 et 1 : c�t� droit
-	// 2 et 3 : c�t� gauche
+	// 0 et 1 : côté droit
+	// 2 et 3 : côté gauche
 	private boolean taken = false;
 	private final Fruit arrayFruit[] = new Fruit[6];
 
