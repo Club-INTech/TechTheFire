@@ -102,6 +102,7 @@ public class ScriptTree extends Script{
 		robot.rateau(PositionRateau.SUPER_BAS, Cote.GAUCHE);
 		robot.rateau(PositionRateau.SUPER_BAS, Cote.DROIT);
 		robot.rateau(PositionRateau.SUPER_BAS, Cote.GAUCHE);
+		robot.sleep(500);
 		//pour être sûr
 		//On remonte juste un peu pour éviter que les rateaux cognent sur le rebord de la table
 		robot.rateau(PositionRateau.BAS, Cote.DROIT);

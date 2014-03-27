@@ -57,13 +57,13 @@ public class ScriptDeposerFruits extends Script {
 	protected void execute(int id_version, Robot robot, Table table)
 			throws MouvementImpossibleException, SerialException {
 		robot.tourner((float)-Math.PI/2);
-		robot.avancer(-190);
+		robot.avancer(-200);
 		robot.bac_haut();	// histoire d'être sûr qu'il y arrive bien
 		robot.bac_haut();
 		robot.bac_haut();
 		robot.sleep(500);
+		robot.avancer(50);
 		robot.bac_bas();
-		robot.avancer(20);
 	}
 	@Override
 	protected void termine(Robot robot, Table table) {
