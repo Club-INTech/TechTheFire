@@ -33,17 +33,17 @@ public class lanceur
 		ScriptManager scriptmanager = (ScriptManager)container.getService("ScriptManager");
 		RobotVrai robotvrai = (RobotVrai)container.getService("RobotVrai");
 		RobotChrono robotchrono = new RobotChrono(config, log);
-				
+		config.set("couleur", "jaune");
 		robotchrono.majRobotChrono(robotvrai);
 		Table table = (Table)container.getService("Table");
 		HookGenerator hookgenerator = (HookGenerator)container.getService("HookGenerator");
 		robotvrai.setPosition(new Vec2(1300, 1200));
-		robotvrai.setOrientation((float)Math.PI);
+		robotvrai.setOrientation((float)(Math.PI));
 		robotvrai.set_vitesse_rotation("entre_scripts");
 		robotvrai.set_vitesse_translation("entre_scripts");
 		container.getService("threadPosition");
 		container.demarreThreads();
-		robotvrai.set_vitesse_translation("30");
+		//robotvrai.set_vitesse_translation("30");
 		
 
 		while(!threadtimer.match_demarre)
@@ -53,8 +53,8 @@ public class lanceur
 		
 			
 		//Le dégager
-		robotvrai.avancer(100);
-		robotvrai.tourner((float)(-Math.PI/2-Math.PI/6));
+		//robotvrai.avancer(100);
+		//robotvrai.tourner((float)(-Math.PI/2-Math.PI/6));
 		robotvrai.avancer(100);
 		while (true)
 		{
@@ -67,7 +67,7 @@ public class lanceur
 			try{
 				//On va déposer la fresque
 				Script s_fresque = (Script)scriptmanager.getScript("ScriptFresque");
-				s_fresque.agit(0, robotvrai, table, false);
+				s_fresque.agit(2, robotvrai, table, false);
 			}
 			finally{}
 			try
@@ -93,6 +93,12 @@ public class lanceur
 			finally{}
 			try
 			{
+				Script s_depot0 = (Script)scriptmanager.getScript("ScriptDeposerFruits");
+				s_depot0.agit(1, robotvrai, table, false);
+			}
+			finally{}
+			try
+			{
 				//On prend des fruits sur l'arbre 3
 				Script s_arbre3 = (Script)scriptmanager.getScript("ScriptTree");
 				s_arbre3.agit(3, robotvrai, table, true);
@@ -105,6 +111,12 @@ public class lanceur
 				s_arbre2.agit(2, robotvrai, table, true);
 			}
 			finally {}
+			try
+			{
+				Script s_depot1 = (Script)scriptmanager.getScript("ScriptDeposerFruits");
+				s_depot1.agit(1, robotvrai, table, false);
+			}
+			finally{}
 		//Enchaîner le scripts à faire en boucle: fait
 		//Entourer chaque script d'un try catch sans rien catcher : fait
 		}
