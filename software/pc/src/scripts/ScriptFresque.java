@@ -60,7 +60,7 @@ public class ScriptFresque extends Script {
 	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException, SerialException
 	{
 		robot.tourner((float)-Math.PI/2);
-		robot.avancer(-300, false, true);
+		robot.avancer(-120, false, true);
 		robot.deposer_fresques();
 		robot.avancer(300);
 	}
