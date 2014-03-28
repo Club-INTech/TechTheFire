@@ -115,7 +115,7 @@ public class ScriptLances extends Script {
 		hooks.add(hook3);
 		
 		robot.set_vitesse_translation("vitesse_mammouth");
-		robot.avancer(800, hooks);
+		robot.avancer(600, hooks);
 	}
 
 	@Override
