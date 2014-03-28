@@ -45,13 +45,13 @@ public class ScriptTree extends Script{
 		Vec2 entree = null;
 
 		if (id_version == 0)
-			entree = new Vec2(1500, 700);
+			entree = new Vec2(1000, 700);
 		else if (id_version == 1)
 			entree = new Vec2(800, 500);
 		else if (id_version == 2)
 			entree = new Vec2(-800, 500);
 		else if (id_version == 3)
-			entree = new Vec2(-1500, 700);
+			entree = new Vec2(-1000, 700);
 		return entree;
 	}
 
@@ -79,12 +79,17 @@ public class ScriptTree extends Script{
 	{
 		// Orientation du robot, le rateau étant à l'arrière
 //		log.debug("I", this);
+		int recul = 0;
 		if (id_version == 0)
 			robot.tourner((float)Math.PI);
 		else if (id_version == 1 || id_version == 2)
 			robot.tourner((float) (Math.PI / 2));
 		else if (id_version ==3)
 			robot.tourner(0) ;
+		if(id_version == 0 ||id_version == 3)
+			recul = 30;
+		else
+			recul = 0;
 //		log.debug("II", this);
 
 		// on déploie les bras 
@@ -93,7 +98,7 @@ public class ScriptTree extends Script{
 		
 		// on avance et on rebaisse les rateaux au min
 		robot.set_vitesse_translation("arbre_arriere");
-		robot.avancer(-320);
+		robot.avancer(-318+recul);
 		robot.rateau(PositionRateau.SUPER_BAS, Cote.DROIT);
 		robot.rateau(PositionRateau.SUPER_BAS, Cote.GAUCHE);
 		robot.rateau(PositionRateau.SUPER_BAS, Cote.DROIT);
