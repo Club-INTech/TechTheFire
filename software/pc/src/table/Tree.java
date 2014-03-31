@@ -2,7 +2,7 @@ package table;
 
 import smartMath.Vec2;
 
-class Tree extends Game_Element {
+public class Tree extends Game_Element {
 
 	// Indice dans arrayTree:
 	//depuis le haut vers le bas, de 0 à 3;
