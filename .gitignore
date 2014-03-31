@@ -20,4 +20,4 @@ hardware/*/*.b\#*
 hardware/*/*.s\#*
 *.class
 */*.class
-/nbproject/private/
+/nbproject/private//software/avr/atmega324p/Total/include/#tot.hpp#
