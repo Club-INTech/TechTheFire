@@ -7,7 +7,7 @@ import smartMath.Vec2;
  * @author pf
  *
  */
-class Torch extends Game_Element {
+public class Torch extends Game_Element {
 	
 	private Fire[] fires;
 

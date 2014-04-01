@@ -2,7 +2,7 @@ package table;
 
 import smartMath.Vec2;
 
-class Fire extends Game_Element {
+public class Fire extends Game_Element {
 
 	private int height ; //0=sol, chaque unité supplémentaire représente un feu en-dessous	
 	private final Colour colour;
