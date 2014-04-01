@@ -9,7 +9,7 @@
 #define NB_SRF_AVANT            1
 #define NB_INFRAROUGE_AVANT     1
 
-#define TAILLE_BUFFER   50
+#define TAILLE_BUFFER   100
 
 //   /!\ A debuguer !!!!
 
