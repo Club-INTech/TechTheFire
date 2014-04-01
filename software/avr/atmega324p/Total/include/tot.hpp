@@ -231,6 +231,7 @@ class Communication
         else if (strcmp(ordre, "von") == 0)
         {
         	D4::high();
+	// c'est plus D4, c'est la pin connectée au PWM
         }
         else if (strcmp(ordre, "voff") ==0)
         {
