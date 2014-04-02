@@ -20,11 +20,12 @@ public class TakeFireGauche implements Executable {
 	}
 
 	public void execute() {
+		/*TODO
 		try {
 			robot.takefiregauche();
 		} catch (SerialException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	@Override
