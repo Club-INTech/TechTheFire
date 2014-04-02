@@ -20,13 +20,13 @@ public class TakeFireDroit implements Executable {
 	}
 
 	public void execute() {
-		/*TODO
 		try {
 			robot.takefiredroit();
 		} catch (SerialException e) {
-			e.printStackTrace();*/
+			e.printStackTrace();
 		}
-		
+	}
+
 	@Override
 	public boolean bougeRobot() {
 		return true;
