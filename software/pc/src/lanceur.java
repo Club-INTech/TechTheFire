@@ -5,6 +5,7 @@ import org.junit.runner.JUnitCore;
 
 import container.Container;
 import exception.ContainerException;
+import exception.ScriptException;
 import robot.RobotChrono;
 import robot.RobotVrai;
 import scripts.Script;
@@ -64,9 +65,9 @@ public class lanceur
 				//robotvrai.va_au_point(s_lances0.point_entree(0), true);
 				//robotvrai.setOrientation((float)(Math.PI));
 				s_lances0.agit(0, robotvrai, table, false);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			
-			finally{}
 			try{
 				//On va déposer la fresque
 				
@@ -74,15 +75,17 @@ public class lanceur
 				//robotvrai.va_au_point(s_fresque.point_entree(2), true);
 				//robotvrai.setOrientation((float)(Math.PI/2));
 				s_fresque.agit(2, robotvrai, table, false);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			try
 			{
 				//On dépose un feu si ça a été pris
 				Script s = (Script)scriptmanager.getScript("ScriptDeposerFeu");
 				s.agit(0, robotvrai, table, true);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			try
 			{
 				//On va prendre des fruits dans l'arbre 0
@@ -90,8 +93,9 @@ public class lanceur
 				//robotvrai.va_au_point(s_arbre0.point_entree(0), true);
 				//robotvrai.setOrientation((float)0);
 				s_arbre0.agit(0, robotvrai, table, true);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			try
 			{
 				//On va prendre des fruits dans l'arbre 1
@@ -99,15 +103,17 @@ public class lanceur
 				//robotvrai.va_au_point(s_arbre1.point_entree(1), true);
 				//robotvrai.setOrientation((float)(-Math.PI));
 				s_arbre1.agit(1, robotvrai, table, true);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			try
 			{
 				//On dépose un feu si ça a été pris
 				Script s = (Script)scriptmanager.getScript("ScriptDeposerFeu");
 				s.agit(1, robotvrai, table, true);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			try
 			{
 				//On va lancer des balles sur l'autre mammouth
@@ -115,8 +121,9 @@ public class lanceur
 				//robotvrai.va_au_point(s_lances1.point_entree(1), true);
 				//robotvrai.setOrientation((float)(Math.PI));
 				s_lances1.agit(1, robotvrai, table, false);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			try
 			{
 				//On dépose les fruits
@@ -124,15 +131,17 @@ public class lanceur
 				//robotvrai.va_au_point(s_depot0.point_entree(1), true);
 				//robotvrai.setOrientation((float)(Math.PI/2));
 				s_depot0.agit(1, robotvrai, table, false);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			try
 			{
 				//On dépose un feu si ça a été pris
 				Script s = (Script)scriptmanager.getScript("ScriptDeposerFeu");
 				s.agit(1, robotvrai, table, true);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			try
 			{
 				//On prend des fruits sur l'arbre 3
@@ -140,8 +149,9 @@ public class lanceur
 				//robotvrai.va_au_point(s_arbre3.point_entree(3), true);
 				//robotvrai.setOrientation((float)(Math.PI));
 				s_arbre3.agit(3, robotvrai, table, true);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			try
 			{
 				//On prend des fruits sur l'arbre 2
@@ -149,15 +159,17 @@ public class lanceur
 				//robotvrai.va_au_point(s_arbre2.point_entree(2), true);
 				//robotvrai.setOrientation((float)(-Math.PI));
 				s_arbre2.agit(2, robotvrai, table, true);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally {}
 			try
 			{
 				//On dépose un feu si ça a été pris
 				Script s = (Script)scriptmanager.getScript("ScriptDeposerFeu");
 				s.agit(2, robotvrai, table, true);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			try
 			{
 				//On dépose encore des fruits
@@ -165,43 +177,47 @@ public class lanceur
 				//robotvrai.va_au_point(s_depot1.point_entree(1), true);
 				//robotvrai.setOrientation((float)(Math.PI/2));
 				s_depot1.agit(1, robotvrai, table, false);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			
 			try
 			{
 				//On prend sur une torche
 				Script s = (Script)scriptmanager.getScript("ScriptTorche");
 				s.agit(0, robotvrai, table, true);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			try
 			{
 				//On dépose un feu si ça a été pris
 				Script s = (Script)scriptmanager.getScript("ScriptDeposerFeu");
 				s.agit(3, robotvrai, table, true);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			try
 			{
 				//On prend sur une torche
 				Script s = (Script)scriptmanager.getScript("ScriptTorche");
 				s.agit(1, robotvrai, table, true);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			try
 			{
 				//On dépose un feu si ça a été pris
 				Script s = (Script)scriptmanager.getScript("ScriptDeposerFeu");
 				s.agit(4, robotvrai, table, true);
+			} catch (ScriptException e) {
+				e.printStackTrace();
 			}
-			finally{}
 			
 		//Enchaîner le scripts à faire en boucle: fait
 		//Entourer chaque script d'un try catch sans rien catcher : fait
 		}
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
