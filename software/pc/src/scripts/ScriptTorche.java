@@ -214,6 +214,7 @@ public class ScriptTorche extends Script {
 		}
 		else if(robot.isFeu_tenu_rouge(Cote.DROIT))
 		{
+			/*
 			if(id_version == 2  && id_version == 3 && id_version == 4 && id_version == 5 && id_version == 10 && id_version == 11)
 			{
 				try {
@@ -230,7 +231,8 @@ public class ScriptTorche extends Script {
 					e.printStackTrace();
 			}
 			}
-			else if(id_version == 0 && id_version == 1)
+			else */
+				if(id_version == 0 && id_version == 1)
 			{
 				//Pour les feux à ramasser dans les torches
 				try {
