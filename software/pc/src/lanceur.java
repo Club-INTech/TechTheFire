@@ -54,8 +54,8 @@ public class lanceur
 			
 		//Le dégager
 		robotvrai.avancer(100);
-		robotvrai.tourner((float)(-Math.PI/2-Math.PI/6));
-		robotvrai.avancer(100);
+		//robotvrai.tourner((float)(-Math.PI/2-Math.PI/6));
+		//robotvrai.avancer(100);
 		while (true)
 		{
 			try{
