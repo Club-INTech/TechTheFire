@@ -26,6 +26,10 @@ class HookFeu extends Hook {
 	
 	public boolean evaluate(final Robot robot)
 	{
+		// si on tient déjà un feu de ce côté...
+		if(robot.isTient_feu(cote))
+			return false;
+		
 		// on regarde à gauche ou à droite selon la valeur de "gauche"
 		if(cote == Cote.GAUCHE && capteur.isThereFireGauche() || cote == Cote.DROIT && capteur.isThereFireDroit())
 		{
