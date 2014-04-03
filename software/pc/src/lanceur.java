@@ -40,6 +40,7 @@ public class lanceur
 		HookGenerator hookgenerator = (HookGenerator)container.getService("HookGenerator");
 		//robotvrai.setPosition(new Vec2(1300, 1700));
 		robotvrai.setPosition(new Vec2(1251, 1695));
+		//On démarre avec la cale !!!!
 		robotvrai.setOrientation((float)(-Math.PI/2));
 		robotvrai.set_vitesse_rotation("entre_scripts");
 		robotvrai.set_vitesse_translation("entre_scripts");
@@ -55,9 +56,9 @@ public class lanceur
 		
 		
 		//Le dégager
+		robotvrai.avancer(200);
+		robotvrai.tourner((float)(-Math.PI/2-Math.PI/6));
 		robotvrai.avancer(100);
-		//robotvrai.tourner((float)(-Math.PI/2));
-		//robotvrai.avancer(100);
 		while (true)
 		{
 			try{
