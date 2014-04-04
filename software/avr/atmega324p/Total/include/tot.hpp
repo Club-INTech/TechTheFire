@@ -27,8 +27,9 @@ class Communication
   	Ax12 rateauD; //ax12 du rateau droit
 	Ax12 bac; //ax12 du bac
 	Ax12 chargeur; //ax12 du chargeur
-	Capteurs capteurs;
         Ax12 filet; //ax12 du lance-filet
+	Capteurs capteurs;
+ 
 
 
 	public:
@@ -242,7 +243,15 @@ class Communication
 		{
 			this->reload();
 		}
-
+		//Actions lance-filet
+		else if ( strcmp ( ordre , "tf" ) == 0 )  
+		{
+			this->tirerFilet();
+		}
+		else if ( strcmp ( ordre , "rf" ) == 0 )  
+		{
+			this->rembobinerFilet();
+		}
 	//Actions ventilo
         else if (strcmp(ordre, "von") == 0)
         {
@@ -523,6 +532,19 @@ void posGauche ()
 	{
 		chargeur.goTo (0);
 	}
+
+  //Actions du lance-filet
+
+	void tirerFilet ()
+	{
+		filet.goTo (300);
+	}
+	void rembobinerFilet ()
+	{
+		filet.goTo (0);
+	}
+
+
 
 };
 
