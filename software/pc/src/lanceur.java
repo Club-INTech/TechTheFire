@@ -34,13 +34,12 @@ public class lanceur
 		ScriptManager scriptmanager = (ScriptManager)container.getService("ScriptManager");
 		RobotVrai robotvrai = (RobotVrai)container.getService("RobotVrai");
 		RobotChrono robotchrono = new RobotChrono(config, log);
-		config.set("couleur", "jaune");
+		//config.set("couleur", "jaune");
 		robotchrono.majRobotChrono(robotvrai);
 		Table table = (Table)container.getService("Table");
 		HookGenerator hookgenerator = (HookGenerator)container.getService("HookGenerator");
 		//robotvrai.setPosition(new Vec2(1300, 1700));
 		robotvrai.setPosition(new Vec2(1251, 1695));
-		//On démarre avec la cale !!!!
 		robotvrai.setOrientation((float)(-Math.PI/2));
 		robotvrai.set_vitesse_rotation("entre_scripts");
 		robotvrai.set_vitesse_translation("entre_scripts");
@@ -64,8 +63,6 @@ public class lanceur
 			try{
 				//On va lancer des balles sur le mammouth
 				Script s_lances0 = (Script)scriptmanager.getScript("ScriptLances");
-				//robotvrai.va_au_point(s_lances0.point_entree(0), true);
-				//robotvrai.setOrientation((float)(Math.PI));
 				s_lances0.agit(0, robotvrai, table, false);
 			} catch (ScriptException e) {
 				e.printStackTrace();
