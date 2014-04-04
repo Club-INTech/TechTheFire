@@ -38,8 +38,10 @@ public class lanceur
 		robotchrono.majRobotChrono(robotvrai);
 		Table table = (Table)container.getService("Table");
 		HookGenerator hookgenerator = (HookGenerator)container.getService("HookGenerator");
-		robotvrai.setPosition(new Vec2(1300, 1200));
-		robotvrai.setOrientation((float)(Math.PI));
+		//robotvrai.setPosition(new Vec2(1300, 1700));
+		robotvrai.setPosition(new Vec2(1251, 1695));
+		//On démarre avec la cale !!!!
+		robotvrai.setOrientation((float)(-Math.PI/2));
 		robotvrai.set_vitesse_rotation("entre_scripts");
 		robotvrai.set_vitesse_translation("entre_scripts");
 		container.getService("threadPosition");
@@ -52,11 +54,11 @@ public class lanceur
 			Thread.sleep(100);
 		}
 		
-			
+		
 		//Le dégager
+		robotvrai.avancer(200);
+		robotvrai.tourner((float)(-Math.PI/2-Math.PI/6));
 		robotvrai.avancer(100);
-		//robotvrai.tourner((float)(-Math.PI/2-Math.PI/6));
-		//robotvrai.avancer(100);
 		while (true)
 		{
 			try{
@@ -74,10 +76,10 @@ public class lanceur
 				Script s_fresque = (Script)scriptmanager.getScript("ScriptFresque");
 				//robotvrai.va_au_point(s_fresque.point_entree(2), true);
 				//robotvrai.setOrientation((float)(Math.PI/2));
-				s_fresque.agit(2, robotvrai, table, false);
+				s_fresque.agit(1, robotvrai, table, false);
 			} catch (ScriptException e) {
 				e.printStackTrace();
-			}
+			}/*
 			try
 			{
 				//On dépose un feu si ça a été pris
@@ -85,7 +87,7 @@ public class lanceur
 				s.agit(0, robotvrai, table, true);
 			} catch (ScriptException e) {
 				e.printStackTrace();
-			}
+			}*/
 			try
 			{
 				//On va prendre des fruits dans l'arbre 0
@@ -105,7 +107,7 @@ public class lanceur
 				s_arbre1.agit(1, robotvrai, table, true);
 			} catch (ScriptException e) {
 				e.printStackTrace();
-			}
+			}/*
 			try
 			{
 				//On dépose un feu si ça a été pris
@@ -113,7 +115,7 @@ public class lanceur
 				s.agit(1, robotvrai, table, true);
 			} catch (ScriptException e) {
 				e.printStackTrace();
-			}
+			}*/
 			try
 			{
 				//On va lancer des balles sur l'autre mammouth
@@ -133,7 +135,7 @@ public class lanceur
 				s_depot0.agit(1, robotvrai, table, false);
 			} catch (ScriptException e) {
 				e.printStackTrace();
-			}
+			}/*
 			try
 			{
 				//On dépose un feu si ça a été pris
@@ -141,7 +143,7 @@ public class lanceur
 				s.agit(1, robotvrai, table, true);
 			} catch (ScriptException e) {
 				e.printStackTrace();
-			}
+			}/
 			try
 			{
 				//On prend des fruits sur l'arbre 3
@@ -161,7 +163,7 @@ public class lanceur
 				s_arbre2.agit(2, robotvrai, table, true);
 			} catch (ScriptException e) {
 				e.printStackTrace();
-			}
+			}/*
 			try
 			{
 				//On dépose un feu si ça a été pris
@@ -169,7 +171,7 @@ public class lanceur
 				s.agit(2, robotvrai, table, true);
 			} catch (ScriptException e) {
 				e.printStackTrace();
-			}
+			}*/
 			try
 			{
 				//On dépose encore des fruits
@@ -189,6 +191,7 @@ public class lanceur
 			} catch (ScriptException e) {
 				e.printStackTrace();
 			}
+			/*
 			try
 			{
 				//On dépose un feu si ça a été pris
@@ -213,7 +216,7 @@ public class lanceur
 			} catch (ScriptException e) {
 				e.printStackTrace();
 			}
-			
+			*/
 		//Enchaîner le scripts à faire en boucle: fait
 		//Entourer chaque script d'un try catch sans rien catcher : fait
 		}
