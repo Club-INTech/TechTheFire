@@ -15,7 +15,9 @@ import smartMath.Vec2;
 import table.Table;
 import utils.Log;
 import utils.Read_Ini;
+import utils.Sleep;
 import exception.MouvementImpossibleException;
+import exception.SerialException;
 
 /**
  * Script pour les lances
@@ -32,7 +34,7 @@ public class ScriptLances extends Script {
 	}
 
 	/*
-	 * Le script lance 4 balles sur le c��t�� droit
+	 * Le script lance 3 balles sur le c��t�� droit
 	 * Le script donne un point d'entr��e
 	 */
 	
@@ -53,10 +55,10 @@ public class ScriptLances extends Script {
 		//if(couleur == "jaune")
 		if(id == 0)
 			//return new Vec2(400,1400);
-			return new Vec2(1000,1400);
+			return new Vec2(750,1400);
 		else
 			//return new Vec2(-1200,1400);
-			return new Vec2(-500,1400);
+			return new Vec2(-750,1400);
 	}
 
 	@Override
@@ -75,6 +77,7 @@ public class ScriptLances extends Script {
 	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
 	{
 		// TODO: tester!
+		/*
 		int a1,a2,a3;
 		
 		
@@ -113,9 +116,21 @@ public class ScriptLances extends Script {
 		Hook hook3 = hookgenerator.hook_abscisse(a3);
 		hook3.ajouter_callback(new Callback(tirerballes, true));
 		hooks.add(hook3);
+		*/
+		robot.tourner((float)(Math.PI), true);
+			try {
+				//Abadon des hooks, on fait donc tout à la main
+				robot.tirerBalle();
+				Sleep.sleep(500);
+				robot.tirerBalle();
+				Sleep.sleep(500);
+				robot.tirerBalle();
+			} catch (SerialException e) {
+				e.printStackTrace();
+			}
+		//robot.set_vitesse_translation("vitesse_mammouth");
+		//robot.avancer(600, hooks);
 		
-		robot.set_vitesse_translation("vitesse_mammouth");
-		robot.avancer(600, hooks);
 	}
 
 	@Override
