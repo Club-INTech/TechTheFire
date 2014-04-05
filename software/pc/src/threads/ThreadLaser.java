@@ -123,5 +123,10 @@ class ThreadLaser extends AbstractThread {
         log.debug("Fin du thread des lasers", this);
 
 	}
+	
+	public void maj_config()
+	{
+		// TODO
+	}
 
 }

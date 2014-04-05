@@ -29,6 +29,7 @@ public class lanceur
 	
 	public static void main(String[] args)
 	{
+		test.test();
 		Container container;
 		try {
 			container = new Container();

@@ -75,4 +75,8 @@ public class ScriptFunnyAction extends Script {
 		
 	}
 
+	public void maj_config()
+	{
+		// TODO
+	}
 }

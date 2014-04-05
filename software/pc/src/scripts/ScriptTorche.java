@@ -292,4 +292,8 @@ public class ScriptTorche extends Script {
 		return "ScriptTorche";
 	}
 	
+	public void maj_config()
+	{
+		// TODO
+	}
 }

@@ -164,5 +164,9 @@ public class ScriptTree extends Script{
 	{
 		return "ScriptTree";
 	}
-
+	
+	public void maj_config()
+	{
+		// TODO
+	}
 }
