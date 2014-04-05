@@ -53,11 +53,11 @@ public class lanceur
 			Thread.sleep(100);
 		}
 		
-		
+		robotvrai.recaler();
 		//Le dégager
 		robotvrai.avancer(200);
 		robotvrai.tourner((float)(-Math.PI/2-Math.PI/6));
-		robotvrai.avancer(100);
+		robotvrai.avancer(300);
 		while (true)
 		{
 			try{
@@ -73,7 +73,7 @@ public class lanceur
 				Script s_fresque = (Script)scriptmanager.getScript("ScriptFresque");
 				//robotvrai.va_au_point(s_fresque.point_entree(2), true);
 				//robotvrai.setOrientation((float)(Math.PI/2));
-				s_fresque.agit(1, robotvrai, table, false);
+				s_fresque.agit(2, robotvrai, table, false);
 			} catch (ScriptException e) {
 				e.printStackTrace();
 			}/*

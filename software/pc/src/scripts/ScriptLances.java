@@ -121,10 +121,11 @@ public class ScriptLances extends Script {
 			try {
 				//Abadon des hooks, on fait donc tout à la main
 				robot.tirerBalle();
-				Sleep.sleep(500);
+				Sleep.sleep(800);
 				robot.tirerBalle();
-				Sleep.sleep(500);
+				Sleep.sleep(800);
 				robot.tirerBalle();
+				Sleep.sleep(1500);
 			} catch (SerialException e) {
 				e.printStackTrace();
 			}
