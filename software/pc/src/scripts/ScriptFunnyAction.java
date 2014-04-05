@@ -6,12 +6,15 @@ import exception.MouvementImpossibleException;
 import exception.SerialException;
 import hook.HookGenerator;
 import pathfinding.Pathfinding;
+import robot.Cote;
+import robot.PositionRateau;
 import robot.Robot;
 import robot.RobotVrai;
 import smartMath.Vec2;
 import table.Table;
 import utils.Log;
 import utils.Read_Ini;
+import utils.Sleep;
 
 /**
  * Script de la funny action (se met juste en position)
@@ -36,7 +39,7 @@ public class ScriptFunnyAction extends Script {
 
 	@Override
 	public Vec2 point_entree(int id) {
-		return new Vec2(700,1300); // pourquoi se mettre si loin?
+		return new Vec2(800,1300); 
 	}
 
 	@Override
@@ -53,7 +56,10 @@ public class ScriptFunnyAction extends Script {
 	@Override
 	protected void execute(int id_version, Robot robot, Table table)
 			throws MouvementImpossibleException, SerialException {
-		robot.tourner((float)(Math.PI), true);	// pas de symétrie
+		robot.tourner((float)(-1 * Math.PI/2), true);	// pas de symétrie
+		robot.rateau(PositionRateau.BAS, Cote.DROIT);
+		robot.rateau(PositionRateau.BAS, Cote.GAUCHE);
+		Sleep.sleep(1500);
 		robot.lancerFilet();
 	}
 

@@ -66,9 +66,9 @@ public class ScriptTorche extends Script {
 		else if(id ==5)
 			return new Vec2(400,400);*/
 		else if(id ==6)
-			return new Vec2(-1500,1000);
+			return new Vec2(-1200,1000);
 		else if(id ==7)
-			return new Vec2(1500, 1000);
+			return new Vec2(1200, 1000);
 		else if(id ==8)
 			return new Vec2(-200, 200);
 		else if(id ==9)
@@ -139,12 +139,12 @@ public class ScriptTorche extends Script {
 		else if(id_version ==8)
 			// Vec2(-200, 0);
 		{
-			robot.tourner((float)(3*Math.PI/2));
+			robot.tourner((float)(-Math.PI/2));
 		}	
 		else if(id_version ==9)
 			// Vec2(200, 0);
 		{
-			robot.tourner((float)(3*Math.PI/2));
+			robot.tourner((float)(-Math.PI/2));
 		}
 		/*
 		else if(id_version ==10)

@@ -27,8 +27,9 @@ class Communication
   	Ax12 rateauD; //ax12 du rateau droit
 	Ax12 bac; //ax12 du bac
 	Ax12 chargeur; //ax12 du chargeur
-	Capteurs capteurs;
         Ax12 filet; //ax12 du lance-filet
+	Capteurs capteurs;
+ 
 
 
 	public:
@@ -156,6 +157,22 @@ class Communication
 		{
        	       		this -> hautDroite ();
 		}
+		else if (strcmp (ordre , "pg") ==0)
+		{
+       	       		this -> posGauche ();
+		}
+		else if (strcmp (ordre , "pd") ==0)
+		{
+       	       		this -> posDroite ();
+		}
+		else if (strcmp (ordre , "tombeg") ==0)
+		{
+       	       		this -> tombeGauche();
+		}
+		else if (strcmp (ordre , "tombed") ==0)
+		{
+       	       		this -> tombeDroite ();
+		}
 		/*
 		  else if (strcmp (ordre, "hrd") ==0)
 		  {
@@ -226,7 +243,15 @@ class Communication
 		{
 			this->reload();
 		}
-
+		//Actions lance-filet
+		else if ( strcmp ( ordre , "tf" ) == 0 )  
+		{
+			this->tirerFilet();
+		}
+		else if ( strcmp ( ordre , "rf" ) == 0 )  
+		{
+			this->rembobinerFilet();
+		}
 	//Actions ventilo
         else if (strcmp(ordre, "von") == 0)
         {
@@ -276,13 +301,13 @@ class Communication
 	
 	void ouvrirGauche ()
 	{
-		pinceGauche.goTo (20);
+		pinceGauche.goTo (60);
 	}
 	void fermerGauche ()
 	{
 //	  uint16_t positionPrecedente = (pinceGauche.getPosition_0_1023());
 //	  uint16_t positionActuelle = positionPrecedente ;
-	  pinceGauche.goTo(67);
+	  pinceGauche.goTo(150);
 /*	  for(int i=0; i<7;i++)
 	      {
 		_delay_ms(100);
@@ -293,22 +318,21 @@ class Communication
 	}
 	void basGauche ()
 	{
-		positionGauche.goTo(75);
-		orientationGauche.goTo(225);
+		positionGauche.goTo(230);
+		orientationGauche.goTo(70);
 	}
 	void milieuGauche ()
 	{
-		positionGauche.goTo(150);
+		positionGauche.goTo(140);
 		orientationGauche.goTo(150);
-
 	}
 	void hautGauche ()
 	{
-	  	positionGauche.goTo(240);
+	  	positionGauche.goTo(60);
 		_delay_ms(300);
-		orientationGauche.goTo(60);
+		orientationGauche.goTo(200);
 		_delay_ms(200);
-		orientationGauche.goTo(170); //cet ajout a pour but de mettre la pince verticale, qu'elle prenne moins de place.
+		orientationGauche.goTo(125); //cet ajout a pour but de mettre la pince verticale, qu'elle prenne moins de place.
 	}
 void retournerGauche ()
   {
@@ -317,6 +341,20 @@ void retournerGauche ()
   void retablirGauche ()
   {
     retourneurGauche.goTo (60);
+  }
+
+void posGauche ()
+  {
+    	serial_pc::printfln ( "angle?" );			
+        uint16_t i;
+	serial_pc::read (i);
+	positionGauche.goTo(i);
+	orientationGauche.goTo(300-i);
+  }
+
+ void tombeGauche ()
+  {
+    pinceGauche.goTo(0);
   }
   /*
   void remonterEtRetablirGauche ()
@@ -333,15 +371,13 @@ void retournerGauche ()
 
 	void ouvrirDroite ()
 	{
-		pinceDroite.goTo (170);
+		pinceDroite.goTo (213);
 	}
 	void fermerDroite ()
 	{
 //	  uint16_t positionPrecedente = (pinceDroite.getPosition_0_1023());
 //	  uint16_t positionActuelle = positionPrecedente ;
-	  pinceDroite.goTo(119);
-      _delay_ms(200);      
-	  pinceDroite.goTo(125);
+	  pinceDroite.goTo(123);
 /*	  for(int i=0; i<7; i++)
 	      {
 		_delay_ms(100);
@@ -378,6 +414,20 @@ void retournerGauche ()
 		_delay_ms(200);
 		orientationDroite.goTo(130);
 	}
+  void posDroite ()
+  {
+    	serial_pc::printfln ( "angle?" );			
+        uint16_t i;
+	serial_pc::read (i);
+	positionDroite.goTo(i);
+	orientationDroite.goTo(300-i);
+  }
+
+  void tombeDroite ()
+  {
+    pinceDroite.goTo(300);
+  }
+
  void retournerDroite ()
   {
     retourneurDroite.goTo (60);
@@ -480,6 +530,19 @@ void retournerGauche ()
 	{
 		chargeur.goTo (0);
 	}
+
+  //Actions du lance-filet
+
+	void tirerFilet ()
+	{
+		filet.goTo (300);
+	}
+	void rembobinerFilet ()
+	{
+		filet.goTo (0);
+	}
+
+
 
 };
 

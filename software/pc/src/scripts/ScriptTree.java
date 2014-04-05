@@ -45,13 +45,13 @@ public class ScriptTree extends Script{
 		Vec2 entree = null;
 
 		if (id_version == 0)
-			entree = new Vec2(1000, 700);
+			entree = new Vec2(1000, 740);
 		else if (id_version == 1)
-			entree = new Vec2(800, 500);
+			entree = new Vec2(870, 500);
 		else if (id_version == 2)
-			entree = new Vec2(-800, 500);
+			entree = new Vec2(-870, 500);
 		else if (id_version == 3)
-			entree = new Vec2(-1000, 700);
+			entree = new Vec2(-1000, 770);
 		return entree;
 	}
 
@@ -87,9 +87,9 @@ public class ScriptTree extends Script{
 		else if (id_version ==3)
 			robot.tourner(0) ;
 		if(id_version == 0 ||id_version == 3)
-			recul = 30;
+			recul = 50;
 		else
-			recul = 0;
+			recul = 50;
 //		log.debug("II", this);
 
 		// on déploie les bras 
