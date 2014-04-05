@@ -81,11 +81,23 @@ public class ScriptTree extends Script{
 //		log.debug("I", this);
 		int recul = 0;
 		if (id_version == 0)
+		{
+			robot.va_au_point(new Vec2(1000, 700));
 			robot.tourner((float)Math.PI);
+		}
 		else if (id_version == 1 || id_version == 2)
+		{
+			if(id_version ==1 )
+				robot.va_au_point(new Vec2(800, 500));
+			else
+				robot.va_au_point(new Vec2(-800, 500));
 			robot.tourner((float) (Math.PI / 2));
+		}
 		else if (id_version ==3)
+		{
+			robot.va_au_point(new Vec2(-1000, 700));
 			robot.tourner(0) ;
+		}
 		if(id_version == 0 ||id_version == 3)
 			recul = 30;
 		else

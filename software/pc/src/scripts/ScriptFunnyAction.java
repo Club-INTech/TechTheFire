@@ -36,8 +36,10 @@ public class ScriptFunnyAction extends Script {
 
 	@Override
 	public Vec2 point_entree(int id) {
-		return new Vec2(700,1300); // pourquoi se mettre si loin?
+		return new Vec2(800,1300); 
+		//return new Vec2(700,700);
 	}
+	//700,700
 
 	@Override
 	public int score(int id_version, Robot robot, Table table) {

@@ -32,7 +32,7 @@ public class Tree extends Game_Element {
 		// 3-5 : partie droite de l'arbre
 		// De plus, 0 et 3 sont les fruits les plus proches du robot.
 	}
-
+	
 	public void clone(Tree tree)
 	{
 		// Si l'arbre est pris, on ne prend même pas la peine de copier ses fruits
@@ -87,5 +87,9 @@ public class Tree extends Game_Element {
 	public Vec2 getPosition()
 	{
 		return position;
+	}
+	public Fruit[] getArrayFruit()
+	{
+		return arrayFruit;
 	}
 }
