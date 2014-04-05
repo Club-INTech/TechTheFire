@@ -88,4 +88,8 @@ public class Tree extends Game_Element {
 	{
 		return position;
 	}
+	public Fruit[] getArrayFruit()
+	{
+		return arrayFruit;
+	}
 }

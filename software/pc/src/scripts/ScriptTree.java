@@ -49,7 +49,7 @@ public class ScriptTree extends Script{
 		else if (id_version == 1)
 			entree = new Vec2(850, 500);
 		else if (id_version == 2)
-			entree = new Vec2(-800, 500);
+			entree = new Vec2(-850, 500);
 		else if (id_version == 3)
 			entree = new Vec2(-1000, 700);
 		return entree;
