@@ -13,6 +13,7 @@ import robot.Cote;
 import robot.PositionRateau;
 import robot.RobotChrono;
 import robot.RobotVrai;
+import robot.cartes.Capteurs;
 import scripts.Script;
 import scripts.ScriptManager;
 import smartMath.Vec2;
@@ -35,6 +36,9 @@ public class lanceur
 			container = new Container();
 			Read_Ini config = (Read_Ini) container.getService("Read_Ini");
 			Log log = (Log) container.getService("Log");
+			Capteurs capteurs = (Capteurs) container.getService("Capteurs");
+			config.set("capteurs_on", false);
+			capteurs.maj_config();
 		ThreadTimer threadtimer = (ThreadTimer) container.getService("threadTimer");
 		// compléter avec: vitesse, position, ...
 		ScriptManager scriptmanager = (ScriptManager)container.getService("ScriptManager");
@@ -44,13 +48,12 @@ public class lanceur
 		robotchrono.majRobotChrono(robotvrai);
 		Table table = (Table)container.getService("Table");
 		HookGenerator hookgenerator = (HookGenerator)container.getService("HookGenerator");
-		robotvrai.setPosition(new Vec2(1300, 1700));
+		robotvrai.setPosition(new Vec2(1000, 1350));
 		//robotvrai.setPosition(new Vec2(1251, 1695));
 		robotvrai.setOrientation((float)(-Math.PI/2));
 		robotvrai.set_vitesse_rotation("entre_scripts");
 		robotvrai.set_vitesse_translation("entre_scripts");
-		container.getService("threadPosition");
-		container.demarreThreads();
+		container.demarreTousThreads();
 		//robotvrai.set_vitesse_translation("30");
 		/*On aura 3 inputs 
 		Le premier pour la couleur du robot avec 0 pour jaune et 1 pour rouge
@@ -73,7 +76,7 @@ public class lanceur
 						config.set("couleur","jaune");
 					else if(couleur.contains("1"))
 						config.set("couleur", "rouge");
-					robotvrai.update_couleur();
+					robotvrai.maj_config();
 				}
 				
 				
@@ -168,12 +171,14 @@ public class lanceur
 		}
 		
 		robotvrai.initialiser_actionneurs_deplacements();
-		robotvrai.recaler();
+//		robotvrai.recaler();
 		//Le dégager
 		robotvrai.avancer(200);
 		robotvrai.tourner((float)(-Math.PI/2-Math.PI/6));
-		robotvrai.avancer(300);
-		
+		robotvrai.avancer(500);
+		config.set("capteurs_on", true);
+		capteurs.maj_config();
+		Thread.sleep(1000);
 		
 			if(couleur.contains("0"))
 				//C'est jaune
