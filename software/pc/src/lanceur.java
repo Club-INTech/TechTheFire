@@ -179,6 +179,7 @@ public class lanceur
 			{
 				while (true)
 				{
+					/*
 					try{
 						//On va lancer des balles sur le mammouth
 						Script s_lances0 = (Script)scriptmanager.getScript("ScriptLances");
@@ -186,9 +187,10 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
+					*/
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -196,6 +198,7 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
+					/*
 					try{
 						//On va déposer la fresque
 						
@@ -206,7 +209,7 @@ public class lanceur
 					}
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -214,6 +217,7 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
+					*/
 					try
 					{
 						//On va prendre des fruits dans l'arbre 0
@@ -224,7 +228,7 @@ public class lanceur
 					}
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -243,7 +247,7 @@ public class lanceur
 					}
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -251,6 +255,7 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
+					/*
 					try
 					{
 						//On va lancer des balles sur l'autre mammouth
@@ -259,9 +264,10 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
+					*/
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -279,7 +285,7 @@ public class lanceur
 					}
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -298,7 +304,7 @@ public class lanceur
 					}
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -316,7 +322,7 @@ public class lanceur
 					}
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -332,9 +338,10 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
+					/*
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -342,6 +349,7 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
+					*/
 					
 					
 					
@@ -353,6 +361,7 @@ public class lanceur
 				//Si la couleur est rouge
 				while (true)
 				{
+					/*
 					try{
 						//On va lancer des balles sur le mammouth
 						Script s_lances1 = (Script)scriptmanager.getScript("ScriptLances");
@@ -360,6 +369,7 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
+					*/
 					try
 					{
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
@@ -425,6 +435,7 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
+					/*
 					try
 					{
 						//On va lancer des balles sur l'autre mammouth
@@ -433,6 +444,7 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
+					*/
 					try
 					{
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)

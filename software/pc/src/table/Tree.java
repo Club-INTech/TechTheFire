@@ -90,6 +90,6 @@ public class Tree extends Game_Element {
 	}
 	public Fruit[] getArrayFruit()
 	{
-		return arrayFruit;
+		return this.arrayFruit;
 	}
 }
