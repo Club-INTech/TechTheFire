@@ -44,8 +44,8 @@ public class lanceur
 		robotchrono.majRobotChrono(robotvrai);
 		Table table = (Table)container.getService("Table");
 		HookGenerator hookgenerator = (HookGenerator)container.getService("HookGenerator");
-		//robotvrai.setPosition(new Vec2(1300, 1700));
-		robotvrai.setPosition(new Vec2(1251, 1695));
+		robotvrai.setPosition(new Vec2(1300, 1700));
+		//robotvrai.setPosition(new Vec2(1251, 1695));
 		robotvrai.setOrientation((float)(-Math.PI/2));
 		robotvrai.set_vitesse_rotation("entre_scripts");
 		robotvrai.set_vitesse_translation("entre_scripts");
@@ -95,27 +95,27 @@ public class lanceur
 						table.setFruitNoir(0, 0);
 						table.setFruitNoir(3, 3);
 					}
-					if(pos_noir1.contains("1"))
+					else if(pos_noir1.contains("1"))
 					{
 						table.setFruitNoir(0, 1);
 						table.setFruitNoir(3, 4);
 					}
-					if (pos_noir1.contains("2"))
+					else if (pos_noir1.contains("2"))
 					{
 						table.setFruitNoir(0, 2);
 						table.setFruitNoir(3, 5);
 					}
-					if (pos_noir1.contains("3"))
+					else if (pos_noir1.contains("3"))
 					{
 						table.setFruitNoir(0, 3);
 						table.setFruitNoir(3, 0);
 					}
-					if (pos_noir1.contains("4"))
+					else if (pos_noir1.contains("4"))
 					{
 						table.setFruitNoir(0, 4);
 						table.setFruitNoir(3, 1);
 					}
-					if (pos_noir1.contains("5"))
+					else if (pos_noir1.contains("5"))
 					{
 						table.setFruitNoir(0, 5);
 						table.setFruitNoir(3, 2);
@@ -128,33 +128,33 @@ public class lanceur
 					pos_noir2 = keyboard.readLine(); 
 					if(pos_noir2.contains("0"))
 					{
-						table.setFruitNoir(0, 0);
-						table.setFruitNoir(3, 3);
+						table.setFruitNoir(1, 0);
+						table.setFruitNoir(2, 3);
 					}
-					if(pos_noir2.contains("1"))
+					else if(pos_noir2.contains("1"))
 					{
-						table.setFruitNoir(0, 1);
-						table.setFruitNoir(3, 4);
+						table.setFruitNoir(1, 1);
+						table.setFruitNoir(2, 4);
 					}
-					if (pos_noir2.contains("2"))
+					else if (pos_noir2.contains("2"))
 					{
-						table.setFruitNoir(0, 2);
-						table.setFruitNoir(3, 5);
+						table.setFruitNoir(1, 2);
+						table.setFruitNoir(2, 5);
 					}
-					if (pos_noir2.contains("3"))
+					else if (pos_noir2.contains("3"))
 					{
-						table.setFruitNoir(0, 3);
-						table.setFruitNoir(3, 0);
+						table.setFruitNoir(1, 3);
+						table.setFruitNoir(2, 0);
 					}
-					if (pos_noir2.contains("4"))
+					else if (pos_noir2.contains("4"))
 					{
-						table.setFruitNoir(0, 4);
-						table.setFruitNoir(3, 1);
+						table.setFruitNoir(1, 4);
+						table.setFruitNoir(2, 1);
 					}
-					if (pos_noir2.contains("5"))
+					else if (pos_noir2.contains("5"))
 					{
-						table.setFruitNoir(0, 5);
-						table.setFruitNoir(3, 2);
+						table.setFruitNoir(1, 5);
+						table.setFruitNoir(2, 2);
 					}
 						
 				}
@@ -538,6 +538,52 @@ public class lanceur
 				e1.printStackTrace();
 			}
 			
-		}
+	
+}
 
-	}
+}
+
+
+
+
+/*Package prise feu sur torche et dépôt feu
+ * 
+ * try
+ 			{
+ 				//On prend sur une torche
+ 				Script s = (Script)scriptmanager.getScript("ScriptTorche");
+ 				s.agit(1, robotvrai, table, true);
+			} catch (ScriptException e) {
+				e.printStackTrace();
+ 			}
+ * 
+ 	try
+ 	{
+ 		//On dépose un feu si ça a été pris
+ 		Script s = (Script)scriptmanager.getScript("ScriptDeposerFeu");
+ 		s.agit(0, robotvrai, table, true);
+	} catch (ScriptException e) {
+		e.printStackTrace();
+ 	}
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * */
+ 

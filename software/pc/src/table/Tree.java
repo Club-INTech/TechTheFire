@@ -86,7 +86,7 @@ public class Tree extends Game_Element {
 	
 	public Vec2 getPosition()
 	{
-		return position;
+		return this.position;
 	}
 	public Fruit[] getArrayFruit()
 	{
