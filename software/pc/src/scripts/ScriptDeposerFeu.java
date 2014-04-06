@@ -21,13 +21,13 @@ import utils.Read_Ini;
  */
 public class ScriptDeposerFeu extends Script {
 
-	public ScriptDeposerFeu(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
+	public ScriptDeposerFeu(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
 	{
-		super(pathfinding, hookgenerator, config, log, robotvrai);
+		super(hookgenerator, config, log, robotvrai);
 	}
 
 	@Override
-	public ArrayList<Integer> version(final Robot robot, final Table table) {
+	public ArrayList<Integer> version(final Robot robot, final Table table, Pathfinding pathfinding) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		if(robot.isTient_feu(Cote.DROIT) || robot.isTient_feu(Cote.GAUCHE))
 		{
@@ -82,7 +82,7 @@ public class ScriptDeposerFeu extends Script {
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException, SerialException
+	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding) throws MouvementImpossibleException, SerialException
 	{
 		//Suivant là où on va poser, on doit se positionner différemment
 		if (id_version == 0)
@@ -117,7 +117,7 @@ public class ScriptDeposerFeu extends Script {
 	}
 
 	@Override
-	protected void termine(Robot robot, Table table)
+	protected void termine(Robot robot, Table table, Pathfinding pathfinding)
 	{
 		try
 		{

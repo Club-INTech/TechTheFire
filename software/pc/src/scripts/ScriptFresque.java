@@ -23,13 +23,13 @@ import exception.SerialException;
 public class ScriptFresque extends Script {
 	
 
-	public ScriptFresque(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
+	public ScriptFresque(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
 	{
-		super(pathfinding, hookgenerator, config, log, robotvrai);
+		super(hookgenerator, config, log, robotvrai);
 	}
 
 	@Override
-	public ArrayList<Integer> version(final Robot robot, final Table table) {
+	public ArrayList<Integer> version(final Robot robot, final Table table, Pathfinding pathfinding) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		if(robot.isFresquesPosees())
 			return versionList;
@@ -57,7 +57,7 @@ public class ScriptFresque extends Script {
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException, SerialException
+	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding) throws MouvementImpossibleException, SerialException
 	{
 		robot.tourner((float)-Math.PI/2);
 		robot.bac_bas();
@@ -67,7 +67,7 @@ public class ScriptFresque extends Script {
 	}
 
 	@Override
-	protected void termine(Robot robot, Table table) {
+	protected void termine(Robot robot, Table table, Pathfinding pathfinding) {
 		// vide
 	}
 	

@@ -24,14 +24,12 @@ import utils.Sleep;
 
 public class ScriptFunnyAction extends Script {
 
-	public ScriptFunnyAction(Pathfinding pathfinding,
-			HookGenerator hookgenerator, Read_Ini config, Log log,
-			RobotVrai robotvrai) {
-		super(pathfinding, hookgenerator, config, log, robotvrai);
+	public ScriptFunnyAction(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai) {
+		super(hookgenerator, config, log, robotvrai);
 	}
 
 	@Override
-	public ArrayList<Integer> version(Robot robot, Table table) {
+	public ArrayList<Integer> version(Robot robot, Table table, Pathfinding pathfinding) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		versionList.add(0);
 		return versionList;
@@ -54,7 +52,7 @@ public class ScriptFunnyAction extends Script {
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table)
+	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding)
 			throws MouvementImpossibleException, SerialException {
 		robot.tourner((float)(-1 * Math.PI/2), true);	// pas de symétrie
 		robot.rateau(PositionRateau.BAS, Cote.DROIT);
@@ -70,7 +68,7 @@ public class ScriptFunnyAction extends Script {
 	}
 
 	@Override
-	protected void termine(Robot robot, Table table) {
+	protected void termine(Robot robot, Table table, Pathfinding pathfinding) {
 		// rien à faire, la partie est finie et rien n'est dérangé.
 		
 	}

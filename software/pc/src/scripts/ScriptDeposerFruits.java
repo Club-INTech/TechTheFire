@@ -21,14 +21,12 @@ import utils.Read_Ini;
 
 public class ScriptDeposerFruits extends Script {
 
-	public ScriptDeposerFruits(Pathfinding pathfinding,
-			HookGenerator hookgenerator, Read_Ini config, Log log,
-			RobotVrai robotvrai) {
-		super(pathfinding, hookgenerator, config, log, robotvrai);
+	public ScriptDeposerFruits(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai) {
+		super(hookgenerator, config, log, robotvrai);
 	}
 
 	@Override
-	public ArrayList<Integer> version(Robot robot, Table table) {
+	public ArrayList<Integer> version(Robot robot, Table table, Pathfinding pathfinding) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		if (robot.get_nombre_fruits_bac() >0)
 		{
@@ -54,7 +52,7 @@ public class ScriptDeposerFruits extends Script {
 		return 0;
 	}
 	@Override
-	protected void execute(int id_version, Robot robot, Table table)
+	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding)
 			throws MouvementImpossibleException, SerialException {
 		robot.tourner((float)-Math.PI/2);
 		robot.avancer(-160);
@@ -66,7 +64,7 @@ public class ScriptDeposerFruits extends Script {
 		robot.bac_bas();
 	}
 	@Override
-	protected void termine(Robot robot, Table table) {
+	protected void termine(Robot robot, Table table, Pathfinding pathfinding) {
 		try {
 			robot.bac_bas();
 		} catch (SerialException e) {

@@ -28,9 +28,9 @@ import exception.SerialException;
 public class ScriptLances extends Script {
 	
 
-	public ScriptLances(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
+	public ScriptLances(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
 	{
-		super(pathfinding, hookgenerator, config, log, robotvrai);
+		super(hookgenerator, config, log, robotvrai);
 	}
 
 	/*
@@ -40,7 +40,7 @@ public class ScriptLances extends Script {
 	
 
 	@Override
-	public ArrayList<Integer> version(final Robot robot, final Table table) {
+	public ArrayList<Integer> version(final Robot robot, final Table table, Pathfinding pathfinding) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		if (robot.getNbrLances() > 0) {
 			versionList.add(0);
@@ -74,7 +74,7 @@ public class ScriptLances extends Script {
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException
+	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding) throws MouvementImpossibleException
 	{
 		// TODO: tester!
 		/*
@@ -142,7 +142,7 @@ public class ScriptLances extends Script {
 	}
 
 	@Override
-	protected void termine(Robot robot, Table table) {
+	protected void termine(Robot robot, Table table, Pathfinding pathfinding) {
 		// vide car rien qui gène
 	}
 	

@@ -21,13 +21,13 @@ import utils.Read_Ini;
  */
 public class ScriptTorche extends Script {
 
-	public ScriptTorche(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
+	public ScriptTorche(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
 	{
-		super(pathfinding, hookgenerator, config, log, robotvrai);
+		super(hookgenerator, config, log, robotvrai);
 	}
 
 	@Override
-	public ArrayList<Integer> version(Robot robot, Table table) {
+	public ArrayList<Integer> version(Robot robot, Table table, Pathfinding pathfinding) {
 		// TODO
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		//Les feux dans les torches
@@ -93,7 +93,7 @@ public class ScriptTorche extends Script {
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table)
+	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding)
 			throws MouvementImpossibleException {
 		if(id_version ==0)
 			//Vec2(-600,900)
@@ -267,7 +267,7 @@ public class ScriptTorche extends Script {
 	}
 
 	@Override
-	protected void termine(Robot robot, Table table) {
+	protected void termine(Robot robot, Table table, Pathfinding pathfinding) {
 		try
 		{
 			robot.lever_pince(Cote.DROIT);
