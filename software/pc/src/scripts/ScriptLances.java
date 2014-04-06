@@ -1,10 +1,6 @@
 package scripts;
 
-import hook.Callback;
-import hook.Executable;
-import hook.Hook;
 import hook.HookGenerator;
-import hook.methodes.TirerBalles;
 
 import java.util.ArrayList;
 
