@@ -1,16 +1,8 @@
-import hook.HookGenerator;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-
-import org.junit.Assert;
-import org.junit.runner.JUnitCore;
-
+import pathfinding.Pathfinding;
 import container.Container;
-import exception.ContainerException;
 import exception.ScriptException;
-import robot.Cote;
-import robot.PositionRateau;
 import robot.RobotChrono;
 import robot.RobotVrai;
 import robot.cartes.Capteurs;
@@ -59,7 +51,7 @@ public class lanceur
 
 			//Talbe
 			Table table = (Table)container.getService("Table");
-			HookGenerator hookgenerator = (HookGenerator)container.getService("HookGenerator");
+			Pathfinding pathfinding = new Pathfinding(table, config, log, 1);
 			
 			// Etat intial du robot
 			robotvrai.setPosition(new Vec2(1300, 1350));
@@ -221,7 +213,7 @@ public class lanceur
 					{
 						//On prend des fruits sur l'arbre 3
 						Script s_arbre3 = (Script)scriptmanager.getScript("ScriptTree");
-						s_arbre3.agit(3, robotvrai, table, false);
+						s_arbre3.agit(3, robotvrai, table, pathfinding, false);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -229,7 +221,7 @@ public class lanceur
 					try{
 						//On va lancer des balles sur le mammouth
 						Script s_lances0 = (Script)scriptmanager.getScript("ScriptLances");
-						s_lances0.agit(0, robotvrai, table, false);
+						s_lances0.agit(0, robotvrai, table, pathfinding, false);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -239,7 +231,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -249,7 +241,7 @@ public class lanceur
 						//On va déposer la fresque
 						
 						Script s_fresque = (Script)scriptmanager.getScript("ScriptFresque");
-						s_fresque.agit(2, robotvrai, table, false);
+						s_fresque.agit(2, robotvrai, table, pathfinding, false);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -258,7 +250,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -268,7 +260,7 @@ public class lanceur
 					{
 						//On va prendre des fruits dans l'arbre 0
 						Script s_arbre0 = (Script)scriptmanager.getScript("ScriptTree");
-						s_arbre0.agit(0, robotvrai, table, false);
+						s_arbre0.agit(0, robotvrai, table, pathfinding, false);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -277,7 +269,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -287,7 +279,7 @@ public class lanceur
 						
 						//dans l'arbre 1
 						Script s_arbre1 = (Script)scriptmanager.getScript("ScriptTree");
-						s_arbre1.agit(1, robotvrai, table, false);
+						s_arbre1.agit(1, robotvrai, table, pathfinding, false);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -296,7 +288,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -306,7 +298,7 @@ public class lanceur
 					{
 						//On va lancer des balles sur l'autre mammouth
 						Script s_lances1 = (Script)scriptmanager.getScript("ScriptLances");
-						s_lances1.agit(1, robotvrai, table, false);
+						s_lances1.agit(1, robotvrai, table, pathfinding, false);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -316,7 +308,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -325,7 +317,7 @@ public class lanceur
 					{
 						//On dépose les fruits
 						Script s_depot0 = (Script)scriptmanager.getScript("ScriptDeposerFruits");
-						s_depot0.agit(1, robotvrai, table, false);
+						s_depot0.agit(1, robotvrai, table, pathfinding, false);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -334,7 +326,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -344,7 +336,7 @@ public class lanceur
 					{
 						//On prend des fruits sur l'arbre 3
 						Script s_arbre3 = (Script)scriptmanager.getScript("ScriptTree");
-						s_arbre3.agit(3, robotvrai, table, false);
+						s_arbre3.agit(3, robotvrai, table, pathfinding, false);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -353,7 +345,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -362,7 +354,7 @@ public class lanceur
 					{
 						//On prend des fruits sur l'arbre 2
 						Script s_arbre2 = (Script)scriptmanager.getScript("ScriptTree");
-						s_arbre2.agit(2, robotvrai, table, true);
+						s_arbre2.agit(2, robotvrai, table, pathfinding, true);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -371,7 +363,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -380,7 +372,7 @@ public class lanceur
 					{
 						//On dépose encore des fruits
 						Script s_depot1 = (Script)scriptmanager.getScript("ScriptDeposerFruits");
-						s_depot1.agit(1, robotvrai, table, false);
+						s_depot1.agit(1, robotvrai, table, pathfinding, false);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -417,7 +409,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -426,7 +418,7 @@ public class lanceur
 						//On va déposer la fresque
 						
 						Script s_fresque = (Script)scriptmanager.getScript("ScriptFresque");
-						s_fresque.agit(2, robotvrai, table, false);
+						s_fresque.agit(2, robotvrai, table, pathfinding, false);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -435,7 +427,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -445,7 +437,7 @@ public class lanceur
 					{
 						//On va prendre des fruits dans l'arbre 0
 						Script s_arbre3 = (Script)scriptmanager.getScript("ScriptTree");
-						s_arbre3.agit(0, robotvrai, table, true);
+						s_arbre3.agit(0, robotvrai, table, pathfinding, true);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -454,7 +446,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -463,7 +455,7 @@ public class lanceur
 					{
 						//On va prendre des fruits dans l'arbre 1
 						Script s_arbre2 = (Script)scriptmanager.getScript("ScriptTree");
-						s_arbre2.agit(1, robotvrai, table, true);
+						s_arbre2.agit(1, robotvrai, table, pathfinding, true);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -472,7 +464,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -492,7 +484,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -501,7 +493,7 @@ public class lanceur
 					{
 						//On dépose les fruits
 						Script s_depot0 = (Script)scriptmanager.getScript("ScriptDeposerFruits");
-						s_depot0.agit(1, robotvrai, table, false);
+						s_depot0.agit(1, robotvrai, table, pathfinding, false);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -510,7 +502,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -520,7 +512,7 @@ public class lanceur
 					{
 						//On prend des fruits sur l'arbre 3
 						Script s_arbre3 = (Script)scriptmanager.getScript("ScriptTree");
-						s_arbre3.agit(3, robotvrai, table, true);
+						s_arbre3.agit(3, robotvrai, table, pathfinding, true);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -529,7 +521,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -538,7 +530,7 @@ public class lanceur
 					{
 						//On prend des fruits sur l'arbre 2
 						Script s_arbre2 = (Script)scriptmanager.getScript("ScriptTree");
-						s_arbre2.agit(2, robotvrai, table, true);
+						s_arbre2.agit(2, robotvrai, table, pathfinding, true);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -547,7 +539,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
@@ -559,7 +551,7 @@ public class lanceur
 					{
 						//On dépose encore des fruits
 						Script s_depot1 = (Script)scriptmanager.getScript("ScriptDeposerFruits");
-						s_depot1.agit(1, robotvrai, table, false);
+						s_depot1.agit(1, robotvrai, table, pathfinding, false);
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
@@ -568,7 +560,7 @@ public class lanceur
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
-						s.agit(0, robotvrai, table, false);
+						s.agit(0, robotvrai, table, pathfinding, false);
 					}
 					} catch (ScriptException e) {
 						e.printStackTrace();
