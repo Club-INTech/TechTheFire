@@ -87,9 +87,9 @@ public class ScriptTree extends Script{
 		else if (id_version ==3)
 			robot.tourner(0) ;
 		if(id_version == 0 ||id_version == 3)
-			recul = 50;
+			recul = 30;
 		else
-			recul = 50;
+			recul = 20;
 //		log.debug("II", this);
 
 		// on déploie les bras 
