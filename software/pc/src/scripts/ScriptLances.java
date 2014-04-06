@@ -11,7 +11,6 @@ import smartMath.Vec2;
 import table.Table;
 import utils.Log;
 import utils.Read_Ini;
-import utils.Sleep;
 import exception.MouvementImpossibleException;
 import exception.SerialException;
 
@@ -117,11 +116,11 @@ public class ScriptLances extends Script {
 			try {
 				//Abadon des hooks, on fait donc tout à la main
 				robot.tirerBalle();
-				Sleep.sleep(800);
+				robot.sleep(800);
 				robot.tirerBalle();
-				Sleep.sleep(800);
+				robot.sleep(800);
 				robot.tirerBalle();
-				Sleep.sleep(1500);
+				robot.sleep(1500);
 			} catch (SerialException e) {
 				e.printStackTrace();
 			}
