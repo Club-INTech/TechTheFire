@@ -1,4 +1,4 @@
-package robot.cartes;
+package robot.cartes.laser;
 
 import smartMath.Vec2;
 
@@ -6,7 +6,6 @@ import smartMath.Vec2;
 /**
  * @author clément
  */
-import robot.cartes.Kalman;
 import utils.Log;
 import utils.Read_Ini;
 import container.Service;

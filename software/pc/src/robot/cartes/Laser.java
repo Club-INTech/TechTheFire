@@ -3,6 +3,7 @@ package robot.cartes;
 import java.util.ArrayList;
 
 import robot.RobotVrai;
+import robot.cartes.laser.Balise;
 import robot.serial.Serial;
 import smartMath.Vec2;
 import utils.Log;
