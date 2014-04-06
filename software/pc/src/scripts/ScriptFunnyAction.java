@@ -54,7 +54,7 @@ public class ScriptFunnyAction extends Script {
 	@Override
 	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding)
 			throws MouvementImpossibleException, SerialException {
-		robot.tourner((float)(-1 * Math.PI/2), true);	// pas de symétrie
+		robot.tourner_sans_symetrie((float)(-1 * Math.PI/2));	// pas de symétrie
 		robot.rateau(PositionRateau.BAS, Cote.DROIT);
 		robot.rateau(PositionRateau.BAS, Cote.GAUCHE);
 		Sleep.sleep(1500);

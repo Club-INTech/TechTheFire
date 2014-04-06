@@ -61,7 +61,7 @@ public class ScriptFresque extends Script {
 	{
 		robot.tourner((float)-Math.PI/2);
 		robot.bac_bas();
-		robot.avancer(-150, false, true);
+		robot.avancer_dans_mur(-150);
 		robot.deposer_fresques();
 		robot.avancer(300);
 	}

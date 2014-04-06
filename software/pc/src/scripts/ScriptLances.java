@@ -113,7 +113,7 @@ public class ScriptLances extends Script {
 		hook3.ajouter_callback(new Callback(tirerballes, true));
 		hooks.add(hook3);
 		*/
-		robot.tourner((float)(Math.PI), true);
+		robot.tourner_sans_symetrie((float)(Math.PI));
 			try {
 				//Abadon des hooks, on fait donc tout à la main
 				robot.tirerBalle();
