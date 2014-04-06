@@ -197,8 +197,11 @@ public class lanceur
 			capteurs.maj_config();
 			
 			
-			// Entrée sur le terrain
+			// vitesse de translation
 			robotvrai.set_vitesse_translation("entre_scripts");
+			
+			
+			// Entrée sur le terrain
 			robotvrai.avancer(200);
 			robotvrai.tourner((float)(-Math.PI/2-Math.PI/6));
 			robotvrai.avancer(500);
@@ -400,7 +403,7 @@ public class lanceur
 					*/
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -418,7 +421,7 @@ public class lanceur
 					}
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -437,7 +440,7 @@ public class lanceur
 					}
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -455,7 +458,7 @@ public class lanceur
 					}
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -475,7 +478,7 @@ public class lanceur
 					*/
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -493,7 +496,7 @@ public class lanceur
 					}
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -512,7 +515,7 @@ public class lanceur
 					}
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -530,7 +533,7 @@ public class lanceur
 					}
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
@@ -551,7 +554,7 @@ public class lanceur
 					}
 					try
 					{
-					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15)
+					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
 					{
 						Script s = (Script)scriptmanager.getScript("ScriptFunnyAction");
 						s.agit(0, robotvrai, table, false);
