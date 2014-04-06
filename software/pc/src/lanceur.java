@@ -32,154 +32,179 @@ public class lanceur
 	{
 		test.test();
 		Container container;
-		try {
+		try 
+		{
+			
+			// Config & Logs
 			container = new Container();
 			Read_Ini config = (Read_Ini) container.getService("Read_Ini");
 			Log log = (Log) container.getService("Log");
-			Capteurs capteurs = (Capteurs) container.getService("Capteurs");
+			
+			// Pas de capteurs avant le racalage
+			Capteurs capteurs = (Capteurs) container.getService("Capteur");
 			config.set("capteurs_on", false);
 			capteurs.maj_config();
-		ThreadTimer threadtimer = (ThreadTimer) container.getService("threadTimer");
-		// compléter avec: vitesse, position, ...
-		ScriptManager scriptmanager = (ScriptManager)container.getService("ScriptManager");
-		RobotVrai robotvrai = (RobotVrai)container.getService("RobotVrai");
-		RobotChrono robotchrono = new RobotChrono(config, log);
-		//config.set("couleur", "jaune");
-		robotchrono.majRobotChrono(robotvrai);
-		Table table = (Table)container.getService("Table");
-		HookGenerator hookgenerator = (HookGenerator)container.getService("HookGenerator");
-		robotvrai.setPosition(new Vec2(1000, 1350));
-		//robotvrai.setPosition(new Vec2(1251, 1695));
-		robotvrai.setOrientation((float)(-Math.PI/2));
-		robotvrai.set_vitesse_rotation("entre_scripts");
-		robotvrai.set_vitesse_translation("entre_scripts");
-		container.demarreTousThreads();
-		//robotvrai.set_vitesse_translation("30");
-		/*On aura 3 inputs 
-		Le premier pour la couleur du robot avec 0 pour jaune et 1 pour rouge
-		Le deuxième pour les arbres 0 et 3 (on donne pour 0 et pour le 3 ça sera calculé facilement)
-		Le troisième pour les arbres 1 et 2 (one donne pour 1 et pour les 2 ça sera calculé facilement) 
-		La position des fruits dans un arbre est expliqué dans la classe Tree
-		*/
-		//--------------------------------------------------------------
-				//Début des paramétrages
-				String couleur = "";
-				while(!couleur.contains("0") && !couleur.contains("1"))
-				{
-					System.out.println("Rentrez 0 pour jaune et 1 pour rouge : ");
-					BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in)); 
-					 
-					couleur = keyboard.readLine(); 
-					
-					
-					if(couleur.contains("0"))
-						config.set("couleur","jaune");
-					else if(couleur.contains("1"))
-						config.set("couleur", "rouge");
-					robotvrai.maj_config();
-				}
-				
-				
-				// On initialise des trucs
-				
-				
-				
-				
-				//Pour les fruits noirs
-				String pos_noir1 = "";
-				String pos_noir2 = "";
-				while(!(pos_noir1.contains("0")|| pos_noir1.contains("1")|| pos_noir1.contains("2")||pos_noir1.contains("3")||pos_noir1.contains("4")||pos_noir1.contains("5")))
-				{
-					System.out.println("Donnez la position des fruits noirs pour les arbres 0 et 3 : ");
-					BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in)); 
-					pos_noir1 = keyboard.readLine(); 
-					if(pos_noir1.contains("0"))
-					{
-						table.setFruitNoir(0, 0);
-						table.setFruitNoir(3, 3);
-					}
-					else if(pos_noir1.contains("1"))
-					{
-						table.setFruitNoir(0, 1);
-						table.setFruitNoir(3, 4);
-					}
-					else if (pos_noir1.contains("2"))
-					{
-						table.setFruitNoir(0, 2);
-						table.setFruitNoir(3, 5);
-					}
-					else if (pos_noir1.contains("3"))
-					{
-						table.setFruitNoir(0, 3);
-						table.setFruitNoir(3, 0);
-					}
-					else if (pos_noir1.contains("4"))
-					{
-						table.setFruitNoir(0, 4);
-						table.setFruitNoir(3, 1);
-					}
-					else if (pos_noir1.contains("5"))
-					{
-						table.setFruitNoir(0, 5);
-						table.setFruitNoir(3, 2);
-					}
-				}		
-				while(!(pos_noir2.contains("0")|| pos_noir2.contains("1")|| pos_noir2.contains("2")||pos_noir2.contains("3")||pos_noir2.contains("4")||pos_noir2.contains("5")))
-				{
-					System.out.println("Donnez la position des fruits noirs pour les arbres 1 et 2 : ");
-					BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in)); 
-					pos_noir2 = keyboard.readLine(); 
-					if(pos_noir2.contains("0"))
-					{
-						table.setFruitNoir(1, 0);
-						table.setFruitNoir(2, 3);
-					}
-					else if(pos_noir2.contains("1"))
-					{
-						table.setFruitNoir(1, 1);
-						table.setFruitNoir(2, 4);
-					}
-					else if (pos_noir2.contains("2"))
-					{
-						table.setFruitNoir(1, 2);
-						table.setFruitNoir(2, 5);
-					}
-					else if (pos_noir2.contains("3"))
-					{
-						table.setFruitNoir(1, 3);
-						table.setFruitNoir(2, 0);
-					}
-					else if (pos_noir2.contains("4"))
-					{
-						table.setFruitNoir(1, 4);
-						table.setFruitNoir(2, 1);
-					}
-					else if (pos_noir2.contains("5"))
-					{
-						table.setFruitNoir(1, 5);
-						table.setFruitNoir(2, 2);
-					}
-						
-				}
-				//Fin paramétrage terrain
-				//------------------------------------------------------
-		
+			
+			// Timer
+			ThreadTimer threadtimer = (ThreadTimer) container.getService("threadTimer");
+			
+			// Declaration robot
+			// compléter avec: vitesse, position, ...
+			ScriptManager scriptmanager = (ScriptManager)container.getService("ScriptManager");
+			RobotVrai robotvrai = (RobotVrai)container.getService("RobotVrai");
+			RobotChrono robotchrono = new RobotChrono(config, log);
+			//config.set("couleur", "jaune");
+			robotchrono.majRobotChrono(robotvrai);
+			
 
-		while(!threadtimer.match_demarre)
-		{
-			Thread.sleep(100);
-		}
-		
-		robotvrai.initialiser_actionneurs_deplacements();
-//		robotvrai.recaler();
-		//Le dégager
-		robotvrai.avancer(200);
-		robotvrai.tourner((float)(-Math.PI/2-Math.PI/6));
-		robotvrai.avancer(500);
-		config.set("capteurs_on", true);
-		capteurs.maj_config();
-		Thread.sleep(1000);
-		
+			//Talbe
+			Table table = (Table)container.getService("Table");
+			HookGenerator hookgenerator = (HookGenerator)container.getService("HookGenerator");
+			
+			// Etat intial du robot
+			robotvrai.setPosition(new Vec2(1300, 1350));
+			//robotvrai.setPosition(new Vec2(1251, 1695));
+			robotvrai.setOrientation((float)(-Math.PI/2));
+			robotvrai.set_vitesse_rotation("entre_scripts");
+			robotvrai.set_vitesse_translation("entre_scripts");
+			
+			// DEmare les threads
+			container.demarreTousThreads();
+			
+			
+			/*On aura 3 inputs 
+			Le premier pour la couleur du robot avec 0 pour jaune et 1 pour rouge
+			Le deuxième pour les arbres 0 et 3 (on donne pour 0 et pour le 3 ça sera calculé facilement)
+			Le troisième pour les arbres 1 et 2 (one donne pour 1 et pour les 2 ça sera calculé facilement) 
+			La position des fruits dans un arbre est expliqué dans la classe Tree
+			*/
+			//--------------------------------------------------------------
+			//Début des paramétrages
+			String couleur = "";
+			while(!couleur.contains("0") && !couleur.contains("1"))
+			{
+				System.out.println("Rentrez 0 pour jaune et 1 pour rouge : ");
+				BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in)); 
+				 
+				couleur = keyboard.readLine(); 
+				
+				
+				if(couleur.contains("0"))
+					config.set("couleur","jaune");
+				else if(couleur.contains("1"))
+					config.set("couleur", "rouge");
+				robotvrai.maj_config();
+			}
+			
+			
+			// On initialise des trucs
+			
+			
+			
+			
+			//Pour les fruits noirs
+			String pos_noir1 = "";
+			String pos_noir2 = "";
+			while(!(pos_noir1.contains("0")|| pos_noir1.contains("1")|| pos_noir1.contains("2")||pos_noir1.contains("3")||pos_noir1.contains("4")||pos_noir1.contains("5")))
+			{
+				System.out.println("Donnez la position des fruits noirs pour les arbres 0 et 3 : ");
+				BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in)); 
+				pos_noir1 = keyboard.readLine(); 
+				if(pos_noir1.contains("0"))
+				{
+					table.setFruitNoir(0, 0);
+					table.setFruitNoir(3, 3);
+				}
+				else if(pos_noir1.contains("1"))
+				{
+					table.setFruitNoir(0, 1);
+					table.setFruitNoir(3, 4);
+				}
+				else if (pos_noir1.contains("2"))
+				{
+					table.setFruitNoir(0, 2);
+					table.setFruitNoir(3, 5);
+				}
+				else if (pos_noir1.contains("3"))
+				{
+					table.setFruitNoir(0, 3);
+					table.setFruitNoir(3, 0);
+				}
+				else if (pos_noir1.contains("4"))
+				{
+					table.setFruitNoir(0, 4);
+					table.setFruitNoir(3, 1);
+				}
+				else if (pos_noir1.contains("5"))
+				{
+					table.setFruitNoir(0, 5);
+					table.setFruitNoir(3, 2);
+				}
+			}		
+			while(!(pos_noir2.contains("0")|| pos_noir2.contains("1")|| pos_noir2.contains("2")||pos_noir2.contains("3")||pos_noir2.contains("4")||pos_noir2.contains("5")))
+			{
+				System.out.println("Donnez la position des fruits noirs pour les arbres 1 et 2 : ");
+				BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in)); 
+				pos_noir2 = keyboard.readLine(); 
+				if(pos_noir2.contains("0"))
+				{
+					table.setFruitNoir(1, 0);
+					table.setFruitNoir(2, 3);
+				}
+				else if(pos_noir2.contains("1"))
+				{
+					table.setFruitNoir(1, 1);
+					table.setFruitNoir(2, 4);
+				}
+				else if (pos_noir2.contains("2"))
+				{
+					table.setFruitNoir(1, 2);
+					table.setFruitNoir(2, 5);
+				}
+				else if (pos_noir2.contains("3"))
+				{
+					table.setFruitNoir(1, 3);
+					table.setFruitNoir(2, 0);
+				}
+				else if (pos_noir2.contains("4"))
+				{
+					table.setFruitNoir(1, 4);
+					table.setFruitNoir(2, 1);
+				}
+				else if (pos_noir2.contains("5"))
+				{
+					table.setFruitNoir(1, 5);
+					table.setFruitNoir(2, 2);
+				}
+					
+			}
+			//Fin paramétrage terrain
+			//------------------------------------------------------
+	
+
+			// Attente du top départ par le thread timer
+			while(!threadtimer.match_demarre)
+			{
+				Thread.sleep(100);
+			}
+			
+			
+			// Debut du match
+			robotvrai.initialiser_actionneurs_deplacements();
+			robotvrai.recaler();
+			
+			config.set("capteurs_on", true);
+			capteurs.maj_config();
+			
+			
+			// Entrée sur le terrain
+			robotvrai.avancer(200);
+			robotvrai.tourner((float)(-Math.PI/2-Math.PI/6));
+			robotvrai.avancer(500);
+			Thread.sleep(1000);	// ?
+			
+			
+			// 2 séquences d'action en boucles selon couleur
 			if(couleur.contains("0"))
 				//C'est jaune
 			{
@@ -356,10 +381,6 @@ public class lanceur
 						e.printStackTrace();
 					}
 					*/
-					
-					
-					
-					
 				}
 			}
 			else
@@ -544,7 +565,7 @@ public class lanceur
 			}
 			
 	
-}
+	}
 
 }
 
