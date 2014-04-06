@@ -205,6 +205,7 @@ public class lanceur
 			robotvrai.avancer(200);
 			robotvrai.tourner((float)(-Math.PI/2-Math.PI/6));
 			robotvrai.avancer(500);
+			threadtimer.match_demarre = true;
 			//Thread.sleep(1000);	// ?
 			
 			
@@ -214,7 +215,17 @@ public class lanceur
 			{
 				while (true)
 				{
-					/*
+
+					
+					try
+					{
+						//On prend des fruits sur l'arbre 3
+						Script s_arbre3 = (Script)scriptmanager.getScript("ScriptTree");
+						s_arbre3.agit(3, robotvrai, table, false);
+					} catch (ScriptException e) {
+						e.printStackTrace();
+					}
+					
 					try{
 						//On va lancer des balles sur le mammouth
 						Script s_lances0 = (Script)scriptmanager.getScript("ScriptLances");
@@ -222,7 +233,7 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
-					*/
+					
 					try
 					{
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
@@ -233,7 +244,7 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
-					/*
+					
 					try{
 						//On va déposer la fresque
 						
@@ -252,7 +263,7 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
-					*/
+					
 					try
 					{
 						//On va prendre des fruits dans l'arbre 0
@@ -290,7 +301,7 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
-					/*
+					
 					try
 					{
 						//On va lancer des balles sur l'autre mammouth
@@ -299,7 +310,7 @@ public class lanceur
 					} catch (ScriptException e) {
 						e.printStackTrace();
 					}
-					*/
+					
 					try
 					{
 					if(System.currentTimeMillis() - threadtimer.date_debut > threadtimer.duree_match-15000)
