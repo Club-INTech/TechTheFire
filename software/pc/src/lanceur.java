@@ -198,10 +198,11 @@ public class lanceur
 			
 			
 			// Entrée sur le terrain
+			robotvrai.set_vitesse_translation("entre_scripts");
 			robotvrai.avancer(200);
 			robotvrai.tourner((float)(-Math.PI/2-Math.PI/6));
 			robotvrai.avancer(500);
-			Thread.sleep(1000);	// ?
+			//Thread.sleep(1000);	// ?
 			
 			
 			// 2 séquences d'action en boucles selon couleur
