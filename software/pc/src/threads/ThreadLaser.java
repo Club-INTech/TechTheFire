@@ -33,6 +33,7 @@ class ThreadLaser extends AbstractThread {
 		this.table = table;
 		this.threadtimer = threadtimer;
 		maj_config();
+		Thread.currentThread().setPriority(2);
 	}
 	
 	@Override
