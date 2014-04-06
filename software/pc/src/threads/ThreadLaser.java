@@ -2,9 +2,9 @@ package threads;
 
 import java.util.ArrayList;
 
-import robot.cartes.Laser;
 import robot.cartes.laser.Balise;
 import robot.cartes.laser.FiltrageLaser;
+import robot.cartes.laser.Laser;
 import smartMath.Vec2;
 import table.Table;
 import utils.Sleep;

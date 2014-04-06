@@ -10,8 +10,7 @@ import smartMath.Matrn;
  */
 //Les erreurs sont dues à la mauvaise gestion des excptions, PF? Au secours !!!
 
-
-public class Kalman {
+class Kalman {
 	//les attributs qui ont été mises en public sont utilisées dans FiltrageLaser.java
 	public Matrn x;
 	private Matrn p;

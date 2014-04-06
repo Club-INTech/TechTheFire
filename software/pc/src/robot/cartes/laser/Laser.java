@@ -1,9 +1,8 @@
-package robot.cartes;
+package robot.cartes.laser;
 
 import java.util.ArrayList;
 
 import robot.RobotVrai;
-import robot.cartes.laser.Balise;
 import robot.serial.Serial;
 import smartMath.Vec2;
 import utils.Log;
