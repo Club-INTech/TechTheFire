@@ -32,15 +32,7 @@ class ThreadLaser extends AbstractThread {
 		this.laser = laser;
 		this.table = table;
 		this.threadtimer = threadtimer;
-		try {
-		table_x = Integer.parseInt(config.get("table_x"));
-		table_y = Integer.parseInt(config.get("table_y"));
-		lasers_frequence = Float.parseFloat(config.get("lasers_frequence"));
-		}
-		catch(Exception e)
-		{
-			log.critical(e, this);
-		}
+		maj_config();
 	}
 	
 	@Override
@@ -126,7 +118,27 @@ class ThreadLaser extends AbstractThread {
 	
 	public void maj_config()
 	{
-		// TODO
+		try {
+		table_x = Integer.parseInt(config.get("table_x"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		try {
+		table_y = Integer.parseInt(config.get("table_y"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		try {
+		lasers_frequence = Float.parseFloat(config.get("lasers_frequence"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 }

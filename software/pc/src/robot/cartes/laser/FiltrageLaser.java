@@ -49,7 +49,6 @@ public class FiltrageLaser implements Service {
 	
 	public void maj_config()
 	{
-		// TODO
 	}
 	
 	public Matrn etat_robot_adverse()

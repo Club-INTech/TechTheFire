@@ -142,10 +142,5 @@ public class ScriptDeposerFeu extends Script {
 	{
 		return "ScriptDeposerFeu";
 	}
-	
-	public void maj_config()
-	{
-		// TODO
-	}
 
 }

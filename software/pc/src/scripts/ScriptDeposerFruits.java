@@ -81,9 +81,5 @@ public class ScriptDeposerFruits extends Script {
 	{
 		return "ScriptDeposerFruits";
 	}
-	
-	public void maj_config()
-	{
-		// TODO
-	}
+
 }

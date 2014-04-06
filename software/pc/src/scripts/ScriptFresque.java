@@ -83,8 +83,4 @@ public class ScriptFresque extends Script {
 		return "ScriptFresque";
 	}
 
-	public void maj_config()
-	{
-		// TODO
-	}
 }

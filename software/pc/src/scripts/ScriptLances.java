@@ -147,8 +147,4 @@ public class ScriptLances extends Script {
 		return "ScriptLances";
 	}
 
-	public void maj_config()
-	{
-		// TODO
-	}
 }

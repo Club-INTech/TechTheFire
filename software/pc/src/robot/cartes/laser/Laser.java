@@ -255,6 +255,5 @@ public class Laser implements Service {
 	
 	public void maj_config()
 	{
-		// TODO
 	}
 }
