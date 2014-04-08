@@ -16,6 +16,7 @@ public abstract class Obstacle {
 	}
 	
 	public abstract Obstacle clone();
+
 	public Vec2 getPosition()
 	{
 		return this.position;
@@ -35,6 +36,11 @@ public abstract class Obstacle {
 		}			
 		// sinon, c'est qu'il est circulaire
 		return   !( pos.distance(obstacle.getPosition()) < ((ObstacleCirculaire)obstacle).getRadius() );
+	}
+	
+	public String toString()
+	{
+		return "Obstacle en "+position;
 	}
 	
 }

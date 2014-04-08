@@ -23,14 +23,18 @@ public class Table implements Service {
 	
 	private ArrayList<Obstacle> listObstacles = new ArrayList<Obstacle>();
 	private static ArrayList<Obstacle> listObstaclesFixes = new ArrayList<Obstacle>();
-	private ObstacleCirculaire[] robots_adverses = new ObstacleCirculaire[2];
+	private ObstacleBalise[] robots_adverses = new ObstacleBalise[2];
 	
 	private int hashFire;
 	private int hashTree;
 	private int hashObstacles;
+	private int hashEnnemis;
 	
 	private Fresco[] list_fresco_pos = new Fresco[3];
 	private boolean[] list_fresco_hanged = new boolean[3];
+
+	private int rayon_robot_adverse = 200;
+	private long duree = 0;
 
 	// Dépendances
 	private Log log;
@@ -40,11 +44,11 @@ public class Table implements Service {
 	{
 		this.log = log;
 		this.config = config;
-		
+		maj_config();
 		initialise();
 	}
 	
-	public void initialise()
+	private void initialise()
 	{
 		// Initialisation des feux
 		// TODO vérifier couleur. Torche fixe?
@@ -67,7 +71,7 @@ public class Table implements Service {
 		arrayTree[3] = new Tree(new Vec2(-1500,700));
 		
 		// Initialisation des torches
-		Fire feu0 = new Fire(new Vec2(600,900), 3, 1, Colour.YELLOW);
+/*		Fire feu0 = new Fire(new Vec2(600,900), 3, 1, Colour.YELLOW);
 		Fire feu1 = new Fire(new Vec2(600,900), 4, 2, Colour.RED);
 		Fire feu2 = new Fire(new Vec2(600,900), 5, 3, Colour.YELLOW);
 		arrayTorch[0] = new Torch(new Vec2(600,900), feu0, feu1, feu2);
@@ -76,7 +80,11 @@ public class Table implements Service {
 		Fire feu4 = new Fire(new Vec2(-600,900), 11, 2, Colour.YELLOW);
 		Fire feu5 = new Fire(new Vec2(-600,900), 12, 3, Colour.RED);
 		arrayTorch[1] = new Torch(new Vec2(-600,900), feu3, feu4, feu5); 
-		
+*/
+
+		arrayTorch[0] = new Torch(new Vec2(600,900));
+		arrayTorch[1] = new Torch(new Vec2(-600,900)); 
+
 		// Ajout des torches mobiles
 		listObstaclesFixes.add(new ObstacleCirculaire(new Vec2(600,900), 80));
 		listObstaclesFixes.add(new ObstacleCirculaire(new Vec2(-600,900), 80));
@@ -90,27 +98,19 @@ public class Table implements Service {
 		listObstaclesFixes.add(new ObstacleRectangulaire(new Vec2(1100,1700), 700, 300));
 		listObstaclesFixes.add(new ObstacleRectangulaire(new Vec2(-1100,1700), 700, 300));
 
-		//listObstaclesFixes.add(new ObstacleRectangulaire(new Vec2(750,1850), 700, 300));
-		//listObstaclesFixes.add(new ObstacleRectangulaire(new Vec2(-750,1850), 700, 300));
-
 		// Ajout des arbres
 		listObstaclesFixes.add(new ObstacleCirculaire(new Vec2(1500,700), 150));
 		listObstaclesFixes.add(new ObstacleCirculaire(new Vec2(800,0), 150));
 		listObstaclesFixes.add(new ObstacleCirculaire(new Vec2(-800,0), 150));
 		listObstaclesFixes.add(new ObstacleCirculaire(new Vec2(-1500,700), 150));
-
-		int rayon_robot_adverse = 230;
-			try {
-				rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
-			} catch (NumberFormatException | ConfigException e) {
-				e.printStackTrace();
-			}
-		robots_adverses[0] = new ObstacleCirculaire(new Vec2(0,0), rayon_robot_adverse);
-		robots_adverses[1] = new ObstacleCirculaire(new Vec2(0,0), rayon_robot_adverse);
+		
+		robots_adverses[0] = new ObstacleBalise(new Vec2(-1000, -1000), rayon_robot_adverse, new Vec2(0, 0));
+		robots_adverses[1] = new ObstacleBalise(new Vec2(-1000, -1000), rayon_robot_adverse, new Vec2(0, 0));
 		
 		hashFire = 0;
 		hashTree = 0;
 		hashObstacles = 0;
+		hashEnnemis = 0;
 		
 		//Gestion des fresques
 		list_fresco_pos[0] = new Fresco(new Vec2(0,0));
@@ -146,27 +146,32 @@ public class Table implements Service {
 		return listObstaclesFixes;
 	}
 	
-	public void creer_obstacle(final Vec2 position)
+	/**
+	 * Renvoie un code selon la présence ou non des torches mobiles
+	 * 0: les deux torches sont là
+	 * 1: la torche de gauche a disparue
+	 * 2: la torche de droite a disparue
+	 * 3: les deux torches sont absentes
+	 * @return ce code
+	 */
+	public int codeTorches()
+	{
+		int out = 0;
+		if(arrayTorch[0].isDisparue())
+			out++;
+		out <<= 1;
+		if(arrayTorch[1].isDisparue())
+			out++;
+		return out;
+	}
+	
+	public synchronized void creer_obstacle(final Vec2 position)
 	{
 		Vec2 position_sauv = position.clone();
-		int rayon_robot_adverse = 0;
-		long duree = 0;
-			try {
-				rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
-			} catch (NumberFormatException | ConfigException e) {
-				e.printStackTrace();
-			}
-			try {
-				duree = Integer.parseInt(config.get("duree_peremption_obstacles"));
-			} catch (NumberFormatException | ConfigException e) {
-				e.printStackTrace();
-			}
 		
 		Obstacle obstacle = new ObstacleProximite(position_sauv, rayon_robot_adverse, System.currentTimeMillis()+duree);
-		synchronized(listObstacles)
-		{
-			listObstacles.add(obstacle);
-		}
+		log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position, this);
+		listObstacles.add(obstacle);
 		hashObstacles = indice++;
 	}
 
@@ -174,21 +179,18 @@ public class Table implements Service {
 	 * Appel fait lors de l'anticipation, supprime les obstacles périmés à une date future
 	 * @param date
 	 */
-	public void supprimer_obstacles_perimes(long date)
+	public synchronized void supprimer_obstacles_perimes(long date)
 	{
 		Iterator<Obstacle> iterator = listObstacles.iterator();
-		synchronized(listObstacles)
+		while ( iterator.hasNext() )
 		{
-			while ( iterator.hasNext() )
-			{
-			    Obstacle obstacle = iterator.next();
-			    if (obstacle instanceof ObstacleProximite && ((ObstacleProximite) obstacle).death_date <= date)
-			    {
-			        iterator.remove();
-					hashObstacles = indice++;
-			    }
-			}	
-		}
+		    Obstacle obstacle = iterator.next();
+		    if (obstacle instanceof ObstacleProximite && ((ObstacleProximite) obstacle).death_date <= date)
+		    {
+		        iterator.remove();
+				hashObstacles = indice++;
+		    }
+		}	
 	}
 	
 	/**
@@ -207,22 +209,19 @@ public class Table implements Service {
 	 */
 	public boolean obstaclePresent(final Vec2 centre_detection, int distance)
 	{
-		Iterator<Obstacle> iterator = listObstacles.iterator();
-		while ( iterator.hasNext() )
+		for(Obstacle obstacle: listObstacles)
 		{
-		    Obstacle obstacle = iterator.next();
-		    if (obstacle.position.SquaredDistance(centre_detection) < distance*distance)
-		    	return true;
-		}	
-		//  Cela ne concerne pas les obstacles fixes, qui sont déjà pris en compte par la recherche de chemin.
-		
-/*		iterator = listObstaclesFixes.iterator();
-		while ( iterator.hasNext() )
-		{
-		    Obstacle obstacle = iterator.next();
-		    if (obstacle.position.SquaredDistance(centre_detection) < distance*distance)
-		    	return true;
-		}*/
+			// On regarde si l'intersection des cercles est vide
+			if(obstacle instanceof ObstacleCirculaire && obstacle.position.SquaredDistance(centre_detection) < (distance+((ObstacleCirculaire)obstacle).radius)*(distance+((ObstacleCirculaire)obstacle).radius))
+				return true;
+			else if(!(obstacle instanceof ObstacleCirculaire))
+			{
+				// Normalement, les obstacles non fixes sont toujours circulaires
+				log.warning("Etrange, un obstacle non circulaire... actualiser \"obstaclePresent\" dans Table", this);
+				if(obstacle.position.SquaredDistance(centre_detection) < distance*distance)
+			    	return true;		    
+			}
+		}
 		
 		return robots_adverses[0].position.SquaredDistance(centre_detection) < distance*distance
 				|| robots_adverses[1].position.SquaredDistance(centre_detection) < distance*distance;
@@ -233,9 +232,10 @@ public class Table implements Service {
 	 * @param i
 	 * @param position
 	 */
-    public void deplacer_robot_adverse(int i, final Vec2 position)
+    public synchronized void deplacer_robot_adverse(int i, final Vec2 position)
     {
     	robots_adverses[i].position = position.clone();
+    	hashEnnemis = indice++;
     }
     
     /**
@@ -252,7 +252,7 @@ public class Table implements Service {
     
 	// Feux
 	
-	public void pickFire (int id)
+	public synchronized void pickFire (int id)
 	{
 		arrayFire[id].pickFire();
 		hashFire = indice++;
@@ -268,7 +268,7 @@ public class Table implements Service {
 		return min;
 	}
 	
-	public void putFire (int id)
+	public synchronized void putFire (int id)
 	{
 		arrayFire[id].ejectFire();
 		hashFire = indice++;
@@ -309,7 +309,7 @@ public class Table implements Service {
 		return position.distance(arrayTree[i].position);
 	}
 
-	public void pickTree (int id)
+	public synchronized void pickTree (int id)
 	{
 		arrayTree[id].setTaken();
 		hashTree = indice++;
@@ -369,10 +369,15 @@ public class Table implements Service {
 	{
 		return position.distance(arrayTorch[i].position);
 	}
-	public Torch[] getListTorch()
-		{
-			return arrayTorch;
-		}
+
+	public void torche_disparue(Cote cote)
+	{
+		if(cote == Cote.DROIT)
+			arrayTorch[0].setDisparue();
+		else
+			arrayTorch[1].setDisparue();
+	}
+	
 	//La table
 	/**
 	 * La table en argument deviendra la copie de this (this reste inchangé)
@@ -382,6 +387,10 @@ public class Table implements Service {
 	{
 		if(!equals(ct))
 		{
+			// Pour les torches, un hash ralentirait plus qu'autre chose
+			arrayTorch[0].clone(ct.arrayTorch[0]);
+			arrayTorch[1].clone(ct.arrayTorch[1]);
+			
 			if(ct.hashFire != hashFire)
 			{
 				for(int i = 0; i < 6; i++)
@@ -397,7 +406,14 @@ public class Table implements Service {
 					arrayTree[i].clone(ct.arrayTree[i]);
 				ct.hashTree = hashTree;
 			}
-	
+
+			if(ct.hashEnnemis != hashEnnemis)
+			{
+				robots_adverses[0].clone(robots_adverses[0]);
+				robots_adverses[1].clone(robots_adverses[1]);
+				ct.hashEnnemis = hashEnnemis;
+			}
+
 			if(ct.hashObstacles != hashObstacles)
 			{
 				ct.listObstacles.clear();
@@ -421,7 +437,7 @@ public class Table implements Service {
 	 */
 	public int hashTable()
 	{
-		return hashFire + hashTree + hashObstacles;
+		return (((hashEnnemis*100 + hashFire)*100 + hashTree)*100 + hashObstacles)*4+codeTorches();
 	}
 
 	/**
@@ -438,7 +454,7 @@ public class Table implements Service {
 	
 	/**
 	 * Utilisé pour les tests
-	 * @return le nombre d'obstacles mobiles détectés
+	 * @return le nombre ed'obstacles mobiles détectés
 	 */
 	public int nb_obstacles()
 	{
@@ -480,7 +496,16 @@ public class Table implements Service {
 	
 	public void maj_config()
 	{
-		// TODO
+		try {
+			rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
+		} catch (NumberFormatException | ConfigException e) {
+			e.printStackTrace();
+		}
+		try {
+			duree = Integer.parseInt(config.get("duree_peremption_obstacles"));
+		} catch (NumberFormatException | ConfigException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

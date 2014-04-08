@@ -13,18 +13,14 @@ import smartMath.Matrn;
 public class FiltrageLaser implements Service {
 
 
-	private Log log;
 	private double dt;
-	private Matrn x;
-	private Matrn p;
-	private Matrn f;
 	private Kalman filtre_kalman;
 	private Vec2 last_point;
 	private int valeurs_rejetees;
 	private Vec2[] historique;
+
 	public FiltrageLaser(Read_Ini config, Log log)
 	{
-		this.log = log;
 		dt = (double)0.2;
 		double[][] tab_x = {{1400.}, {100.},{0.},{0.}};
 		Matrn x = new Matrn(tab_x);
@@ -38,9 +34,9 @@ public class FiltrageLaser implements Service {
 		Matrn r = new Matrn(tab_r);
 		double[][] tab_q = {{Math.pow(dt, 3)/3., 0, Math.pow(dt, 2.)/2., 0},{0, Math.pow(dt, 3.)/3., 0, Math.pow(dt, 2.)/2},{Math.pow(dt, 2.)/2., 0, 4*dt, 0},{0, Math.pow(dt, 2.)/2, 0, 4*dt}};
 		Matrn q = new Matrn(tab_q);
-		Kalman filtre_kalman = new Kalman(x, p, f, h, r, q); 
-		Vec2[] historique = new Vec2[3];
-		int valeurs_rejetees = 0;
+		filtre_kalman = new Kalman(x, p, f, h, r, q); 
+		historique = new Vec2[3];
+		valeurs_rejetees = 0;
 		//double acceleration = null; 
 		//Je sais pas à quoi acceleration servait dans le code python, puisqu'il était inutile...
 		
@@ -49,7 +45,6 @@ public class FiltrageLaser implements Service {
 	
 	public void maj_config()
 	{
-		// TODO
 	}
 	
 	public Matrn etat_robot_adverse()
@@ -97,12 +92,12 @@ public class FiltrageLaser implements Service {
 		}
 		Vec2 pointm1 = historique[2];
 		Vec2 pointm2 = historique[1];
-		Vec2 pointm3 = historique[0];
+//		Vec2 pointm3 = historique[0];
 		Vec2 vitesse_actuelle = pointm0.MinusNewVector(pointm1);
 		Vec2 vitesse_m1 = pointm1.MinusNewVector(pointm2);
-		Vec2 vitesse_m2 = pointm2.MinusNewVector(pointm3);
+//		Vec2 vitesse_m2 = pointm2.MinusNewVector(pointm3);
 		Vec2 acceleration_actuelle = vitesse_actuelle.MinusNewVector(vitesse_m1);
-		Vec2 acceleration_precedente = vitesse_m1.MinusNewVector(vitesse_m2);
+//		Vec2 acceleration_precedente = vitesse_m1.MinusNewVector(vitesse_m2);
 		//Vec2 jerk = acceleration_actuelle.MinusNewVector(acceleration_precedente);
 		//float produit = acceleration_actuelle.dot(vitesse_m1);
 		//jerk et produit étaient utilisés dans du code inutilisé en Python

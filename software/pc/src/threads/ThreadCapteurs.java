@@ -1,6 +1,5 @@
 package threads;
 
-import pathfinding.Pathfinding;
 import robot.RobotVrai;
 import robot.cartes.Capteurs;
 import smartMath.Vec2;
@@ -18,7 +17,6 @@ class ThreadCapteurs extends AbstractThread {
 	private RobotVrai robotvrai;
 	private Capteurs capteur;
 	private Table table;
-	private Pathfinding pathfinding;
 	private ThreadTimer threadTimer;
 	
 	// Valeurs par défaut s'il y a un problème de config
@@ -30,14 +28,14 @@ class ThreadCapteurs extends AbstractThread {
 	private int table_y = 2000;
 	private int capteurs_frequence = 5;
 	
-	ThreadCapteurs(RobotVrai robotvrai, Pathfinding pathfinding, ThreadTimer threadTimer, Table table, Capteurs capteur)
+	ThreadCapteurs(RobotVrai robotvrai, ThreadTimer threadTimer, Table table, Capteurs capteur)
 	{
 		super(config, log);
 		this.robotvrai = robotvrai;
-		this.pathfinding = pathfinding;
 		this.threadTimer = threadTimer;
 		this.table = table;
 		this.capteur = capteur;
+		Thread.currentThread().setPriority(2);
 	}
 	
 	@Override
@@ -46,21 +44,7 @@ class ThreadCapteurs extends AbstractThread {
 		log.debug("Lancement du thread de capteurs", this);
 		int date_dernier_ajout = 0;
 //		boolean marche_arriere = false;
-
-		try
-		{
-			tempo = Double.parseDouble(config.get("capteurs_temporisation_obstacles"));
-			horizon_capteurs = Integer.parseInt(config.get("horizon_capteurs"));
-			rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
-			largeur_robot = Integer.parseInt(config.get("largeur_robot"));
-			table_x = Integer.parseInt(config.get("table_x"));
-			table_y = Integer.parseInt(config.get("table_y"));
-			capteurs_frequence = Integer.parseInt(config.get("capteurs_frequence"));
-		}
-		catch(Exception e)
-		{
-			log.critical(e, this);
-		}
+		maj_config();
 		
 		while(!threadTimer.match_demarre)
 		{
@@ -233,8 +217,6 @@ class ThreadCapteurs extends AbstractThread {
 							date_dernier_ajout = (int)System.currentTimeMillis();
 							log.debug("Nouvel obstacle en "+position, this);
 							log.debug("obstacle a une distance de : "+distance, this);
-							pathfinding.update(table);
-							robotvrai.setObstacleImprevuDevantCapteur(true); // informe le robot
 						}
 							
 						//	log.debug("L'objet vu est un obstacle fixe.", this);
@@ -251,7 +233,62 @@ class ThreadCapteurs extends AbstractThread {
 	
 	public void maj_config()
 	{
-		// TODO
+		try
+		{
+			tempo = Double.parseDouble(config.get("capteurs_temporisation_obstacles"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		try
+		{
+			horizon_capteurs = Integer.parseInt(config.get("horizon_capteurs"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		try
+		{
+			rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		try
+		{
+			largeur_robot = Integer.parseInt(config.get("largeur_robot"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		try
+		{
+			table_x = Integer.parseInt(config.get("table_x"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		try
+		{
+			table_y = Integer.parseInt(config.get("table_y"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		try
+		{
+			capteurs_frequence = Integer.parseInt(config.get("capteurs_frequence"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 }

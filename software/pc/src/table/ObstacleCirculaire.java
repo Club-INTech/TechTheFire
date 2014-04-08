@@ -17,12 +17,20 @@ public class ObstacleCirculaire extends Obstacle
 	{
 		return new ObstacleCirculaire(position.clone(), radius);
 	}
+
+	// Copie this dans oc, sans modifier this
+	public void clone(ObstacleCirculaire oc)
+	{
+		oc.position = position;
+		oc.radius = radius;
+	}
+
 	public float getRadius()
 	{
 		return radius;
 	}
 	public String toString()
 	{
-		return "ObstacleCirculaire";
+		return super.toString()+", rayon: "+radius;
 	}
 }

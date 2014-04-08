@@ -21,8 +21,8 @@ import robot.RobotVrai;
 import robot.cartes.Actionneurs;
 import robot.cartes.Capteurs;
 import robot.cartes.Deplacements;
-import robot.cartes.Laser;
 import robot.cartes.laser.FiltrageLaser;
+import robot.cartes.laser.Laser;
 import robot.serial.SerialManager;
 import robot.serial.Serial;
 
@@ -95,11 +95,8 @@ public class Container {
 		if(services.containsKey(nom))
 			;
 		else if(nom == "Table")
-		{
 			services.put(nom, (Service)new Table(	(Log)getService("Log"),
 													(Read_Ini)getService("Read_Ini")));
-			((Table) services.get(nom)).initialise(); // N'est pas mis dans le constructeur car ne doit être appelé que pour la toute première instance
-		}
 		else if(nom.length() > 4 && nom.substring(0,5).equals("serie"))
 		{
 			if(serialmanager == null)
@@ -109,8 +106,8 @@ public class Container {
 		else if(nom == "Deplacements")
 			services.put(nom, (Service)new Deplacements((Log)getService("Log"),
 														(Serial)getService("serieAsservissement")));
-		else if(nom == "Capteur")
-			services.put(nom, (Service)new Capteurs(	(Read_Ini)getService("Read_Ini"),
+		else if(nom == "Capteur" || nom == "Capteurs")
+			services.put("Capteur", (Service)new Capteurs(	(Read_Ini)getService("Read_Ini"),
 													(Log)getService("Log"),
 													(Serial)getService("serieCapteursActionneurs")));
 		else if(nom == "Actionneurs")
@@ -131,6 +128,7 @@ public class Container {
 														(Log)getService("Log")));		
 		else if(nom == "ScriptManager")
 			services.put(nom, (Service)new ScriptManager(	(HookGenerator)getService("HookGenerator"),
+															(ThreadTimer)getService("threadTimer"),
 															(Read_Ini)getService("Read_Ini"),
 															(Log)getService("Log"),
 															(RobotVrai)getService("RobotVrai")));
@@ -151,7 +149,6 @@ public class Container {
 																		(ThreadTimer)getService("threadTimer")));
 		else if(nom == "threadCapteurs")
 			services.put(nom, (Service)threadmanager.getThreadCapteurs(	(RobotVrai)getService("RobotVrai"),
-																		(Pathfinding)getService("Pathfinding"),
 																		(ThreadTimer)getService("threadTimer"),
 																		(Table)getService("Table"),
 																		(Capteurs)getService("Capteur")));
@@ -218,17 +215,17 @@ public class Container {
 			e.printStackTrace();
 		}
 		try {
-		//	getService("threadLaser");
+			getService("threadLaser");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		try {
-		//	getService("threadStrategie");
+			getService("threadStrategie");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		try {
-				getService("threadCapteurs");
+			getService("threadCapteurs");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

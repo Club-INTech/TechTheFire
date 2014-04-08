@@ -294,6 +294,5 @@ public class ScriptTorche extends Script {
 	
 	public void maj_config()
 	{
-		// TODO
 	}
 }

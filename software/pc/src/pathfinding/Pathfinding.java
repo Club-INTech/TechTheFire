@@ -3,6 +3,7 @@ package pathfinding;
 import java.util.ArrayList;
 
 import pathfinding.SearchSpace.Grid2DSpace;
+import pathfinding.cache.CacheHolder;
 import smartMath.IntPair;
 import smartMath.Vec2;
 import table.ObstacleCirculaire;
@@ -11,6 +12,9 @@ import table.Table;
 import utils.Log;
 import utils.Read_Ini;
 import container.Service;
+import exception.ConfigException;
+import exception.PathfindingException;
+
 
 /**
  * Service de recherche de chemin
@@ -26,23 +30,53 @@ import container.Service;
 public class Pathfinding implements Service
 {
 	// Dépendances
-	private Table table;
-	private Read_Ini config;
-	private Log log;
+	private final Table table;	// Final: protection contre le changement de référence.
+								// Si la référence change, tout le memorymanager foire.
+	private int hashTable = -1;	// Permet, à l'update, de ne recalculer map que si la table a effectivement changé.
+	private static Read_Ini config;
+	private static Log log;
 	private boolean resultUpToDate;
+	private int rayon_robot = 200;
+
 	public Grid2DSpace map;
-	private int centimetresParCases;
-	AStar solver;
-	ArrayList<IntPair> result;
-	ArrayList<Vec2> output;
+
+	/* Quatre Grid2DSpace qui sont la base, avec les obstacles fixes. On applique des pochoirs dessus.
+	 * Quatre parce qu'il y a la table initiale, la table à laquelle il manque une torche fixe et la table sans torche fixe.
+	 * Ces quatre cas permettront de n'ajouter au final que les obstacles mobiles.
+	 */
+	private static Grid2DSpace[] map_obstacles_fixes = null;
+	private static CacheHolder[] distance_caches = null;
+	private int millimetresParCases;
+
+	private AStar solver;
+	private ArrayList<IntPair> result;
+	private ArrayList<Vec2> output;
 	
-	public Pathfinding(Table requestedtable, Read_Ini requestedConfig, Log requestedLog, int requestedCentimetresParCases)
+	public Pathfinding(Table requestedtable, Read_Ini requestedConfig, Log requestedLog, int requestedMillimetresParCases)
 	{
+		if(map_obstacles_fixes == null)
+		{
+			map_obstacles_fixes = new Grid2DSpace[4];
+			for(int i = 0; i < 4; i++)
+				map_obstacles_fixes[i] = Grid2DSpace.load(i);
+		}
+		if(distance_caches == null)
+		{
+			distance_caches = new CacheHolder[4];
+			try {
+			for(int i = 0; i < 4; i++)
+					distance_caches[i] = CacheHolder.load(i);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			distance_caches = null;
+		}
 		table = requestedtable;
 		config = requestedConfig;
 		log = requestedLog;
-		centimetresParCases = requestedCentimetresParCases;
-		map = new Grid2DSpace(new IntPair((int)((float)300.0f/centimetresParCases), (int)((float)220.0f/centimetresParCases)), table, 200);
+		maj_config();
+		millimetresParCases = requestedMillimetresParCases;
+		map = new Grid2DSpace(new IntPair((int)((float)3000.0f/millimetresParCases), (int)((float)2200.0f/millimetresParCases)), table, rayon_robot, log);
 		solver = new AStar(map, new IntPair(0,0), new IntPair(0,0));
 		output = new ArrayList<Vec2>();
 		result = new ArrayList<IntPair>();
@@ -57,30 +91,42 @@ public class Pathfinding implements Service
 
 	public void maj_config()
 	{
-		// TODO
+		try {
+			rayon_robot = Integer.parseInt(config.get("rayon_robot"));
+		} catch (NumberFormatException | ConfigException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * Méthode appelée par le thread de capteur. Met à jour les obstacles de la recherche de chemin en les demandant à table
-	 * @param newtable : le nouvel état du jeu a prendre en compte
+	 * On consulte pour cela l'attribut table qui a été modifié de l'extérieur.
 	 */
-	public void update(Table newtable)
+	public void update()
 	{
-		// TODO : clear map to initial state
-		// also figure out if a check can be founded to skip the whole process if newtable = map
-		
-		//System.out.println(map.stringForm());
-		
-		for (int i = 0; i < newtable.getListObstacles().size(); ++i)
+		synchronized(table) // Mutex sur la table, afin qu'elle ne change pas pendant qu'on met à jour le pathfinding
 		{
-			if (newtable.getListObstacles().get(i) instanceof ObstacleRectangulaire)
-				map.appendObstacle((ObstacleRectangulaire)newtable.getListObstacles().get(i));
-			else
-				map.appendObstacle((ObstacleCirculaire)newtable.getListObstacles().get(i));
+			// Si le hash actuel est égal au hash du dernier update, on annule la copie car la map n'a pas changé.
+			if(table.hashTable() == hashTable)
+				return;
+			
+			hashTable = table.hashTable();
+			// TODO : clear map to initial state
+			// also figure out if a check can be founded to skip the whole process if newtable = map
+			
+			//System.out.println(map.stringForm());
+			
+			for (int i = 0; i < table.getListObstacles().size(); ++i)
+			{
+				if (table.getListObstacles().get(i) instanceof ObstacleRectangulaire)
+					map.appendObstacle((ObstacleRectangulaire)table.getListObstacles().get(i));
+				else
+					map.appendObstacle((ObstacleCirculaire)table.getListObstacles().get(i));
+			}
+			
+			// les chemins sont périmés puisque la map est différente
+			resultUpToDate = true;
 		}
-		
-		// les chemins sont périmés puisque la map est différente
-		resultUpToDate = true;
 	}
 
 	/**
@@ -88,19 +134,19 @@ public class Pathfinding implements Service
 	 * @param depart, exprimé en milimètres, avec comme origine le point en face du centre des mamouths
 	 * @param arrivee système de coords IDEM
 	 * @return l'itinéraire, exprimé comme des vecteurs de déplacement, et non des positions absolues, et en millimètres
-	 * 			Si l'itinéraire est non trouvable, null est retourné.
+	 * 			Si l'itinéraire est non trouvable, une exception est est retournée.
+	 * @throws PathfindingException 
 	 */
 	
-	// TODO : deal with precision issue (divide by centimetresParCases)
-	public ArrayList<Vec2> chemin(Vec2 depart, Vec2 arrivee)
+	// TODO : deal with precision issue (divide by millimetresParCases)
+	public ArrayList<Vec2> chemin(Vec2 depart, Vec2 arrivee) throws PathfindingException
 	{
 		
-
-		solver.setDepart(new IntPair((int)((float)(depart.x + 1500) / centimetresParCases /10), (int)((float)(depart.y) / centimetresParCases /10)));
-		solver.setArrivee(new IntPair((int)((float)(arrivee.x + 1500) / centimetresParCases /10), (int)((float)(arrivee.y) / centimetresParCases /10)));
+		solver.setDepart(new IntPair((int)((float)(depart.x + 1500) / millimetresParCases), (int)((float)(depart.y) / millimetresParCases)));
+		solver.setArrivee(new IntPair((int)((float)(arrivee.x + 1500) / millimetresParCases), (int)((float)(arrivee.y) / millimetresParCases)));
 /*		// Change de système de coordonnées
-		solver.setDepart(new IntPair((int)Math.round(depart.x/10 + 150)/centimetresParCases, (int)Math.round(depart.y/10)/centimetresParCases));
-		solver.setArrivee(new IntPair((int)Math.round(arrivee.x/10 + 150)/centimetresParCases, (int)Math.round(arrivee.y/10)/centimetresParCases));
+		solver.setDepart(new IntPair((int)Math.round(depart.x + 1500)/millimetresParCases, (int)Math.round(depart.y)/millimetresParCases));
+		solver.setArrivee(new IntPair((int)Math.round(arrivee.x + 1500)/millimetresParCases, (int)Math.round(arrivee.y)/millimetresParCases));
 
 		System.out.println("solver.depart : " + solver.getDepart().x + "   " + solver.getDepart().y);
 		System.out.println("solver.arrivee : " + solver.getArrivee().x + "   " + solver.getArrivee().y);
@@ -109,7 +155,7 @@ public class Pathfinding implements Service
 		// calcule le chemin
 		solver.process();
 		if (!solver.isValid())	// null si A* dit que pas possib'
-			return null;
+			throw new PathfindingException();
 		result = lissage(solver.getChemin(), map);
 		
 /*
@@ -150,11 +196,10 @@ public class Pathfinding implements Service
 		// affiche la liste des positions
 		output.clear();
 		for (int i = 0; i < result.size()-1; ++i)
-			output.add(new Vec2((float)(result.get(i).x)* 10*centimetresParCases -1500, (float)(result.get(i).y)* 10*centimetresParCases));
+			output.add(new Vec2((float)(result.get(i).x)* millimetresParCases -1500, (float)(result.get(i).y)* millimetresParCases));
 		output.add(arrivee);
 		System.out.println("Chemin : " + output);
 		
-
 		resultUpToDate = true;
 		return output;
 		
@@ -162,7 +207,7 @@ public class Pathfinding implements Service
 		/*
 		output.clear();
 		for (int i = 1; i < result.size(); ++i)
-			output.add(new Vec2((float)(result.get(i).x - result.get(i-1).x)* 10*centimetresParCases, (float)(result.get(i).y - result.get(i-1).y)* 10*centimetresParCases));
+			output.add(new Vec2((float)(result.get(i).x - result.get(i-1).x)* millimetresParCases, (float)(result.get(i).y - result.get(i-1).y)* millimetresParCases));
 		
 		
 		
@@ -179,11 +224,11 @@ public class Pathfinding implements Service
 	 */
 	public int distance(Vec2 depart, Vec2 arrivee, boolean use_cache)
 	{
-		if(!use_cache)
+		if(!use_cache || distance_caches == null)
 		{
 			// Change de système de coordonnées
-			solver.setDepart(new IntPair((int)Math.round(depart.x/10 + 150)/centimetresParCases, (int)Math.round(depart.y/10)/centimetresParCases));
-			solver.setArrivee(new IntPair((int)Math.round(arrivee.x/10 + 150)/centimetresParCases, (int)Math.round(arrivee.y/10)/centimetresParCases));
+			solver.setDepart(new IntPair((int)Math.round(depart.x + 1500)/millimetresParCases, (int)Math.round(depart.y)/millimetresParCases));
+			solver.setArrivee(new IntPair((int)Math.round(arrivee.x + 1500)/millimetresParCases, (int)Math.round(arrivee.y)/millimetresParCases));
 			
 			// calcule le chemin
 			solver.process();
@@ -198,13 +243,12 @@ public class Pathfinding implements Service
 									(result.get(i).y - result.get(i-1).y) * (result.get(i).y - result.get(i-1).y));
 
 			resultUpToDate = true;
-			return out*10*centimetresParCases;	// x 10 pour la distance en mm
+			return out*millimetresParCases;
 		}
 		else
 		{
-			// système de cache inside
 			resultUpToDate = true;
-			return 0;
+			return distance_caches[table.codeTorches()].data[(int)depart.x+1500][(int)depart.y][(int)arrivee.x+1500][(int)arrivee.y];
 		}
 	}
 	
@@ -300,25 +344,37 @@ public class Pathfinding implements Service
 	{
 		return map;
 	}
-
-	public void update()
+	
+	/**
+	 * @return the millimetresParCases
+	 */
+	public int getMillimetresParCases() 
 	{
-		// TODO
+		return millimetresParCases;
+	}
+
+	/**
+	 * @param millimetresParCases the millimetresParCases to set
+	 */
+	public void setMillimetresParCases(int millimetresParCases) 
+	{
+		this.millimetresParCases = millimetresParCases;
 	}
 	
 	/**
-	 * @return the centimetresParCases
+	 * Le pathfinding en argument deviendra la copie de this (this reste inchangé)
+	 * @param cp (cloned_pathfinding)
 	 */
-	public int getCentimetresParCases() 
+	public void clone(Pathfinding cp)
 	{
-		return centimetresParCases;
+		table.clone(cp.table); // clone de la table
+
+		// Si les tables sont identiques, alors les map sont identiques et on n'a pas besoin de copier.
+		if(!table.equals(cp.table))
+		{
+			map_obstacles_fixes[table.codeTorches()].clone(map);
+			// TODO Ensuite, on applique à partir d'une liste d'obstacles les pochoirs sur cp
+		}
 	}
 
-	/**
-	 * @param centimetresParCases the centimetresParCases to set
-	 */
-	public void setCentimetresParCases(int centimetresParCases) 
-	{
-		this.centimetresParCases = centimetresParCases;
-	}
 }

@@ -78,7 +78,6 @@ public class ScriptTree extends Script{
 	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException, SerialException
 	{
 		// Orientation du robot, le rateau étant à l'arrière
-//		log.debug("I", this);
 		int recul = 0;
 		if (id_version == 0)
 			robot.tourner((float)Math.PI);
@@ -165,8 +164,4 @@ public class ScriptTree extends Script{
 		return "ScriptTree";
 	}
 	
-	public void maj_config()
-	{
-		// TODO
-	}
 }

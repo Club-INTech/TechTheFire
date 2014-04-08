@@ -20,6 +20,7 @@ class ThreadPosition extends AbstractThread {
 	{
 		this.robotvrai = robotvrai;
 		this.threadTimer = threadTimer;
+		Thread.currentThread().setPriority(6);
 	}
 	
 	@Override
@@ -44,9 +45,4 @@ class ThreadPosition extends AbstractThread {
 	
 	}
 	
-	public void maj_config()
-	{
-		// TODO
-	}
-
 }

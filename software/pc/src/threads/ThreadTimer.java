@@ -8,6 +8,7 @@ import utils.Sleep;
 
 /**
  * Thread qui s'occupe de la gestion du temps: début du match, péremption des obstacles
+ * C'est lui qui active les capteurs en début de match.
  * @author pf
  *
  */
@@ -30,20 +31,15 @@ public class ThreadTimer extends AbstractThread {
 		this.capteur = capteur;
 		this.deplacements = deplacements;
 		
-		// facteur 1000 car temps_match est en secondes et duree_match en ms
-		try {
-			duree_match = 1000*Long.parseLong(config.get("temps_match"));
-		}
-		catch(Exception e)
-		{
-			log.warning(e, this);
-		}
-
+		maj_config();
+		Thread.currentThread().setPriority(1);
 	}
 
 	@Override
 	public void run()
 	{
+		config.set("capteurs_on", false);
+		capteur.maj_config();
 		log.debug("Lancement du thread timer", this);
 		// Attente du démarrage du match
 		while(!capteur.demarrage_match() && !match_demarre)
@@ -57,6 +53,9 @@ public class ThreadTimer extends AbstractThread {
 		}
 		date_debut = System.currentTimeMillis();
 		match_demarre = true;
+
+		config.set("capteurs_on", true);
+		capteur.maj_config();
 
 		log.debug("LE MATCH COMMENCE !", this);
 
@@ -103,9 +102,21 @@ public class ThreadTimer extends AbstractThread {
 		
 	}
 	
+	public long temps_restant()
+	{
+		return date_debut + duree_match - System.currentTimeMillis();
+	}
+	
 	public void maj_config()
 	{
-		// TODO
+		// facteur 1000 car temps_match est en secondes et duree_match en ms
+		try {
+			duree_match = 1000*Long.parseLong(config.get("temps_match"));
+		}
+		catch(Exception e)
+		{
+			log.warning(e, this);
+		}
 	}
 	
 }

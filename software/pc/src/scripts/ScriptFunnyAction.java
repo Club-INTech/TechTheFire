@@ -12,9 +12,9 @@ import robot.Robot;
 import robot.RobotVrai;
 import smartMath.Vec2;
 import table.Table;
+import threads.ThreadTimer;
 import utils.Log;
 import utils.Read_Ini;
-import utils.Sleep;
 
 /**
  * Script de la funny action (se met juste en position)
@@ -24,8 +24,11 @@ import utils.Sleep;
 
 public class ScriptFunnyAction extends Script {
 
-	public ScriptFunnyAction(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai) {
+	private ThreadTimer threadtimer;
+	
+	public ScriptFunnyAction(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai, ThreadTimer threadtimer) {
 		super(hookgenerator, config, log, robotvrai);
+		this.threadtimer = threadtimer;
 	}
 
 	@Override
@@ -54,10 +57,10 @@ public class ScriptFunnyAction extends Script {
 	@Override
 	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding)
 			throws MouvementImpossibleException, SerialException {
-		robot.tourner((float)(-1 * Math.PI/2), true);	// pas de symétrie
+		robot.tourner_sans_symetrie((float)(-1 * Math.PI/2));	// pas de symétrie
 		robot.rateau(PositionRateau.BAS, Cote.DROIT);
-		robot.rateau(PositionRateau.BAS, Cote.GAUCHE);
-		Sleep.sleep(1500);
+		robot.sleep(threadtimer.temps_restant());
+		robot.sleep(1500);
 		robot.lancerFilet();
 	}
 
@@ -73,8 +76,4 @@ public class ScriptFunnyAction extends Script {
 		
 	}
 
-	public void maj_config()
-	{
-		// TODO
-	}
 }
