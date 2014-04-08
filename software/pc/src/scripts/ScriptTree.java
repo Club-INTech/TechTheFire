@@ -26,13 +26,13 @@ import exception.SerialException;
  */
 public class ScriptTree extends Script{
 
-	public ScriptTree(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
+	public ScriptTree(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
 	{
-		super(hookgenerator, config, log, robotvrai);
+		super(pathfinding, hookgenerator, config, log, robotvrai);
 	}
 
 	@Override
-	public ArrayList<Integer> version(final Robot robot, final Table table, Pathfinding pathfinding) {
+	public ArrayList<Integer> version(final Robot robot, final Table table) {
 		ArrayList<Integer> versionsList = new ArrayList<Integer>();
 		for (int i = 0; i < 4; i++)
 			if (!table.isTreeTaken(i))
@@ -51,7 +51,7 @@ public class ScriptTree extends Script{
 		else if (id_version == 2)
 			entree = new Vec2(-870, 500);
 		else if (id_version == 3)
-			entree = new Vec2(-1000, 6100);
+			entree = new Vec2(-1000, 610);
 		return entree;
 	}
 
@@ -75,7 +75,7 @@ public class ScriptTree extends Script{
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding) throws MouvementImpossibleException, SerialException
+	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException, SerialException
 	{
 		// Orientation du robot, le rateau étant à l'arrière
 //		log.debug("I", this);
@@ -87,9 +87,9 @@ public class ScriptTree extends Script{
 		else if (id_version ==3)
 			robot.tourner(0) ;
 		if(id_version == 0 ||id_version == 3)
-			recul = 30;
+			recul = 50;
 		else
-			recul = 20;
+			recul = 50;
 //		log.debug("II", this);
 
 		// on déploie les bras 
@@ -144,7 +144,7 @@ public class ScriptTree extends Script{
 	}
 
 	@Override
-	protected void termine(Robot robot, Table table, Pathfinding pathfinding) {
+	protected void termine(Robot robot, Table table) {
 		try {
 			robot.rateau(PositionRateau.RANGER, Cote.DROIT);
 			robot.rateau(PositionRateau.RANGER, Cote.GAUCHE);
