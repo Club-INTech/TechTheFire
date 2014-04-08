@@ -55,7 +55,7 @@ public class ScriptTorche extends Script {
 		if(id ==0)
 			return new Vec2(-600,700);
 		else if(id ==1)
-			return new Vec2(600,700);
+			return new Vec2(900,820);
 		/*
 		else if(id ==2)
 			return new Vec2(-1100, 700);
@@ -103,7 +103,18 @@ public class ScriptTorche extends Script {
 		else if(id_version ==1)
 			//Vec2(600,900);
 		{
-			robot.tourner((float)Math.PI/2);
+			robot.tourner((float)Math.PI);
+			robot.prendre_torche(Cote.DROIT);
+			robot.set_vitesse_translation("torche");
+			robot.avancer(100);
+			robot.sleep(500);
+			robot.fermer_pince(Cote.DROIT);
+			robot.sleep(200);
+			robot.lever_pince(Cote.DROIT);
+			robot.sleep(300);
+			robot.ouvrir_pince(Cote.DROIT);
+			robot.sleep(50);
+			robot.fermer_pince(Cote.DROIT);
 		}			
 		else /*if(id_version ==2)
 			//Vec2(-1100, 900);
