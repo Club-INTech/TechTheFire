@@ -120,7 +120,10 @@ class Communication
 		{
        	       		this -> hautGauche ();
 		}
-
+		else if (strcmp (ordre, "torcheg")==0)
+		  {
+		    this -> torcheGauche
+		  }
 	//Actions pinces droite
 		else if ( strcmp ( ordre , "od" ) == 0 )
 		{
@@ -157,6 +160,10 @@ class Communication
 		{
        	       		this -> hautDroite ();
 		}
+		else if (strcmp (ordre, "torched")==0)
+		  {
+		    this -> torcheDroite
+		  }
 		else if (strcmp (ordre , "pg") ==0)
 		{
        	       		this -> posGauche ();
@@ -356,6 +363,15 @@ void posGauche ()
   {
     pinceGauche.goTo(0);
   }
+
+ void torcheGauche ()
+	{
+	  this->ouvrirgauche;
+	  orientationGauche.goTo(130);
+	  positionGauche.goTo(110);
+	}
+
+
   /*
   void remonterEtRetablirGauche ()
   {
@@ -406,6 +422,12 @@ void posGauche ()
 		orientationDroite.goTo(145);
 		positionDroite.goTo(150);
 	}
+ void torcheDroite ()
+	{
+	  this->ouvrirdroite;
+	  orientationDroite.goTo(220);
+	  positionDroite.goTo(70);
+	}
 	void hautDroite ()
 	{
 	  	positionDroite.goTo(60);
@@ -420,7 +442,7 @@ void posGauche ()
         uint16_t i;
 	serial_pc::read (i);
 	positionDroite.goTo(i);
-	orientationDroite.goTo(300-i);
+	orientationDroite.goTo(290-i);
   }
 
   void tombeDroite ()
