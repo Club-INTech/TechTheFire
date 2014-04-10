@@ -14,6 +14,11 @@ import threads.ThreadTimer;
 import utils.Log;
 import utils.Read_Ini;
 
+/*
+ * TODO pour le lanceur final:
+ * - ne pas oublier container.destructeur();
+ *
+ */
 		
 public class lanceur
 {
