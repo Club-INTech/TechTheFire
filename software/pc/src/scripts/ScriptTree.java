@@ -26,13 +26,13 @@ import exception.SerialException;
  */
 public class ScriptTree extends Script{
 
-	public ScriptTree(Pathfinding pathfinding, HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
+	public ScriptTree(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
 	{
-		super(pathfinding, hookgenerator, config, log, robotvrai);
+		super(hookgenerator, config, log, robotvrai);
 	}
 
 	@Override
-	public ArrayList<Integer> version(final Robot robot, final Table table) {
+	public ArrayList<Integer> version(final Robot robot, final Table table, final Pathfinding pathfinding) {
 		ArrayList<Integer> versionsList = new ArrayList<Integer>();
 		for (int i = 0; i < 4; i++)
 			if (!table.isTreeTaken(i))
@@ -75,7 +75,7 @@ public class ScriptTree extends Script{
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table) throws MouvementImpossibleException, SerialException
+	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding) throws MouvementImpossibleException, SerialException
 	{
 		// Orientation du robot, le rateau étant à l'arrière
 		int recul = 0;
@@ -143,7 +143,7 @@ public class ScriptTree extends Script{
 	}
 
 	@Override
-	protected void termine(Robot robot, Table table) {
+	protected void termine(Robot robot, Table table, Pathfinding pathfinding) {
 		try {
 			robot.rateau(PositionRateau.RANGER, Cote.DROIT);
 			robot.rateau(PositionRateau.RANGER, Cote.GAUCHE);
