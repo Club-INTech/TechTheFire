@@ -32,6 +32,7 @@ public class ScriptTorche extends Script {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		//Les feux dans les torches
 		//Ajouter une condition sur la présence de feux dans les torches
+		//Ca va nécessiter de créer d'autres versions encore
 		versionList.add(0);
 		versionList.add(1);
 		//Les feux verticaux
@@ -53,9 +54,9 @@ public class ScriptTorche extends Script {
 	public Vec2 point_entree(int id) {
 		//Les coordonnées ont été prises à partir du réglement
 		if(id ==0)
-			return new Vec2(-600,700);
+			return new Vec2(-900,820);
 		else if(id ==1)
-			return new Vec2(600,700);
+			return new Vec2(900,820);
 		/*
 		else if(id ==2)
 			return new Vec2(-1100, 700);
@@ -94,16 +95,38 @@ public class ScriptTorche extends Script {
 
 	@Override
 	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding)
-			throws MouvementImpossibleException {
+			throws MouvementImpossibleException, SerialException {
 		if(id_version ==0)
 			//Vec2(-600,900)
 		{
-			robot.tourner((float)Math.PI/2);
+			robot.tourner(0);
+			robot.prendre_torche(Cote.GAUCHE);
+			robot.set_vitesse_translation("torche");
+			robot.avancer(100);
+			robot.sleep(500);
+			robot.fermer_pince(Cote.GAUCHE);
+			robot.sleep(200);
+			robot.lever_pince(Cote.GAUCHE);
+			robot.sleep(300);
+			robot.ouvrir_pince(Cote.GAUCHE);
+			robot.sleep(50);
+			robot.fermer_pince(Cote.GAUCHE);
 		}
 		else if(id_version ==1)
 			//Vec2(600,900);
 		{
-			robot.tourner((float)Math.PI/2);
+			robot.tourner((float)Math.PI);
+			robot.prendre_torche(Cote.DROIT);
+			robot.set_vitesse_translation("torche");
+			robot.avancer(100);
+			robot.sleep(500);
+			robot.fermer_pince(Cote.DROIT);
+			robot.sleep(200);
+			robot.lever_pince(Cote.DROIT);
+			robot.sleep(300);
+			robot.ouvrir_pince(Cote.DROIT);
+			robot.sleep(50);
+			robot.fermer_pince(Cote.DROIT);
 		}			
 		else /*if(id_version ==2)
 			//Vec2(-1100, 900);

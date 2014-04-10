@@ -21,7 +21,7 @@
 #define LARGEUR_ROBOT 200.0
 #define LONGUEUR_TABLE 3000.0
 
-#define CONVERSION_TIC_MM 0.10332//0.10360
+#define CONVERSION_TIC_MM 0.10341 //0.10360
 #define CONVERSION_TIC_RADIAN 0.0007382
 
 class Robot : public Singleton<Robot>{
