@@ -128,7 +128,7 @@ public class ScriptTree extends Script{
 				distance = 200;
 			else if(nbFruits == 0)
 				distance = 310;
-			Vec2 diff = new Vec2((float)(distance*Math.cos((double)robot.getOrientation())),(float)(distance*Math.sin((double)robot.getOrientation())));
+			Vec2 diff = new Vec2((int)(distance*Math.cos((double)robot.getOrientation())),(int)(distance*Math.sin((double)robot.getOrientation())));
 			Hook hook = hookgenerator.hook_position(robot.getPosition().PlusNewVector(diff));
 			hook.ajouter_callback(new Callback(remonte, true));
 			hooks.add(hook);
