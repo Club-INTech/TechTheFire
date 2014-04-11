@@ -3,12 +3,10 @@ package pathfinding;
 import java.util.ArrayList;
 
 import pathfinding.SearchSpace.Grid2DSpace;
-import pathfinding.cache.CacheHolder;
-import smartMath.IntPair;
 import smartMath.Vec2;
 import table.ObstacleCirculaire;
-import table.ObstacleRectangulaire;
 import table.Table;
+import utils.DataSaver;
 import utils.Log;
 import utils.Read_Ini;
 import container.Service;
@@ -18,12 +16,12 @@ import exception.PathfindingException;
 
 /**
  * Service de recherche de chemin
- * @author Marsu
+ * @author Marsu, pf
  * 
  * 
  * Permet de traiter les problèmes de chemins : longueur d'un parcourt d'un point à un autre de la map,
  * 												 trajet d'un point a un autre de la map
- * 	Le tout indépendamment de l'algorithme (pour l'insantant que weithed A*
+ * 	Le tout indépendamment de l'algorithme (pour l'instant que weithed A*)
  *
  */
 
@@ -32,70 +30,97 @@ public class Pathfinding implements Service
 	// Dépendances
 	private final Table table;	// Final: protection contre le changement de référence.
 								// Si la référence change, tout le memorymanager foire.
-	private int hashTable = -1;	// Permet, à l'update, de ne recalculer map que si la table a effectivement changé.
+	private int[] hashTableSaved;	// Permet, à l'update, de ne recalculer map que si la table a effectivement changé.
 	private static Read_Ini config;
 	private static Log log;
-	private boolean resultUpToDate;
-	private int rayon_robot = 200;
-
-	public Grid2DSpace map;
+	private int table_x = 3000; // écrasé par la config
+	private int code_torches_actuel = -1;
+	private static int nb_precisions;
+	
+	private AStar[] solvers;
+	private AStar solver;
+//	private Grid2DSpace[] map;
 
 	/* Quatre Grid2DSpace qui sont la base, avec les obstacles fixes. On applique des pochoirs dessus.
 	 * Quatre parce qu'il y a la table initiale, la table à laquelle il manque une torche fixe et la table sans torche fixe.
 	 * Ces quatre cas permettront de n'ajouter au final que les obstacles mobiles.
 	 */
-	private static Grid2DSpace[] map_obstacles_fixes = null;
-	private static CacheHolder[] distance_caches = null;
-	private int millimetresParCases;
+	private static Grid2DSpace[][] map_obstacles_fixes = null;
+	
+	/* Le caches des distances
+	 * Sera rechargé en match (au plus 4 fois), car prend trop de mémoire sinon
+	 */
+	private static CacheHolder distance_cache;
 
-	private AStar solver;
-	private ArrayList<IntPair> result;
+	private int degree;
+
+//	private PathfindingAlgo solver;
+	private ArrayList<Vec2> result;
 	private ArrayList<Vec2> output;
 	
-	public Pathfinding(Table requestedtable, Read_Ini requestedConfig, Log requestedLog, int requestedMillimetresParCases)
+	/**
+	 * Constructeur appelé rarement.
+	 * @param requestedtable
+	 * @param requestedConfig
+	 * @param requestedLog
+	 * @param requestedMillimetresParCases
+	 */
+	public Pathfinding(Table requestedtable, Read_Ini requestedConfig, Log requestedLog)
 	{
-		if(map_obstacles_fixes == null)
-		{
-			map_obstacles_fixes = new Grid2DSpace[4];
-			for(int i = 0; i < 4; i++)
-				map_obstacles_fixes[i] = Grid2DSpace.load(i);
-		}
-		if(distance_caches == null)
-		{
-			distance_caches = new CacheHolder[4];
-			try {
-			for(int i = 0; i < 4; i++)
-					distance_caches[i] = CacheHolder.load(i);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			distance_caches = null;
-		}
 		table = requestedtable;
 		config = requestedConfig;
 		log = requestedLog;
 		maj_config();
-		millimetresParCases = requestedMillimetresParCases;
-		map = new Grid2DSpace(new IntPair((int)((float)3000.0f/millimetresParCases), (int)((float)2200.0f/millimetresParCases)), table, rayon_robot, log);
-		solver = new AStar(map, new IntPair(0,0), new IntPair(0,0));
-		output = new ArrayList<Vec2>();
-		result = new ArrayList<IntPair>();
-		resultUpToDate = false;
-		
-	};
-	
-	public boolean isResultUpToDate() 
-	{
-		return resultUpToDate;
-	}
 
+		degree = 0;
+
+		output = new ArrayList<Vec2>();
+		result = new ArrayList<Vec2>();
+	}
+	
+	/**
+	 * Régénère les objets, car ils dépendent de la précision utilisée.
+	 */
 	public void maj_config()
 	{
 		try {
-			rayon_robot = Integer.parseInt(config.get("rayon_robot"));
+			table_x = Integer.parseInt(config.get("table_x"));
 		} catch (NumberFormatException | ConfigException e) {
 			e.printStackTrace();
 		}
+		try {
+			nb_precisions = Integer.parseInt(config.get("nb_precisions"));
+		} catch (NumberFormatException | ConfigException e) {
+			e.printStackTrace();
+		}
+
+		hashTableSaved = new int[nb_precisions];
+
+		Grid2DSpace.set_static_variables(config, log);
+		solvers = new AStar[nb_precisions];
+		solver = solvers[degree];
+//		map = new Grid2DSpace[nb_precisions];
+
+		// On ne recharge les maps que si elles n'ont jamais été créées, ou avec une précision différente
+		if(map_obstacles_fixes == null || map_obstacles_fixes.length != nb_precisions)
+		{
+			map_obstacles_fixes = new Grid2DSpace[nb_precisions][4];
+			for(int i = 0; i < nb_precisions; i++)
+				for(int j = 0; j < 4; j++)
+					map_obstacles_fixes[i][j] = (Grid2DSpace)DataSaver.charger("cache/map-"+i+"-"+j+".cache");
+		}
+		
+		int reductionFactor = 1;
+		for(int i = 0; i < nb_precisions; i++)
+		{
+			hashTableSaved[i] = -1;
+			solver = new AStar(new Grid2DSpace(reductionFactor));
+			reductionFactor <<= 1;
+			degree = i; // modification temporaire de degree afin d'updater toutes les maps
+			update(); 	// initialisation des map
+		}
+
+//		solver = new AStar(map[degree], new Vec2(0,0), new Vec2(0,0));
 	}
 
 	/**
@@ -103,29 +128,31 @@ public class Pathfinding implements Service
 	 * On consulte pour cela l'attribut table qui a été modifié de l'extérieur.
 	 */
 	public void update()
-	{
+	{		
+		/* La table est modifiée entre temps. Il faut donc modifier la map.
+		 */		
+
 		synchronized(table) // Mutex sur la table, afin qu'elle ne change pas pendant qu'on met à jour le pathfinding
 		{
 			// Si le hash actuel est égal au hash du dernier update, on annule la copie car la map n'a pas changé.
-			if(table.hashTable() == hashTable)
+			if(table.hashTable() == hashTableSaved[degree])
 				return;
-			
-			hashTable = table.hashTable();
-			// TODO : clear map to initial state
-			// also figure out if a check can be founded to skip the whole process if newtable = map
-			
-			//System.out.println(map.stringForm());
-			
-			for (int i = 0; i < table.getListObstacles().size(); ++i)
+
+			if(table.codeTorches() != code_torches_actuel)
 			{
-				if (table.getListObstacles().get(i) instanceof ObstacleRectangulaire)
-					map.appendObstacle((ObstacleRectangulaire)table.getListObstacles().get(i));
-				else
-					map.appendObstacle((ObstacleCirculaire)table.getListObstacles().get(i));
+				code_torches_actuel = table.codeTorches();
+				distance_cache = (CacheHolder) DataSaver.charger("cache/distance-"+code_torches_actuel+".cache");
 			}
 			
-			// les chemins sont périmés puisque la map est différente
-			resultUpToDate = true;
+			hashTableSaved[degree] = table.hashTable();
+			
+			// On recopie les obstacles fixes
+			map_obstacles_fixes[degree][code_torches_actuel].clone(solver.espace);
+
+			// Puis les obstacles temporaires
+			ArrayList<ObstacleCirculaire> obs = table.getListObstacles();
+			for(ObstacleCirculaire o: obs)
+				solver.espace.appendObstacleTemporaire(o);
 		}
 	}
 
@@ -137,82 +164,26 @@ public class Pathfinding implements Service
 	 * 			Si l'itinéraire est non trouvable, une exception est est retournée.
 	 * @throws PathfindingException 
 	 */
-	
-	// TODO : deal with precision issue (divide by millimetresParCases)
 	public ArrayList<Vec2> chemin(Vec2 depart, Vec2 arrivee) throws PathfindingException
 	{
-		
-		solver.setDepart(new IntPair((int)((float)(depart.x + 1500) / millimetresParCases), (int)((float)(depart.y) / millimetresParCases)));
-		solver.setArrivee(new IntPair((int)((float)(arrivee.x + 1500) / millimetresParCases), (int)((float)(arrivee.y) / millimetresParCases)));
-/*		// Change de système de coordonnées
-		solver.setDepart(new IntPair((int)Math.round(depart.x + 1500)/millimetresParCases, (int)Math.round(depart.y)/millimetresParCases));
-		solver.setArrivee(new IntPair((int)Math.round(arrivee.x + 1500)/millimetresParCases, (int)Math.round(arrivee.y)/millimetresParCases));
+		solver.setDepart(depart);
+		solver.setArrivee(arrivee);
 
-		System.out.println("solver.depart : " + solver.getDepart().x + "   " + solver.getDepart().y);
-		System.out.println("solver.arrivee : " + solver.getArrivee().x + "   " + solver.getArrivee().y);
-		System.out.println("solver.espace.size : " + solver.getEspace().getSizeX() + "   " + solver.getEspace().getSizeY());
-		*/
 		// calcule le chemin
 		solver.process();
 		if (!solver.isValid())	// null si A* dit que pas possib'
 			throw new PathfindingException();
-		result = lissage(solver.getChemin(), map);
-		
-/*
-		System.out.println("=======================================================\n PostLissage dump\n=============================");
-		
-		
 
-		String out = "";
-		Integer ptCount = 0;
-		for (int  j = 0; j < map.getSizeX(); ++j)
-		{
-			for (int  k = map.getSizeY() - 1; k >= 0; --k)
-			{
-				IntPair pos = new IntPair(j,k);
-				if (depart.x ==j && depart.y ==k)
-					out += "D ";
-				else if (arrivee.x ==j && arrivee.y ==k)
-					out += "A ";
-				else if (result.contains(pos))
-				{
-					ptCount ++;
-					out += ptCount.toString();
-				}
-				else if(map.canCross(j, k))
-					out += ". ";
-				else
-					out += "X ";	
-			}
-			
-			out +='\n';
-		}
-		System.out.println(out);
-		System.out.println("=======================================================\nEnd of dump\n=============================");
-		
-		*/
-		
+		result = lissage(solver.getChemin(), solver.espace);
 		
 		// affiche la liste des positions
 		output.clear();
 		for (int i = 0; i < result.size()-1; ++i)
-			output.add(new Vec2((float)(result.get(i).x)* millimetresParCases -1500, (float)(result.get(i).y)* millimetresParCases));
+			output.add(solver.espace.conversionGrid2Table(result.get(i)));
 		output.add(arrivee);
-		System.out.println("Chemin : " + output);
+		log.debug("Chemin : " + output, this);
 		
-		resultUpToDate = true;
 		return output;
-		
-		// convertit la sortie de l'AStar en suite de Vec2 dans le système de coords d'entrée.
-		/*
-		output.clear();
-		for (int i = 1; i < result.size(); ++i)
-			output.add(new Vec2((float)(result.get(i).x - result.get(i-1).x)* millimetresParCases, (float)(result.get(i).y - result.get(i-1).y)* millimetresParCases));
-		
-		
-		
-		return output;*/
-		
 	}
 
 	/**
@@ -221,57 +192,65 @@ public class Pathfinding implements Service
 	 * @param arrivee
 	 * @param use_cache :  si le chemin doit être précisément calculé, ou si on peut utiliser un calcul préfait.
 	 * @return la longeur du parsours, exprimée en milimèrtes. Le parsours calculé est diponible via getResult. -1 est retourné quand le chemin est pas trouvable
+	 * @throws PathfindingException 
 	 */
-	public int distance(Vec2 depart, Vec2 arrivee, boolean use_cache)
+	public int distance(Vec2 depart, Vec2 arrivee, boolean use_cache) throws PathfindingException
 	{
-		if(!use_cache || distance_caches == null)
+		if(!use_cache || distance_cache == null)
 		{
+			// pas plus simple d'appeler chemin?
+			
+			int millimetresParCases = exponentiation(2, degree);
 			// Change de système de coordonnées
-			solver.setDepart(new IntPair((int)Math.round(depart.x + 1500)/millimetresParCases, (int)Math.round(depart.y)/millimetresParCases));
-			solver.setArrivee(new IntPair((int)Math.round(arrivee.x + 1500)/millimetresParCases, (int)Math.round(arrivee.y)/millimetresParCases));
+			solver.setDepart(depart);
+			solver.setArrivee(arrivee);
 			
 			// calcule le chemin
+			System.out.println("Boucle infinie?");
 			solver.process();
-			if (!solver.isValid())	// null si A* dit que pas possib'
-				return -1;
-			result = lissage(solver.getChemin(), map);
+			System.out.println("Pas de boucle infinie.");
+
+			if (!solver.isValid())	// lève une exception si A* dit que pas possible
+				throw new PathfindingException();
+			result = lissage(solver.getChemin(), solver.espace);
 			
 			// convertit la sortie de l'AStar en suite de Vec2
 			int out = 0;
 			for (int i = 1; i < result.size(); ++i)
-				out +=  Math.sqrt(	(result.get(i).x - result.get(i-1).x) * (result.get(i).x - result.get(i-1).x) +
-									(result.get(i).y - result.get(i-1).y) * (result.get(i).y - result.get(i-1).y));
+				out += result.get(i-1).distance(result.get(i));
 
-			resultUpToDate = true;
 			return out*millimetresParCases;
 		}
 		else
 		{
-			resultUpToDate = true;
-			return distance_caches[table.codeTorches()].data[(int)depart.x+1500][(int)depart.y][(int)arrivee.x+1500][(int)arrivee.y];
+			int cacheReduction = distance_cache.reduction;
+			int distance = distance_cache.data[(depart.x+table_x/2)/cacheReduction][depart.y/cacheReduction][(arrivee.x+table_x/2)/cacheReduction][arrivee.y/cacheReduction];
+
+			if(distance == -1)
+				throw new PathfindingException();
+			else
+				return distance;
 		}
-	}
-	
-	
+	}	
 
 
 	/**
 	 * Transforme un chemin ou chaque pas est spécifié en un chemin lissé ou il ne reste que très peu de sommets
 	 * ch
 			// calcule le chemin
-			solver.setDepart(new IntPair((int)Math.round(depart.x),(int)Math.round(depart.y)));
-			solver.setArrivee(new IntPair((int)Math.round(arrivee.x),(int)Math.round(arrivee.y)));
+			solver.setDepart(new Vec2((int)Math.round(depart.x),(int)Math.round(depart.y)));
+			solver.setArrivee(new Vec2((int)Math.round(arrivee.x),(int)Math.round(arrivee.y)));
 			solver.process();
 			result = lissage(solver.getChemin(), map);acun de ses sommets est séparé par une ligne droite sans obstacle
 	 * @param le chemin non lissé (avec tout les pas)
 	 * @return le chemin liss (avec typiquement une disaine de sommets grand maximum)
 	 */
-	public ArrayList<IntPair> lissage(ArrayList<IntPair> cheminFull, Grid2DSpace map)
+	public ArrayList<Vec2> lissage(ArrayList<Vec2> cheminFull, Grid2DSpace map)
 	{
 		if (cheminFull.size() < 2)
 			return cheminFull;
 		// Nettoie le chemin
-		ArrayList<IntPair> chemin = new ArrayList<IntPair>();
+		ArrayList<Vec2> chemin = new ArrayList<Vec2>();
 		int 	lastXDelta = 0,
 				lastYDelta = 0,
 				xDelta = 0,
@@ -299,7 +278,7 @@ public class Pathfinding implements Service
 		
 		
 		// supprimes les points non nécéssaire.
-		ArrayList<IntPair> out = new ArrayList<IntPair>();
+		ArrayList<Vec2> out = new ArrayList<Vec2>();
 		
 		// saute les 2 derniers points, comme on ne pourra rien simplifier entre.
 		for (int i = 0; i < chemin.size(); ++i)	
@@ -324,41 +303,16 @@ public class Pathfinding implements Service
 		return out;
 	}
 	
-
-	public ArrayList<IntPair> getResult() 
+	public void setPrecision(int precision) 
 	{
-		return result;
-	}
-	public IntPair getDepart() 
-	{
-		return solver.getDepart();
-	}
-	public IntPair getArrivee() 
-	{
-		return solver.getArrivee();
-	}
-	/**
-	 * @return the map
-	 */
-	public Grid2DSpace getMap()
-	{
-		return map;
-	}
-	
-	/**
-	 * @return the millimetresParCases
-	 */
-	public int getMillimetresParCases() 
-	{
-		return millimetresParCases;
-	}
-
-	/**
-	 * @param millimetresParCases the millimetresParCases to set
-	 */
-	public void setMillimetresParCases(int millimetresParCases) 
-	{
-		this.millimetresParCases = millimetresParCases;
+		if(precision >= nb_precisions)
+		{
+			log.critical("Précision demandée ("+precision+") impossible. Précision utilisée: "+(nb_precisions-1), this);
+			degree = nb_precisions-1;
+		}
+		else
+			degree = precision;
+		solver = solvers[degree];
 	}
 	
 	/**
@@ -367,14 +321,21 @@ public class Pathfinding implements Service
 	 */
 	public void clone(Pathfinding cp)
 	{
-		table.clone(cp.table); // clone de la table
-
-		// Si les tables sont identiques, alors les map sont identiques et on n'a pas besoin de copier.
-		if(!table.equals(cp.table))
-		{
-			map_obstacles_fixes[table.codeTorches()].clone(map);
-			// TODO Ensuite, on applique à partir d'une liste d'obstacles les pochoirs sur cp
-		}
+		table.clone(cp.table);  // clone de la table
+		cp.update();		    // et update
 	}
 
+	public int exponentiation(int a, int b)
+	{
+		if(b == 0)
+			return 1;
+		else if(b == 1)
+			return a;
+		int c = exponentiation(a, b/2);
+		if((b&1) == 0)	// si b est pair
+			return c*c;
+		else
+			return c*c*a;
+	}
+	
 }

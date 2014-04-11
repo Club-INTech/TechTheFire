@@ -11,18 +11,19 @@ import java.util.Set;
 import java.util.Map;
 
 import pathfinding.SearchSpace.Grid2DSpace;
-import smartMath.IntPair;
+import smartMath.Vec2;
 
 /**
  * @author Marsya
  *
  */
 @SuppressWarnings("unused")
-public class HPAStar 
+class HPAStar
 {
 	private ArrayList<Grid2DSpace> espace;
-	private IntPair		depart,
+	private Vec2		depart,
 						arrivee;
+	private AStar solver;
 				
 
 	public HPAStar ( Grid2DSpace espaceVoulu)
@@ -31,14 +32,10 @@ public class HPAStar
 		espace.add(espaceVoulu.makeCopy());
 	}
 	
-	public void initialise(IntPair departVoulu, IntPair arriveeVoule)
+	public void initialise(Vec2 departVoulu, Vec2 arriveeVoule)
 	{
 		depart = departVoulu.makeCopy();
 		arrivee = arriveeVoule.makeCopy();
 	}
 	
-	public void process()
-	{
-		
-	}
 }

@@ -44,22 +44,22 @@ public class Strategie implements Service {
 
 	// TODO initialisations des variables = première action
 	// Prochain script à exécuter si on est interrompu par l'ennemi
-	private NoteScriptVersion prochainScriptEnnemi;
+	private volatile NoteScriptVersion prochainScriptEnnemi;
 	
 	// Prochain script à exécuter si l'actuel se passe bien
-	private NoteScriptVersion prochainScript;
+	private volatile NoteScriptVersion prochainScript;
 	
-	public Strategie(MemoryManager memorymanager, ThreadTimer threadtimer, ScriptManager scriptmanager, Table table, RobotVrai robotvrai, Read_Ini config, Log log)
+	public Strategie(MemoryManager memorymanager, ThreadTimer threadtimer, ScriptManager scriptmanager, Table table, RobotVrai robotvrai, Pathfinding pathfinding, Read_Ini config, Log log)
 	{
 		this.memorymanager = memorymanager;
 		this.threadtimer = threadtimer;
 		this.scriptmanager = scriptmanager;
 		this.table = table;
 		this.robotvrai = robotvrai;
+		this.pathfinding = pathfinding;
 		this.config = config;
 		this.log = log;
 		maj_config();
-		pathfinding = new Pathfinding(table, config, log, 1);
 	}
 	
 	/**
@@ -117,7 +117,6 @@ public class Strategie implements Service {
 
 		}
 		log.debug("Arrêt de la stratégie", this);
-		
 	}
 
 	/**

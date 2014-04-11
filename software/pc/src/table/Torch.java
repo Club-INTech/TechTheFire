@@ -7,10 +7,11 @@ import smartMath.Vec2;
  * @author pf
  *
  */
-public class Torch extends Game_Element {
+class Torch extends Game_Element {
 	
 //	private Fire[] fires;
 	private boolean disparue = false; // True si elle est dégommée
+	public int rayon = 80;
 
 /*	public Torch(Vec2 position, Fire fire0, Fire fire1, Fire fire2)
 	{

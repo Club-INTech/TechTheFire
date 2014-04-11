@@ -55,9 +55,7 @@ public class RobotChrono extends Robot {
 			e.printStackTrace();
 		}
 		duree += ((float)Math.abs(distance))/vitesse_mmpms;
-		Vec2 ecart = new Vec2((float)Math.cos(orientation), (float)Math.sin(orientation));
-		ecart.x *= distance;
-		ecart.y *= distance;
+		Vec2 ecart = new Vec2((int)(distance*Math.cos(orientation)), (int)(distance*Math.sin(orientation)));
 		position.Plus(ecart);
 	}
 	
@@ -273,6 +271,12 @@ public class RobotChrono extends Robot {
 	@Override
 	public void ouvrir_bas_pince(Cote cote) throws SerialException {
 		duree += 1000;
+	}
+
+	@Override
+	public void prendre_torche(Cote cote) throws SerialException {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

@@ -2,6 +2,12 @@ package table;
 
 import smartMath.Vec2;
 
+/**
+ * Convention: la "position" d'un ObstacleRectangulaire est son coin supérieur gauche
+ * "largeur" est selon x, "longueur" selon y
+ * @author pf
+ *
+ */
 public class ObstacleRectangulaire extends Obstacle {
 
 	protected int longueur;
@@ -31,6 +37,11 @@ public class ObstacleRectangulaire extends Obstacle {
 		return this.largeur;
 	}
 	
+	public float distance(Vec2 point)
+	{
+		return (float) Math.sqrt(SquaredDistance(point));
+	}
+	
 	/**
 	 * Fourni la distance au carré d'un point à l'obstacle
 	 * @param point
@@ -39,10 +50,10 @@ public class ObstacleRectangulaire extends Obstacle {
 	public float SquaredDistance(Vec2 point)
 	{
 		// Si le point est à un des coins
-		Vec2 coinBasGauche = position.PlusNewVector((new Vec2(0,(float)longueur)));
+		Vec2 coinBasGauche = position.PlusNewVector((new Vec2(0,longueur)));
 		Vec2 coinHautGauche = position.PlusNewVector((new Vec2(0,0)));
-		Vec2 coinBasDroite = position.PlusNewVector((new Vec2((float)largeur,(float)longueur)));
-		Vec2 coinHautDroite = position.PlusNewVector((new Vec2((float)largeur,0)));
+		Vec2 coinBasDroite = position.PlusNewVector((new Vec2(largeur,longueur)));
+		Vec2 coinHautDroite = position.PlusNewVector((new Vec2(largeur,0)));
 
 		if(point.x < coinBasGauche.x && point.y < coinBasGauche.y)
 			return point.SquaredDistance(coinBasGauche);
