@@ -54,9 +54,10 @@ public class lanceur
 			robotchrono.majRobotChrono(robotvrai);
 			
 
-			//Talbe
+			//Table
 			Table table = (Table)container.getService("Table");
-			Pathfinding pathfinding = new Pathfinding(table, config, log, 1);
+			Pathfinding pathfinding = new Pathfinding(table, config, log);
+			pathfinding.setPrecision(2);
 			
 			// Etat intial du robot
 			robotvrai.setPosition(new Vec2(1300, 1350));
