@@ -1,7 +1,7 @@
 /**
  *  Classe encapsulant le calcul par A* d'un chemin sur un graphe quelconque
  *
- * @author Marsya
+ * @author Marsya, PF
  */
 package pathfinding;
 
@@ -12,13 +12,13 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.Map;
 
+import exception.PathfindingException;
 import pathfinding.SearchSpace.Grid2DSpace;
 import smartMath.Vec2;
 
 // Le test se trouve dans un test unitaire
 class AStar
 {
-	private boolean 	isValid;	// indique si le chamin calcul� est valide ou non ( auquel cas une erreur a emp�ch� son calcul)
 	public Grid2DSpace espace;		// espace de travail
 	private ArrayList<Vec2> chemin;	// r�ceptacle du calcul
 	
@@ -28,50 +28,27 @@ class AStar
 	private Map<Vec2, Integer>	g_score,
 									f_score;
 	
-	private Vec2 	depart, 
-						arrivee;
+	/* Combien de millimètre aurait-on eu le temps de faire pendant cette rotation?
+	 * Rotation moyenne: 1/6 de tour (PI/3)
+	 * Vitesse angulaire entre script: 5.15 r/s
+	 * Vitesse translatoire entre script: 725 mm/s
+	 * La réponse est donc 150mm.
+	 */
+	// TODO intégrer coefficient_rotation
+//	private int coefficient_rotation = 150;
 	
-
 	public AStar(Grid2DSpace espaceVoulu)
 	{
-		// Construit la demande d'un futur calcul
-		isValid = false;
+		espace = espaceVoulu;
+
 		chemin = new ArrayList<Vec2>();
-		
-		depart = new Vec2();
-		arrivee = new Vec2();
-//		depart = new Vec2(departVoulu.x, departVoulu.y);
-//		arrivee = new Vec2(arriveeVoulue.x, arriveeVoulue.y);
-		
-		espace = espaceVoulu.makeCopy();
 		
 		closedset = new LinkedHashSet<Vec2>();
 		openset = new LinkedHashSet<Vec2>();
 		
 		came_from = new HashMap<Vec2, Vec2>();
 		g_score = new HashMap<Vec2, Integer>();
-		f_score = new HashMap<Vec2, Integer>();
-		
-	}
-	
-	public void cleanup()
-	{
-		// Construit la demande d'un futur calcul
-		isValid = false;
-		chemin = new ArrayList<Vec2>();
-		
-		//depart = new Vec2(0,0);
-		//arrivee = new Vec2(0,0);
-		
-		//espace = espaceVoulu.makeCopy();
-		
-		closedset = new LinkedHashSet<Vec2>();
-		openset = new LinkedHashSet<Vec2>();
-		
-		came_from = new HashMap<Vec2, Vec2>();
-		g_score = new HashMap<Vec2, Integer>();
-		f_score = new HashMap<Vec2, Integer>();
-		
+		f_score = new HashMap<Vec2, Integer>();		
 	}
 	/**
 	 * From wikipedia :
@@ -117,21 +94,32 @@ function reconstruct_path(came_from, current_node)
         
 	 * 
 	 */
-	public void process()
+	public ArrayList<Vec2> process(Vec2 depart, Vec2 arrivee) throws PathfindingException
 	{
-		
-		
+		chemin.clear();
+
+		// Si le départ ou l'arrivée est dans un obstacle, on lève une exception
+		if(!espace.canCross(arrivee) || !espace.canCross(depart))
+			throw new PathfindingException();
+		else if(espace.canCrossLine(depart, arrivee))
+		{
+			chemin.add(arrivee);
+			return chemin;
+		}
+
 		closedset.clear();		// The set of nodes already evaluated.
+		openset.clear();
 		openset.add(depart);	// The set of tentative nodes to be evaluated, initially containing the start node
 		came_from.clear(); 		// The map of navigated nodes.
-
+		g_score.clear();
+		f_score.clear();
 		
 		g_score.put(depart, 0);	// Cost from start along best known path.
-	    // Estimated total cost from start to goal through y.
-	    f_score.put(depart, g_score.get(depart) + fastGridDistance(depart, arrivee));
+                           	    // Estimated total cost from start to goal through y.
+	    f_score.put(depart, g_score.get(depart) + depart.manhattan_distance(arrivee));
 	    
 	    Vec2 current = 	new Vec2(0,0),
-	    		temp =		new Vec2(0,0);			
+	    		temp =	new Vec2(0,0);			
 	    Iterator<Vec2> NodeIterator = openset.iterator();
 	    int tentative_g_score = 0;
 	    
@@ -149,12 +137,11 @@ function reconstruct_path(came_from, current_node)
 	    	
 	    	if (current.x == arrivee.x && current.y == arrivee.y)
 	    	{
-	    		
 	    		chemin.clear();
     			chemin.add( new Vec2(arrivee.x,arrivee.y));
     			if (arrivee.x != depart.x && arrivee.y != depart.y && came_from.get(current) != null)
     			{
-		    		temp = came_from.get(current);	    		
+		    		temp = came_from.get(current);
 		    		while ( temp.x != depart.x || temp.y != depart.y )
 		    		{
 		    			chemin.add(0, new Vec2(temp.x,temp.y)); // insert le point d'avant au debut du parcours
@@ -163,42 +150,9 @@ function reconstruct_path(came_from, current_node)
 		    			
 		    		}
     			}
-    			chemin.add(0, new Vec2(depart.x,depart.y));
-    			
-/*
-				System.out.println("=======================================================\nPostGaffeur dump\n=============================");
-				
-				
-
-				String out = "";
-				Integer ptCount = 0;
-				for (int  j = 0; j < espace.getSizeX(); ++j)
-				{
-					for (int  k = espace.getSizeY() - 1; k >= 0; --k)
-					{
-						Vec2 pos = new Vec2(j,k);
-						if (depart.x ==j && depart.y ==k)
-							out += "D ";
-						else if (arrivee.x ==j && arrivee.y ==k)
-							out += "A ";
-						else if (chemin.contains(pos))
-						{
-							ptCount ++;
-							out += ptCount.toString();
-						}
-						else if(espace.canCross(j, k))
-							out += ". ";
-						else
-							out += "X ";	
-					}
-					
-					out +='\n';
-				}
-				System.out.println(out);
-				System.out.println("=======================================================\nEnd of dump\n=============================");
-	    		*/
-	    		processFinalisationWithSucess();
-	    		return;	//  reconstruct path
+    			// Le chemin final ne doit pas contenir le point de départ (plus pratique pour Script et pour le HPA*)
+//    			chemin.add(0, new Vec2(depart.x,depart.y));
+	    		return chemin;	//  reconstruct path
 	    	}
 	    	
 	    	openset.remove(current);
@@ -217,7 +171,7 @@ function reconstruct_path(came_from, current_node)
 	    				came_from.put(temp.makeCopy(), current.makeCopy());
 	    				g_score.put(temp, tentative_g_score);
 	    				// TODO: vérifier que 5 est bien le meilleur coefficient
-	    				f_score.put(temp, tentative_g_score + 5 * fastGridDistance(temp, arrivee));
+	    				f_score.put(temp, tentative_g_score + 5 * temp.manhattan_distance(arrivee));
 	    				if(openset.contains(temp) == false)
 	    					openset.add(new Vec2(temp.x, temp.y));
 	    				
@@ -225,85 +179,26 @@ function reconstruct_path(came_from, current_node)
 	    			}
 	    		}	
 	    	}
-	    	
-	    	
-	    	
+	    		    	
 	    }// while
-	    
-	    processFinalisationWithError();
-	    return;
+	    throw new PathfindingException();
 	}	// process
+
 	
-	private void processFinalisationWithSucess()
-	{
-		isValid = true;
-	}
-	
-	private void processFinalisationWithError()
-	{
-		isValid = false;
-	}
-		
 	// =====================================  Utilitaires ===============================
-	
-	// Calcule rapidement la distance entre A et B en nombre de cases a traverser. Pas besoin d'op�rations en
-	// virgule flottante ni de multiplication
-	private int fastGridDistance( Vec2 A, Vec2 B)
-	{
-		return Math.abs(A.x - B.x) + Math.abs(A.y - B.y); 
-	}
-	
+		
 	// donne les voisins d'un node par index : 1, droite, 2, haut, 3, gauche, 4, bas
 	private Vec2 neighbor_nodes(Vec2 center, int index)
 	{
 		if( index == 1 && espace.canCross(center.x + 1, center.y))
 			return new Vec2(center.x + 1, center.y);
-		if( index == 2 && espace.canCross(center.x, center.y + 1))
+		else if( index == 2 && espace.canCross(center.x, center.y + 1))
 			return new Vec2(center.x, center.y + 1);
-		if( index == 3 && espace.canCross(center.x - 1, center.y))
+		else if( index == 3 && espace.canCross(center.x - 1, center.y))
 			return new Vec2(center.x - 1, center.y);
-		if( index == 4 && espace.canCross(center.x, center.y - 1))
+		else if( index == 4 && espace.canCross(center.x, center.y - 1))
 			return new Vec2(center.x, center.y - 1);
 		return center;
 	}
 	
-	// ======================================= Getters / Setters ========================================
-	
-	/**
-	 * @return the chemin
-	 */
-	public ArrayList<Vec2> getChemin() 
-	{
-		return chemin;
-	}
-	
-	public Grid2DSpace getEspace() {
-		return espace;
-	}
-	public void setEspace(Grid2DSpace espace)
-	{
-		cleanup();
-		this.espace = espace;
-	}
-	public Vec2 getDepart() {
-		return depart;
-	}
-	public void setDepart(Vec2 depart) 
-	{
-		cleanup();
-		this.depart = espace.conversionTable2Grid(depart);
-	}
-	public Vec2 getArrivee() {
-		return arrivee;
-	}
-	public void setArrivee(Vec2 arrivee) 
-	{
-		cleanup();
-		this.arrivee = espace.conversionTable2Grid(arrivee);
-	}
-
-	public boolean isValid()
-	{
-		return isValid;
-	}
 }

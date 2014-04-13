@@ -97,6 +97,12 @@ public class Table implements Service {
 		// Ajout bacs
 		listObstaclesFixes.add(new ObstacleRectangulaire(new Vec2(400,2000), 700, 300));
 		listObstaclesFixes.add(new ObstacleRectangulaire(new Vec2(-1100,2000), 700, 300));
+		
+		// Ajout des bordures
+		listObstaclesFixes.add(new ObstacleRectangulaire(new Vec2(-1500,0), 3000, 1));
+		listObstaclesFixes.add(new ObstacleRectangulaire(new Vec2(-1500,2000), 1, 2000));
+		listObstaclesFixes.add(new ObstacleRectangulaire(new Vec2(-1500,2000), 3000, 1));
+		listObstaclesFixes.add(new ObstacleRectangulaire(new Vec2(1500,2000), 1, 2000));
 
 		// Ajout des arbres
 		listObstaclesFixes.add(new ObstacleCirculaire(new Vec2(1500,700), 150));
@@ -148,19 +154,19 @@ public class Table implements Service {
 	
 	/**
 	 * Renvoie un code selon la présence ou non des torches mobiles
-	 * 0: les deux torches sont là
-	 * 1: la torche de gauche a disparue
-	 * 2: la torche de droite a disparue
-	 * 3: les deux torches sont absentes
+	 * 3: les deux torches sont là
+	 * 2: la torche de gauche a disparue
+	 * 1: la torche de droite a disparue
+	 * 0: les deux torches sont absentes
 	 * @return ce code
 	 */
 	public int codeTorches()
 	{
 		int out = 0;
-		if(arrayTorch[0].isDisparue())
+		if(!arrayTorch[0].isDisparue())
 			out++;
 		out <<= 1;
-		if(arrayTorch[1].isDisparue())
+		if(!arrayTorch[1].isDisparue())
 			out++;
 		return out;
 	}
@@ -503,7 +509,7 @@ public class Table implements Service {
 	 		if(obstacle instanceof ObstacleRectangulaire)
 	 		{
 	 			Vec2 position_obs = obstacle.getPosition();
-				return !(pos.x<((ObstacleRectangulaire)obstacle).getLongueur()+position_obs.x && position_obs.x < pos.x && position_obs.y <pos.y && pos.y < position_obs.y+((ObstacleRectangulaire)obstacle).getLargeur());
+				return !(pos.x<((ObstacleRectangulaire)obstacle).getLongueur_en_x()+position_obs.x && position_obs.x < pos.x && position_obs.y <pos.y && pos.y < position_obs.y+((ObstacleRectangulaire)obstacle).getLongueur_en_y());
 	
 	 		}			
 	 		// sinon, c'est qu'il est circulaire
