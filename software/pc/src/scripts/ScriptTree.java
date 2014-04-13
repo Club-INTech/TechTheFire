@@ -30,7 +30,17 @@ public class ScriptTree extends Script{
 	{
 		super(hookgenerator, config, log, robotvrai);
 	}
-
+	@Override 
+	public  ArrayList<Integer> meta_version(final Robot robot, final Table table, Pathfinding pathfinding)
+	{
+		
+		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
+		
+		for (int i = 0; i < 4; i++)
+			if (!table.isTreeTaken(i))
+				metaversionList.add(i);
+		return metaversionList;
+	}
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table, final Pathfinding pathfinding) {
 		ArrayList<Integer> versionsList = new ArrayList<Integer>();
