@@ -36,11 +36,16 @@ public class ScriptFeuBord extends Script {
 		
 		metaversionList.add(0);
 		metaversionList.add(1);
-		//Les feux verticaux
-		//Ajouter une condition pour chaque feu pour savoir s'il est toujours là ?
 		metaversionList.add(2);
 		metaversionList.add(3);
 		return metaversionList;
+	}
+	@Override
+	public  ArrayList<Integer> version_asso(int id_meta)
+	{
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		versionList.add(id_meta);
+		return versionList;
 	}
 	@Override
 	public ArrayList<Integer> version(Robot robot, Table table, Pathfinding pathfinding) {

@@ -37,6 +37,18 @@ public class ScriptFresque extends Script {
 		return metaversionList;
 	}
 	@Override
+	public  ArrayList<Integer> version_asso(int id_meta)
+	{
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		if(id_meta == 0)
+		{
+			versionList.add(0);
+			versionList.add(1);
+			versionList.add(2);
+		}
+		return versionList;
+	}
+	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table, Pathfinding pathfinding) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		if(robot.isFresquesPosees())

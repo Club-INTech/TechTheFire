@@ -33,13 +33,19 @@ public class ScriptTree extends Script{
 	@Override 
 	public  ArrayList<Integer> meta_version(final Robot robot, final Table table, Pathfinding pathfinding)
 	{
-		
 		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
 		
 		for (int i = 0; i < 4; i++)
 			if (!table.isTreeTaken(i))
 				metaversionList.add(i);
 		return metaversionList;
+	}
+	@Override
+	public  ArrayList<Integer> version_asso(int id_meta)
+	{
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		versionList.add(id_meta);
+		return versionList;
 	}
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table, final Pathfinding pathfinding) {

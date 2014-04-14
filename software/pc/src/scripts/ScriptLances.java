@@ -43,7 +43,13 @@ public class ScriptLances extends Script {
 	 * Le script lance 3 balles sur le c��t�� droit
 	 * Le script donne un point d'entr��e
 	 */
-	
+	@Override
+	public  ArrayList<Integer> version_asso(int id_meta)
+	{
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		versionList.add(id_meta);
+		return versionList;
+	}
 
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table, Pathfinding pathfinding) {

@@ -32,6 +32,17 @@ public class ScriptDeposerFruits extends Script {
 			metaversionList.add(0);
 		return metaversionList;
 	}
+	@Override
+	public  ArrayList<Integer> version_asso(int id_meta)
+	{
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		if(id_meta == 0)
+		{
+			versionList.add(0);
+			versionList.add(1);
+		}
+		return versionList;
+	}
 
 	@Override
 	public ArrayList<Integer> version(Robot robot, Table table, Pathfinding pathfinding) {

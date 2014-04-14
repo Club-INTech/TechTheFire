@@ -27,35 +27,53 @@ public class ScriptFeuDebout extends Script{
 	{
 		super(hookgenerator, config, log, robotvrai);
 	}
-
+	@Override 
+	public  ArrayList<Integer> meta_version(final Robot robot, final Table table, Pathfinding pathfinding)
+	{
+		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
+		metaversionList.add(0);
+		metaversionList.add(1);
+		metaversionList.add(2);
+		metaversionList.add(3);
+		metaversionList.add(4);
+		metaversionList.add(5);
+		return metaversionList;
+	}
+	@Override
+	public  ArrayList<Integer> version_asso(int id_meta)
+	{
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		versionList.add(id_meta);
+		return versionList;
+	}
 	public ArrayList<Integer> version(Robot robot, Table table, Pathfinding pathfinding) {
 		// TODO
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		//Les feux verticaux
 		//Ajouter une condition pour chaque feu pour savoir s'il est toujours là ?
+		versionList.add(0);
+		versionList.add(1);
 		versionList.add(2);
 		versionList.add(3);
 		versionList.add(4);
 		versionList.add(5);
-		versionList.add(10);
-		versionList.add(11);
 		return versionList;
 	}
-
+	
 	public Vec2 point_entree(int id) {
 		//Les coordonnées ont été prises à partir du réglement
 		
-		if(id ==2)
+		if(id ==0)
 			return new Vec2(-1100, 700);
-		else if(id ==3)
+		else if(id ==1)
 			return new Vec2(1100,700);
-		else if(id ==4)
+		else if(id ==2)
 			return new Vec2(-400, 400);
-		else if(id ==5)
+		else if(id ==3)
 			return new Vec2(400,400);
-		else if(id ==10)
+		else if(id ==4)
 			return new Vec2(-400, 1400);
-		else if(id ==11)
+		else if(id ==5)
 			return new Vec2(400, 1400);
 		else
 			return null;		
@@ -75,34 +93,32 @@ public class ScriptFeuDebout extends Script{
 
 	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding)
 			throws MouvementImpossibleException {
-		if(id_version ==2)
+		if(id_version == 0)
 			//Vec2(-1100, 900);
 		{
 			robot.tourner((float)Math.PI/2);
 		}	
-		else if(id_version ==3)
+		else if(id_version == 1)
 			// Vec2(1100,900);
 		{
 			robot.tourner((float)Math.PI/2);
 		}	
-		else if(id_version ==4)
+		else if(id_version == 2)
 			// Vec2(-600, 400);
 		{
 			robot.tourner((float)Math.PI);
 		}	
-		else if(id_version ==5)
+		else if(id_version == 3)
 			// Vec2(600,400);
 		{
 			robot.tourner((float)Math.PI);
 		}	
-		
-		
-		else if(id_version ==10)
+		else if(id_version == 4)
 			// Vec2(-600, 1400);
 		{
 			robot.tourner((float)Math.PI);
 		}	
-		else if(id_version ==11)
+		else if(id_version == 5)
 			// Vec2(600, 1400);
 		{
 			robot.tourner((float)0);			
