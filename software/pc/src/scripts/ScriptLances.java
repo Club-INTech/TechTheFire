@@ -16,7 +16,7 @@ import exception.SerialException;
 
 /**
  * Script pour les lances
- * @author pf
+ * @author pf, Krissprolls
  *
  */
 
@@ -72,7 +72,7 @@ public class ScriptLances extends Script {
 			//return new Vec2(-1200,1400);
 			return new Vec2(-750,1400);
 	}
-
+	
 	@Override
 	public int score(int id_version, final Robot robot, final Table table) {
 		return robot.getNbrLances()*2;

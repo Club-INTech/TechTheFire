@@ -63,7 +63,6 @@ public class ScriptFresque extends Script {
 	public Vec2 point_entree(int id) {
 		return new Vec2(-150+id*150, 1700);
 	}
-
 	@Override
 	public int score(int id_version, final Robot robot, final Table table) {
 		return 6;

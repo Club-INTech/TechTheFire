@@ -90,8 +90,7 @@ public class ScriptDeposerFeu extends Script {
 			return new Vec2(391, 739);
 		}
 		return null;
-	}
-
+	}	
 	@Override
 	public int score(int id_version, Robot robot, Table table) 
 	{

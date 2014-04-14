@@ -75,7 +75,6 @@ public class ScriptTree extends Script{
 			//-1000, 700
 		return entree;
 	}
-
 	@Override
 	public int score(int id_version, final Robot robot, final Table table) {
 		int res = 0;

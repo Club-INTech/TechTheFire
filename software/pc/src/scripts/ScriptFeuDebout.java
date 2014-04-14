@@ -79,7 +79,7 @@ public class ScriptFeuDebout extends Script{
 			return null;		
 	}
 
-
+	@Override
 	public int score(int id_version, Robot robot, Table table) {
 		return 0;
 	}

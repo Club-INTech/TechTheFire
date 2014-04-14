@@ -101,7 +101,6 @@ public class ScriptTorche extends Script {
 		else
 			return null;		
 	}
-
 	@Override
 	public int score(int id_version, Robot robot, Table table) {
 		return 0;

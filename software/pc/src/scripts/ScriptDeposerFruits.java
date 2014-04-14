@@ -59,7 +59,6 @@ public class ScriptDeposerFruits extends Script {
 	public Vec2 point_entree(int id) {
 		return new Vec2(-600-300*id, 1300);
 	}
-
 	@Override
 	public int score(int id_version, Robot robot, Table table) {
 		return robot.get_nombre_fruits_bac();

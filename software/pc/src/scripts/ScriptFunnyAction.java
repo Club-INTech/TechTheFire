@@ -56,7 +56,7 @@ public class ScriptFunnyAction extends Script {
 	public Vec2 point_entree(int id) {
 		return new Vec2(800,1300); 
 	}
-
+	
 	@Override
 	public int score(int id_version, Robot robot, Table table) {
 		// Point si ça marche
