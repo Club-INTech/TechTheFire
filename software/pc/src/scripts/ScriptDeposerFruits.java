@@ -24,6 +24,14 @@ public class ScriptDeposerFruits extends Script {
 	public ScriptDeposerFruits(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai) {
 		super(hookgenerator, config, log, robotvrai);
 	}
+	@Override 
+	public  ArrayList<Integer> meta_version(final Robot robot, final Table table, Pathfinding pathfinding)
+	{
+		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
+		if(robot.get_nombre_fruits_bac() > 0)
+			metaversionList.add(0);
+		return metaversionList;
+	}
 
 	@Override
 	public ArrayList<Integer> version(Robot robot, Table table, Pathfinding pathfinding) {

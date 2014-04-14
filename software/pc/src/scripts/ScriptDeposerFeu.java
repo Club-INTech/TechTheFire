@@ -25,7 +25,19 @@ public class ScriptDeposerFeu extends Script {
 	{
 		super(hookgenerator, config, log, robotvrai);
 	}
-
+	@Override 
+	public  ArrayList<Integer> meta_version(final Robot robot, final Table table, Pathfinding pathfinding)
+	{
+		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
+		if(robot.isTient_feu(Cote.DROIT) || robot.isTient_feu(Cote.GAUCHE))
+		{
+			metaversionList.add(0);
+			metaversionList.add(1);
+			metaversionList.add(2);
+		}
+		return metaversionList;
+	}
+	
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table, Pathfinding pathfinding) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();

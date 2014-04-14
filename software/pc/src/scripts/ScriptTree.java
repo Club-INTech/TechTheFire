@@ -30,7 +30,17 @@ public class ScriptTree extends Script{
 	{
 		super(hookgenerator, config, log, robotvrai);
 	}
-
+	@Override 
+	public  ArrayList<Integer> meta_version(final Robot robot, final Table table, Pathfinding pathfinding)
+	{
+		
+		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
+		
+		for (int i = 0; i < 4; i++)
+			if (!table.isTreeTaken(i))
+				metaversionList.add(i);
+		return metaversionList;
+	}
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table, final Pathfinding pathfinding) {
 		ArrayList<Integer> versionsList = new ArrayList<Integer>();
@@ -43,15 +53,20 @@ public class ScriptTree extends Script{
 	@Override
 	public Vec2 point_entree(int id_version) {
 		Vec2 entree = null;
-
+		//Les points d'entrée véritables sont mis en commentaire
+		//Quand tout marchera correctement, ça sera ces points qui faudra retenir
 		if (id_version == 0)
 			entree = new Vec2(1000, 740);
+			//1000,700
 		else if (id_version == 1)
 			entree = new Vec2(870, 500);
+			//800,500
 		else if (id_version == 2)
 			entree = new Vec2(-870, 500);
+			//-800,500
 		else if (id_version == 3)
 			entree = new Vec2(-1000, 610);
+			//-1000, 700
 		return entree;
 	}
 
@@ -85,6 +100,11 @@ public class ScriptTree extends Script{
 			robot.tourner((float) (Math.PI / 2));
 		else if (id_version ==3)
 			robot.tourner(0) ;
+		//Les reculs servent à calibrer l'avancement du robot lors de la prise des fruits
+		//50 est plutôt trop prudent
+		//30 est ce qui est à retenir pour id_version valant 0 et 3
+		//et 0 pour id_version 1 et 2
+		//résultats obtenus une semaine avant la pré-coupe
 		if(id_version == 0 ||id_version == 3)
 			recul = 50;
 		else

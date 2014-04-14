@@ -30,7 +30,13 @@ public class ScriptFunnyAction extends Script {
 		super(hookgenerator, config, log, robotvrai);
 		this.threadtimer = threadtimer;
 	}
-
+	@Override 
+	public  ArrayList<Integer> meta_version(final Robot robot, final Table table, Pathfinding pathfinding)
+	{
+		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
+		metaversionList.add(0);
+		return metaversionList;
+	}
 	@Override
 	public ArrayList<Integer> version(Robot robot, Table table, Pathfinding pathfinding) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();

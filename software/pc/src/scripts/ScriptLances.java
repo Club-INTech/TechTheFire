@@ -27,6 +27,17 @@ public class ScriptLances extends Script {
 	{
 		super(hookgenerator, config, log, robotvrai);
 	}
+	@Override 
+	public  ArrayList<Integer> meta_version(final Robot robot, final Table table, Pathfinding pathfinding)
+	{
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		if(robot.getNbrLances() > 0)
+		{
+			versionList.add(0);
+			versionList.add(1);
+		}
+		return versionList;
+	}
 
 	/*
 	 * Le script lance 3 balles sur le c��t�� droit
@@ -37,7 +48,7 @@ public class ScriptLances extends Script {
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table, Pathfinding pathfinding) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		if (robot.getNbrLances() > 0) {
+		if  (robot.getNbrLances() > 0){
 			versionList.add(0);
 			versionList.add(1);
 		}
