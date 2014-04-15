@@ -41,6 +41,24 @@ public class ScriptTorche extends Script {
 		return metaversionList;
 	}
 	@Override
+	public  ArrayList<Integer> version_asso(int id_meta)
+	{
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		if(id_meta == 0)
+		{
+			versionList.add(0);
+			versionList.add(1);
+			versionList.add(2);
+		}
+		if(id_meta == 1)
+		{
+			versionList.add(3);
+			versionList.add(4);
+			versionList.add(5);
+		}
+		return versionList;
+	}
+	@Override
 	public ArrayList<Integer> version(Robot robot, Table table, Pathfinding pathfinding) {
 		// TODO
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
@@ -49,6 +67,10 @@ public class ScriptTorche extends Script {
 		//Ca va nécessiter de créer d'autres versions encore
 		versionList.add(0);
 		versionList.add(1);
+		versionList.add(2);
+		versionList.add(3);
+		versionList.add(4);
+		versionList.add(5);
 		
 		return versionList;
 	}
@@ -79,7 +101,6 @@ public class ScriptTorche extends Script {
 		else
 			return null;		
 	}
-
 	@Override
 	public int score(int id_version, Robot robot, Table table) {
 		return 0;
