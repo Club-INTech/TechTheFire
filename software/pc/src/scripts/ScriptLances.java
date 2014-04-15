@@ -16,7 +16,7 @@ import exception.SerialException;
 
 /**
  * Script pour les lances
- * @author pf
+ * @author pf, Krissprolls
  *
  */
 
@@ -43,7 +43,13 @@ public class ScriptLances extends Script {
 	 * Le script lance 3 balles sur le c��t�� droit
 	 * Le script donne un point d'entr��e
 	 */
-	
+	@Override
+	public  ArrayList<Integer> version_asso(int id_meta)
+	{
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		versionList.add(id_meta);
+		return versionList;
+	}
 
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table, Pathfinding pathfinding) {
@@ -66,7 +72,7 @@ public class ScriptLances extends Script {
 			//return new Vec2(-1200,1400);
 			return new Vec2(-750,1400);
 	}
-
+	
 	@Override
 	public int score(int id_version, final Robot robot, final Table table) {
 		return robot.getNbrLances()*2;

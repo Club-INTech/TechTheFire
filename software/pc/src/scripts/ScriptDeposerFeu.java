@@ -37,7 +37,22 @@ public class ScriptDeposerFeu extends Script {
 		}
 		return metaversionList;
 	}
-	
+	@Override
+	public  ArrayList<Integer> version_asso(int id_meta)
+	{
+		ArrayList<Integer> versionList = new ArrayList<Integer>();
+		if(id_meta == 0)
+			versionList.add(0);
+		else if(id_meta == 1)
+			versionList.add(1);
+		else if(id_meta == 2)
+		{
+			versionList.add(2);
+			versionList.add(3);
+			versionList.add(4);
+		}
+		return versionList;
+	}
 	@Override
 	public ArrayList<Integer> version(final Robot robot, final Table table, Pathfinding pathfinding) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
@@ -75,8 +90,7 @@ public class ScriptDeposerFeu extends Script {
 			return new Vec2(391, 739);
 		}
 		return null;
-	}
-
+	}	
 	@Override
 	public int score(int id_version, Robot robot, Table table) 
 	{
