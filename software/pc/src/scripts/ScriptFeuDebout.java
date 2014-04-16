@@ -199,4 +199,11 @@ public class ScriptFeuDebout extends Script{
 	{
 	}
 
+	@Override
+	public ArrayList<Integer> meta_version(Robot robot, Table table,
+			Pathfinding pathfinding) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
