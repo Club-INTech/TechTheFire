@@ -1,20 +1,22 @@
 package threads;
 
-import pathfinding.Pathfinding;
 import exception.ScriptException;
 import robot.RobotChrono;
 import robot.RobotVrai;
 import smartMath.Vec2;
 import strategie.MemoryManager;
-import strategie.NoteScriptVersion;
 import strategie.NoteScriptMetaversion;
+import strategie.NoteScriptVersion;
+import pathfinding.Pathfinding;
 import strategie.Strategie;
 import table.Table;
 import utils.Sleep;
 
+
+
 /**
  * Thread qui calculera en continu la stratégie à adopter
- * @author pf
+ * @author pf, Krissprolls
  *
  */
 
@@ -26,8 +28,8 @@ public class ThreadStrategie extends AbstractThread {
 	private RobotVrai robotvrai;
 	private RobotChrono robotchrono;
 	private MemoryManager memorymanager;
-	private ThreadTimer threadtimer;
 	private Pathfinding pathfinding;
+	private ThreadTimer threadtimer;
 	
 	private int profondeur_max;
 
@@ -38,8 +40,8 @@ public class ThreadStrategie extends AbstractThread {
 		this.robotvrai = robotvrai;
 		this.robotchrono = new RobotChrono(config, log);
 		this.memorymanager = memorymanager;
-		this.threadtimer = threadtimer;
 		this.pathfinding = pathfinding;
+		this.threadtimer = threadtimer;
 		maj_config();
 		Thread.currentThread().setPriority(5);
 	}
@@ -49,6 +51,7 @@ public class ThreadStrategie extends AbstractThread {
 	{
 		log.debug("Lancement du thread de stratégie", this);
 
+		// attends que le match démarre
 		while(!threadtimer.match_demarre)
 		{
 			if(stop_threads)
@@ -56,9 +59,12 @@ public class ThreadStrategie extends AbstractThread {
 				log.debug("Stoppage du thread de stratégie", this);
 				return;
 			}
-			Sleep.sleep(200);
+			
+			// vérifie tout les dixièmes de seconde si le match a démarré
+			Sleep.sleep(100);
 		}
 		
+		// boucle principale de stratégie 
 		while(!stop_threads)
 		{
 			// Evaluation d'une stratégie de secours si ce script bug
@@ -73,6 +79,7 @@ public class ThreadStrategie extends AbstractThread {
 		}
 	}
 
+	
 	private void maj_prochainScriptErreur()
 	{
 		robotchrono.majRobotChrono(robotvrai);
@@ -89,12 +96,14 @@ public class ThreadStrategie extends AbstractThread {
 			e.printStackTrace();
 			log.critical(e, this);
 		}
-		float[] a = strategie.meilleurVersion(meilleurErreur.metaversion, meilleurErreur.script, robotchrono, tableFuture, pathfinding);
+
+		float[] a = strategie.meilleurVersion(meilleurErreur.metaversion, meilleurErreur.script, robotchrono, tableBlocage, pathfinding);
 		NoteScriptVersion meilleur_version = new NoteScriptVersion();
 		meilleur_version.script = meilleurErreur.script;
 		meilleur_version.version = (int)a[0];
 		meilleur_version.note = a[1];
 		strategie.setProchainScriptEnnemi(meilleur_version);		
+
 	}
 
 	private void maj_prochainScript()
