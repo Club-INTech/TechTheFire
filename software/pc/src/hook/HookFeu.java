@@ -26,6 +26,7 @@ class HookFeu extends Hook {
 	
 	public boolean evaluate(final Robot robot)
 	{
+	    // TODO: si le robot détecte un feu à gauche et que sa pince gauche est prise, alors il prend le feu à droite...
 		// si on tient déjà un feu de ce côté...
 		if(robot.isTient_feu(cote))
 			return false;
