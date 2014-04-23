@@ -6,12 +6,9 @@ import java.util.ArrayList;
 import exception.MouvementImpossibleException;
 import exception.SerialException;
 import hook.HookGenerator;
-import pathfinding.Pathfinding;
 import robot.Cote;
-import robot.Robot;
-import robot.RobotVrai;
 import smartMath.Vec2;
-import table.Table;
+import strategie.GameState;
 import utils.Log;
 import utils.Read_Ini;
 
@@ -24,16 +21,15 @@ import utils.Read_Ini;
 
 public class ScriptFeuBord extends Script {
 
-	public ScriptFeuBord(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
+	public ScriptFeuBord(HookGenerator hookgenerator, Read_Ini config, Log log)
 	{
-		super(hookgenerator, config, log, robotvrai);
+		super(hookgenerator, config, log);
 	}
 	@Override 
-	public  ArrayList<Integer> meta_version(final Robot robot, final Table table, Pathfinding pathfinding)
+	public  ArrayList<Integer> meta_version(final GameState<?> state)
 	{
-		
 		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
-		
+		// TODO
 		metaversionList.add(0);
 		metaversionList.add(1);
 		metaversionList.add(2);
@@ -48,7 +44,7 @@ public class ScriptFeuBord extends Script {
 		return versionList;
 	}
 	@Override
-	public ArrayList<Integer> version(Robot robot, Table table, Pathfinding pathfinding) {
+	public ArrayList<Integer> version(GameState<?> state) {
 		// TODO
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		//Les feux dans les torches
@@ -79,72 +75,66 @@ public class ScriptFeuBord extends Script {
 			return null;		
 	}
 	@Override
-	public int score(int id_version, Robot robot, Table table) {
+	public int score(int id_version, GameState<?> state) {
 		return 0;
 	}
 
 	@Override
-	public int poids(Robot robot, Table table) {
+	public int poids(GameState<?> state) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding)
+	protected void execute(int id_version, GameState<?> state)
 			throws MouvementImpossibleException, SerialException {
 		if(id_version ==0)
 			// Vec2(-1500,1200);
-		{
-			robot.tourner((float)Math.PI);
-		}	
+		    state.robot.tourner((float)Math.PI);
+
 		else if(id_version ==1)
 			// Vec2(1500, 1200);
-		{
-			robot.tourner(0);
-		}	
+		    state.robot.tourner(0);
+
 		else if(id_version ==2||id_version ==3)
 			// Vec2(-200, 0);
 			// Vec2(200, 0);
-		{
-			robot.tourner((float)(-Math.PI/2));
-		}	
+		    state.robot.tourner((float)(-Math.PI/2));
+
 		
-		if(!robot.isTient_feu(Cote.GAUCHE))
+		if(!state.robot.isTient_feu(Cote.GAUCHE))
 		{
-			
-			
-			
 				//Pour les feux à tirer
 				try {
-				robot.milieu_pince(Cote.GAUCHE);
-				robot.ouvrir_pince(Cote.GAUCHE);
-				robot.avancer(10);
-				robot.fermer_pince(Cote.GAUCHE);
-				robot.avancer(-10);
-				robot.ouvrir_pince(Cote.GAUCHE);
-				robot.baisser_pince(Cote.GAUCHE);
-				robot.avancer(5);
-				robot.fermer_pince(Cote.GAUCHE);
-				robot.lever_pince(Cote.GAUCHE);
+				state.robot.milieu_pince(Cote.GAUCHE);
+				state.robot.ouvrir_pince(Cote.GAUCHE);
+				state.robot.avancer(10);
+				state.robot.fermer_pince(Cote.GAUCHE);
+				state.robot.avancer(-10);
+				state.robot.ouvrir_pince(Cote.GAUCHE);
+				state.robot.baisser_pince(Cote.GAUCHE);
+				state.robot.avancer(5);
+				state.robot.fermer_pince(Cote.GAUCHE);
+				state.robot.lever_pince(Cote.GAUCHE);
 				} catch (SerialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			
 		}
-		else if(robot.isFeu_tenu_rouge(Cote.DROIT))
+		else if(state.robot.isFeu_tenu_rouge(Cote.DROIT))
 		{
 				try {
-				robot.milieu_pince(Cote.DROIT);
-				robot.ouvrir_pince(Cote.DROIT);
-				robot.avancer(10);
-				robot.fermer_pince(Cote.DROIT);
-				robot.avancer(-10);
-				robot.ouvrir_pince(Cote.DROIT);
-				robot.baisser_pince(Cote.DROIT);
-				robot.avancer(5);
-				robot.fermer_pince(Cote.DROIT);
-				robot.lever_pince(Cote.DROIT);
+				    state.robot.milieu_pince(Cote.DROIT);
+				    state.robot.ouvrir_pince(Cote.DROIT);
+				    state.robot.avancer(10);
+				    state.robot.fermer_pince(Cote.DROIT);
+				    state.robot.avancer(-10);
+				    state.robot.ouvrir_pince(Cote.DROIT);
+				    state.robot.baisser_pince(Cote.DROIT);
+				    state.robot.avancer(5);
+				    state.robot.fermer_pince(Cote.DROIT);
+				    state.robot.lever_pince(Cote.DROIT);
 				} catch (SerialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -154,13 +144,13 @@ public class ScriptFeuBord extends Script {
 	}
 
 	@Override
-	protected void termine(Robot robot, Table table, Pathfinding pathfinding) {
+	protected void termine(GameState<?> state) {
 		try
 		{
-			robot.lever_pince(Cote.DROIT);
-			robot.fermer_pince(Cote.DROIT);
-			robot.lever_pince(Cote.GAUCHE);
-			robot.fermer_pince(Cote.GAUCHE);
+		    state.robot.lever_pince(Cote.DROIT);
+		    state.robot.fermer_pince(Cote.DROIT);
+		    state.robot.lever_pince(Cote.GAUCHE);
+		    state.robot.fermer_pince(Cote.GAUCHE);
 		}
 		catch(SerialException e) {
 			e.printStackTrace();

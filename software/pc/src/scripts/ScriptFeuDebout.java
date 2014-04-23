@@ -5,12 +5,9 @@ import java.util.ArrayList;
 import exception.MouvementImpossibleException;
 import exception.SerialException;
 import hook.HookGenerator;
-import pathfinding.Pathfinding;
 import robot.Cote;
-import robot.Robot;
-import robot.RobotVrai;
 import smartMath.Vec2;
-import table.Table;
+import strategie.GameState;
 import utils.Log;
 import utils.Read_Ini;
 
@@ -23,12 +20,12 @@ import utils.Read_Ini;
 public class ScriptFeuDebout extends Script{
 	
 	
-	public ScriptFeuDebout(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
+	public ScriptFeuDebout(HookGenerator hookgenerator, Read_Ini config, Log log)
 	{
-		super(hookgenerator, config, log, robotvrai);
+		super(hookgenerator, config, log);
 	}
 	@Override 
-	public  ArrayList<Integer> meta_version(final Robot robot, final Table table, Pathfinding pathfinding)
+	public  ArrayList<Integer> meta_version(final GameState<?> state)
 	{
 		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
 		metaversionList.add(0);
@@ -46,7 +43,7 @@ public class ScriptFeuDebout extends Script{
 		versionList.add(id_meta);
 		return versionList;
 	}
-	public ArrayList<Integer> version(Robot robot, Table table, Pathfinding pathfinding) {
+	public ArrayList<Integer> version(GameState<?> state) {
 		// TODO
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		//Les feux verticaux
@@ -80,64 +77,64 @@ public class ScriptFeuDebout extends Script{
 	}
 
 	@Override
-	public int score(int id_version, Robot robot, Table table) {
+	public int score(int id_version, GameState<?> state) {
 		return 0;
 	}
 
 
-	public int poids(Robot robot, Table table) {
+	public int poids(GameState<?> state) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 
-	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding)
+	protected void execute(int id_version, GameState<?> state)
 			throws MouvementImpossibleException {
 		if(id_version == 0)
 			//Vec2(-1100, 900);
 		{
-			robot.tourner((float)Math.PI/2);
+		    state.robot.tourner((float)Math.PI/2);
 		}	
 		else if(id_version == 1)
 			// Vec2(1100,900);
 		{
-			robot.tourner((float)Math.PI/2);
+		    state.robot.tourner((float)Math.PI/2);
 		}	
 		else if(id_version == 2)
 			// Vec2(-600, 400);
 		{
-			robot.tourner((float)Math.PI);
+		    state.robot.tourner((float)Math.PI);
 		}	
 		else if(id_version == 3)
 			// Vec2(600,400);
 		{
-			robot.tourner((float)Math.PI);
+		    state.robot.tourner((float)Math.PI);
 		}	
 		else if(id_version == 4)
 			// Vec2(-600, 1400);
 		{
-			robot.tourner((float)Math.PI);
+		    state.robot.tourner((float)Math.PI);
 		}	
 		else if(id_version == 5)
 			// Vec2(600, 1400);
 		{
-			robot.tourner((float)0);			
+		    state.robot.tourner((float)0);			
 		}
-		if(!robot.isTient_feu(Cote.GAUCHE))
+		if(!state.robot.isTient_feu(Cote.GAUCHE))
 		{
 			if(id_version == 2  && id_version == 3 && id_version == 4 && id_version == 5 && id_version == 10 && id_version == 11)
 			{
 				//Pour les feux à pousser
 				
 				try {
-				robot.milieu_pince(Cote.GAUCHE);
-				robot.avancer(10);
-				robot.avancer(-10);
-				robot.baisser_pince(Cote.GAUCHE);
-				robot.ouvrir_pince(Cote.GAUCHE);
-				robot.avancer(10);
-				robot.fermer_pince(Cote.GAUCHE);
-				robot.avancer(-10);
+				    state.robot.milieu_pince(Cote.GAUCHE);
+				    state.robot.avancer(10);
+				    state.robot.avancer(-10);
+				    state.robot.baisser_pince(Cote.GAUCHE);
+				    state.robot.ouvrir_pince(Cote.GAUCHE);
+				    state.robot.avancer(10);
+				    state.robot.fermer_pince(Cote.GAUCHE);
+				    state.robot.avancer(-10);
 				} catch (SerialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -148,21 +145,22 @@ public class ScriptFeuDebout extends Script{
 			
 			}
 		
-		else if(robot.isFeu_tenu_rouge(Cote.DROIT))
+		else if(state.robot.isFeu_tenu_rouge(Cote.DROIT))
 		{
 			
+		    // TODO: cette condition est impossible à réaliser. Clément le sait-il?
 			if(id_version == 2  && id_version == 3 && id_version == 4 && id_version == 5 && id_version == 10 && id_version == 11)
 			{
 				try {
 				
-				robot.milieu_pince(Cote.DROIT);
-				robot.avancer(10);
-				robot.avancer(-10);
-				robot.baisser_pince(Cote.DROIT);
-				robot.ouvrir_pince(Cote.DROIT);
-				robot.avancer(10);
-				robot.fermer_pince(Cote.DROIT);
-				robot.avancer(-10);
+				    state.robot.milieu_pince(Cote.DROIT);
+				    state.robot.avancer(10);
+				    state.robot.avancer(-10);
+				    state.robot.baisser_pince(Cote.DROIT);
+				    state.robot.ouvrir_pince(Cote.DROIT);
+				    state.robot.avancer(10);
+				    state.robot.fermer_pince(Cote.DROIT);
+				    state.robot.avancer(-10);
 				} catch (SerialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -171,13 +169,13 @@ public class ScriptFeuDebout extends Script{
 		}
 	}
 
-	protected void termine(Robot robot, Table table, Pathfinding pathfinding) {
+	protected void termine(GameState<?> state) {
 		try
 		{
-			robot.lever_pince(Cote.DROIT);
-			robot.fermer_pince(Cote.DROIT);
-			robot.lever_pince(Cote.GAUCHE);
-			robot.fermer_pince(Cote.GAUCHE);
+		    state.robot.lever_pince(Cote.DROIT);
+		    state.robot.fermer_pince(Cote.DROIT);
+		    state.robot.lever_pince(Cote.GAUCHE);
+		    state.robot.fermer_pince(Cote.GAUCHE);
 		}
 		catch(SerialException e) {
 			e.printStackTrace();

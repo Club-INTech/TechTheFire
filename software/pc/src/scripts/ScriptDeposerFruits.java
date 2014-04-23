@@ -5,11 +5,8 @@ import java.util.ArrayList;
 import exception.MouvementImpossibleException;
 import exception.SerialException;
 import hook.HookGenerator;
-import pathfinding.Pathfinding;
-import robot.Robot;
-import robot.RobotVrai;
 import smartMath.Vec2;
-import table.Table;
+import strategie.GameState;
 import utils.Log;
 import utils.Read_Ini;
 
@@ -21,14 +18,14 @@ import utils.Read_Ini;
 
 public class ScriptDeposerFruits extends Script {
 
-	public ScriptDeposerFruits(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai) {
-		super(hookgenerator, config, log, robotvrai);
+	public ScriptDeposerFruits(HookGenerator hookgenerator, Read_Ini config, Log log) {
+		super(hookgenerator, config, log);
 	}
 	@Override 
-	public  ArrayList<Integer> meta_version(final Robot robot, final Table table, Pathfinding pathfinding)
+	public  ArrayList<Integer> meta_version(final GameState<?> state)
 	{
 		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
-		if(robot.get_nombre_fruits_bac() > 0)
+		if(state.robot.get_nombre_fruits_bac() > 0)
 			metaversionList.add(0);
 		return metaversionList;
 	}
@@ -45,9 +42,9 @@ public class ScriptDeposerFruits extends Script {
 	}
 
 	@Override
-	public ArrayList<Integer> version(Robot robot, Table table, Pathfinding pathfinding) {
+	public ArrayList<Integer> version(GameState<?> state) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		if (robot.get_nombre_fruits_bac() >0)
+		if (state.robot.get_nombre_fruits_bac() >0)
 		{
 			versionList.add(0);
 			versionList.add(1);
@@ -60,31 +57,31 @@ public class ScriptDeposerFruits extends Script {
 		return new Vec2(-600-300*id, 1300);
 	}
 	@Override
-	public int score(int id_version, Robot robot, Table table) {
-		return robot.get_nombre_fruits_bac();
+	public int score(int id_version, GameState<?> state) {
+		return state.robot.get_nombre_fruits_bac();
 	}
 
 	@Override
-	public int poids(Robot robot, Table table) {
+	public int poids(GameState<?> state) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 	@Override
-	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding)
+	protected void execute(int id_version, GameState<?> state)
 			throws MouvementImpossibleException, SerialException {
-		robot.tourner((float)-Math.PI/2);
-		robot.avancer(-160);
-		robot.bac_haut();	// histoire d'être sûr qu'il y arrive bien
-		robot.bac_haut();
-		robot.bac_haut();
-		robot.sleep(500);
-		robot.avancer(50);
-		robot.bac_bas();
+	    state.robot.tourner((float)-Math.PI/2);
+	    state.robot.avancer(-160);
+	    state.robot.bac_haut();	// histoire d'être sûr qu'il y arrive bien
+	    state.robot.bac_haut();
+	    state.robot.bac_haut();
+	    state.robot.sleep(500);
+	    state.robot.avancer(50);
+	    state.robot.bac_bas();
 	}
 	@Override
-	protected void termine(Robot robot, Table table, Pathfinding pathfinding) {
+	protected void termine(GameState<?> state) {
 		try {
-			robot.bac_bas();
+		    state.robot.bac_bas();
 		} catch (SerialException e) {
 			e.printStackTrace();
 		}
