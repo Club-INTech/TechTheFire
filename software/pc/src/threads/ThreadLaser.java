@@ -20,18 +20,16 @@ class ThreadLaser extends AbstractThread {
 	private FiltrageLaser filtragelaser;
 	private Laser laser;
 	private Table table;
-	private ThreadTimer threadtimer;
 	
 	private int table_x;
 	private int table_y;
 	private float lasers_frequence;
 	
-	public ThreadLaser(Laser laser, Table table, ThreadTimer threadtimer, FiltrageLaser filtragelaser)
+	public ThreadLaser(Laser laser, Table table, FiltrageLaser filtragelaser)
 	{
 		this.filtragelaser = filtragelaser;
 		this.laser = laser;
 		this.table = table;
-		this.threadtimer = threadtimer;
 		maj_config();
 		Thread.currentThread().setPriority(2);
 	}
@@ -70,7 +68,7 @@ class ThreadLaser extends AbstractThread {
         // Liste des balises prises en compte
         ArrayList<Balise> balises = laser.balises_actives();
 
-        while(!threadtimer.fin_match)
+        while(!ThreadTimer.fin_match)
         {
         	long start = System.currentTimeMillis();
 			if(stop_threads)

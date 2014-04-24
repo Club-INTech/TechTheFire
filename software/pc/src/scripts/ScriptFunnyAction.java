@@ -5,13 +5,10 @@ import java.util.ArrayList;
 import exception.MouvementImpossibleException;
 import exception.SerialException;
 import hook.HookGenerator;
-import pathfinding.Pathfinding;
 import robot.Cote;
 import robot.PositionRateau;
-import robot.Robot;
-import robot.RobotVrai;
 import smartMath.Vec2;
-import table.Table;
+import strategie.GameState;
 import threads.ThreadTimer;
 import utils.Log;
 import utils.Read_Ini;
@@ -26,12 +23,12 @@ public class ScriptFunnyAction extends Script {
 
 	private ThreadTimer threadtimer;
 	
-	public ScriptFunnyAction(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai, ThreadTimer threadtimer) {
-		super(hookgenerator, config, log, robotvrai);
+	public ScriptFunnyAction(HookGenerator hookgenerator, Read_Ini config, Log log, ThreadTimer threadtimer) {
+		super(hookgenerator, config, log);
 		this.threadtimer = threadtimer;
 	}
 	@Override 
-	public  ArrayList<Integer> meta_version(final Robot robot, final Table table, Pathfinding pathfinding)
+	public  ArrayList<Integer> meta_version(final GameState<?> state)
 	{
 		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
 		metaversionList.add(0);
@@ -46,7 +43,7 @@ public class ScriptFunnyAction extends Script {
 		return versionList;
 	}
 	@Override
-	public ArrayList<Integer> version(Robot robot, Table table, Pathfinding pathfinding) {
+	public ArrayList<Integer> version(GameState<?> state) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		versionList.add(0);
 		return versionList;
@@ -58,24 +55,24 @@ public class ScriptFunnyAction extends Script {
 	}
 	
 	@Override
-	public int score(int id_version, Robot robot, Table table) {
+	public int score(int id_version, GameState<?> state) {
 		// Point si ça marche
 		return 6;
 	}
 
 	@Override
-	public int poids(Robot robot, Table table) {
+	public int poids(GameState<?> state) {
 		return 0;
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding)
+	protected void execute(int id_version, GameState<?> state)
 			throws MouvementImpossibleException, SerialException {
-		robot.tourner_sans_symetrie((float)(-1 * Math.PI/2));	// pas de symétrie
-		robot.rateau(PositionRateau.BAS, Cote.DROIT);
-		robot.sleep(threadtimer.temps_restant());
-		robot.sleep(1500);
-		robot.lancerFilet();
+		state.robot.tourner_sans_symetrie((float)(-1 * Math.PI/2));	// pas de symétrie
+		state.robot.rateau(PositionRateau.BAS, Cote.DROIT);
+		state.robot.sleep(threadtimer.temps_restant());
+		state.robot.sleep(1500);
+		state.robot.lancerFilet();
 	}
 
 	@Override
@@ -85,7 +82,7 @@ public class ScriptFunnyAction extends Script {
 	}
 
 	@Override
-	protected void termine(Robot robot, Table table, Pathfinding pathfinding) {
+	protected void termine(GameState<?> state) {
 		// rien à faire, la partie est finie et rien n'est dérangé.
 		
 	}

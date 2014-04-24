@@ -4,11 +4,8 @@ import hook.HookGenerator;
 
 import java.util.ArrayList;
 
-import pathfinding.Pathfinding;
-import robot.Robot;
-import robot.RobotVrai;
 import smartMath.Vec2;
-import table.Table;
+import strategie.GameState;
 import utils.Log;
 import utils.Read_Ini;
 import exception.MouvementImpossibleException;
@@ -23,15 +20,15 @@ import exception.SerialException;
 public class ScriptLances extends Script {
 	
 
-	public ScriptLances(HookGenerator hookgenerator, Read_Ini config, Log log, RobotVrai robotvrai)
+	public ScriptLances(HookGenerator hookgenerator, Read_Ini config, Log log)
 	{
-		super(hookgenerator, config, log, robotvrai);
+		super(hookgenerator, config, log);
 	}
 	@Override 
-	public  ArrayList<Integer> meta_version(final Robot robot, final Table table, Pathfinding pathfinding)
+	public  ArrayList<Integer> meta_version(final GameState<?> state)
 	{
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		if(robot.getNbrLances() > 0)
+		if(state.robot.getNbrLances() > 0)
 		{
 			versionList.add(0);
 			versionList.add(1);
@@ -52,9 +49,9 @@ public class ScriptLances extends Script {
 	}
 
 	@Override
-	public ArrayList<Integer> version(final Robot robot, final Table table, Pathfinding pathfinding) {
+	public ArrayList<Integer> version(final GameState<?> state) {
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		if  (robot.getNbrLances() > 0){
+		if  (state.robot.getNbrLances() > 0){
 			versionList.add(0);
 			versionList.add(1);
 		}
@@ -74,19 +71,19 @@ public class ScriptLances extends Script {
 	}
 	
 	@Override
-	public int score(int id_version, final Robot robot, final Table table) {
-		return robot.getNbrLances()*2;
+	public int score(int id_version, final GameState<?> state) {
+		return state.robot.getNbrLances()*2;
 	}
 
 	@Override
-	public int poids(final Robot robot, final Table table) {
+	public int poids(final GameState<?> state) {
 		// On s'en fout pour le moment
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	protected void execute(int id_version, Robot robot, Table table, Pathfinding pathfinding) throws MouvementImpossibleException
+	protected void execute(int id_version, GameState<?> state) throws MouvementImpossibleException
 	{
 		// TODO: tester!
 		/*
@@ -129,15 +126,15 @@ public class ScriptLances extends Script {
 		hook3.ajouter_callback(new Callback(tirerballes, true));
 		hooks.add(hook3);
 		*/
-		robot.tourner_sans_symetrie((float)(Math.PI));
+	    state.robot.tourner_sans_symetrie((float)(Math.PI));
 			try {
 				//Abadon des hooks, on fait donc tout à la main
-				robot.tirerBalle();
-				robot.sleep(800);
-				robot.tirerBalle();
-				robot.sleep(800);
-				robot.tirerBalle();
-				robot.sleep(1500);
+			    state.robot.tirerBalle();
+			    state.robot.sleep(800);
+			    state.robot.tirerBalle();
+			    state.robot.sleep(800);
+			    state.robot.tirerBalle();
+			    state.robot.sleep(1500);
 			} catch (SerialException e) {
 				e.printStackTrace();
 			}
@@ -154,7 +151,7 @@ public class ScriptLances extends Script {
 	}
 
 	@Override
-	protected void termine(Robot robot, Table table, Pathfinding pathfinding) {
+	protected void termine(GameState<?> state) {
 		// vide car rien qui gène
 	}
 	
