@@ -122,7 +122,7 @@ class Communication
 		}
 		else if (strcmp (ordre, "torcheg")==0)
 		  {
-		    this -> torcheGauche
+		    this -> torcheGauche();
 		  }
 	//Actions pinces droite
 		else if ( strcmp ( ordre , "od" ) == 0 )
@@ -162,7 +162,7 @@ class Communication
 		}
 		else if (strcmp (ordre, "torched")==0)
 		  {
-		    this -> torcheDroite
+		    this -> torcheDroite ();
 		  }
 		else if (strcmp (ordre , "pg") ==0)
 		{
@@ -366,9 +366,10 @@ void posGauche ()
 
  void torcheGauche ()
 	{
-	  this->ouvrirgauche;
-	  orientationGauche.goTo(130);
-	  positionGauche.goTo(110);
+
+	  pinceGauche.goTo (60);
+	  orientationGauche.goTo(175);
+	  positionGauche.goTo(115);
 	}
 
 
@@ -422,12 +423,7 @@ void posGauche ()
 		orientationDroite.goTo(145);
 		positionDroite.goTo(150);
 	}
- void torcheDroite ()
-	{
-	  this->ouvrirdroite;
-	  orientationDroite.goTo(220);
-	  positionDroite.goTo(70);
-	}
+ 
 	void hautDroite ()
 	{
 	  	positionDroite.goTo(60);
@@ -444,7 +440,12 @@ void posGauche ()
 	positionDroite.goTo(i);
 	orientationDroite.goTo(290-i);
   }
-
+void torcheDroite ()
+	{
+	  pinceDroite.goTo (213);
+	  positionDroite.goTo(120);
+	  orientationDroite.goTo(170);
+	}
   void tombeDroite ()
   {
     pinceDroite.goTo(300);
