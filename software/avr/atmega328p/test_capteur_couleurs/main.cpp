@@ -149,7 +149,7 @@ void interruption_int1(){
            s1 = D5
            s2 = D4
            s3 = D7
-           out = D2
+           out = D2 et D3
 
 Valeurs: RIEN: r=14 b=11/12 g=13
          JAUNE: r=13/17 b=12 g=11
