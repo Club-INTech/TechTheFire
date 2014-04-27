@@ -58,7 +58,10 @@ public class ScriptFresque extends Script {
 
 	@Override
 	public Vec2 point_entree(int id) {
-		return new Vec2(-150+id*150, 1600);
+	    if(id == 1)
+	        return new Vec2(0, 1700);
+	    else
+            return new Vec2(-150+id*150, 1450);
 	}
 	@Override
 	public int score(int id_version, final GameState<?> state) {
