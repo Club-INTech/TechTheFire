@@ -172,32 +172,29 @@ public class ScriptTorche extends Script {
 		 */
 		if(!state.robot.isTient_feu(Cote.GAUCHE))
 		{
-				//Pour les feux à ramasser dans les torches
-				try {
-				    state.robot.ouvrir_pince(Cote.GAUCHE);
-				    state.robot.milieu_pince(Cote.GAUCHE);
-				    state.robot.fermer_pince(Cote.GAUCHE);
-				    state.robot.lever_pince(Cote.GAUCHE);
-				} catch (SerialException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			//Pour les feux à ramasser dans les torches
+			try {
+			    state.robot.ouvrir_pince(Cote.GAUCHE);
+			    state.robot.milieu_pince(Cote.GAUCHE);
+			    state.robot.fermer_pince(Cote.GAUCHE);
+			    state.robot.lever_pince(Cote.GAUCHE);
+			} catch (SerialException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else if(state.robot.isFeu_tenu_rouge(Cote.DROIT))
-		{
-			
-				//Pour les feux à ramasser dans les torches
-				try {
-				    state.robot.ouvrir_pince(Cote.DROIT);
-				    state.robot.milieu_pince(Cote.DROIT);
-				    state.robot.fermer_pince(Cote.DROIT);
-				    state.robot.lever_pince(Cote.DROIT);
-				} catch (SerialException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			
-			
+		{		
+			//Pour les feux à ramasser dans les torches
+			try {
+			    state.robot.ouvrir_pince(Cote.DROIT);
+			    state.robot.milieu_pince(Cote.DROIT);
+			    state.robot.fermer_pince(Cote.DROIT);
+			    state.robot.lever_pince(Cote.DROIT);
+			} catch (SerialException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -59,16 +59,16 @@ public class ScriptTree extends Script{
 		//Les points d'entrée véritables sont mis en commentaire
 		//Quand tout marchera correctement, ça sera ces points qui faudra retenir
 		if (id_version == 0)
-			entree = new Vec2(1000, 740);
+			entree = new Vec2(1000, 700);
 			//1000,700
 		else if (id_version == 1)
-			entree = new Vec2(870, 500);
+			entree = new Vec2(800, 500);
 			//800,500
 		else if (id_version == 2)
-			entree = new Vec2(-870, 500);
+			entree = new Vec2(-800, 500);
 			//-800,500
 		else if (id_version == 3)
-			entree = new Vec2(-1000, 610);
+			entree = new Vec2(-1000, 700);
 			//-1000, 700
 		return entree;
 	}

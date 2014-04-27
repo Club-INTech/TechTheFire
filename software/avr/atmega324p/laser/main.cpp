@@ -20,7 +20,7 @@ int main()
     
     while(1)
     {
-        char buffer[20];
+        char buffer[100];
         Balise::serial_pc::read(buffer);
         balise.execute(buffer);
     }
