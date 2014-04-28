@@ -160,6 +160,7 @@ public class ScriptTree extends Script{
 			else
 				cote = Cote.GAUCHE;
 		} while(cote == Cote.DROIT);
+		state.table.pickTree(id_version);
 		state.robot.set_vitesse_translation("arbre_avant");
 		state.robot.avancer(350, hooks);
 	}

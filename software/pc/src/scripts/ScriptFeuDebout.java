@@ -8,6 +8,8 @@ import hook.HookGenerator;
 import robot.Cote;
 import smartMath.Vec2;
 import strategie.GameState;
+import table.Colour;
+import table.Fire;
 import utils.Log;
 import utils.Read_Ini;
 
@@ -28,12 +30,30 @@ public class ScriptFeuDebout extends Script{
 	public  ArrayList<Integer> meta_version(final GameState<?> state)
 	{
 		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
-		metaversionList.add(0);
-		metaversionList.add(1);
-		metaversionList.add(2);
-		metaversionList.add(3);
-		metaversionList.add(4);
-		metaversionList.add(5);
+		/*
+		 * arrayFire[0] = new Fire(new Vec2(1100,900), 1, 0, Colour.RED);	// ok
+		arrayFire[1] = new Fire(new Vec2(600,1400), 2, 0, Colour.YELLOW); // OK
+		arrayFire[2] = new Fire(new Vec2(600,400), 6, 0, Colour.RED); // ok
+		arrayFire[3] = new Fire(new Vec2(-600,1400), 9, 0, Colour.YELLOW); //ok
+		arrayFire[4] = new Fire(new Vec2(-600,400), 13, 0, Colour.RED); // ok
+		arrayFire[5] = new Fire(new Vec2(-1100,900), 14, 0, Colour.YELLOW); // ok
+
+		 */
+		if(!(state.robot.isTient_feu(Cote.DROIT)||state.robot.isTient_feu(Cote.GAUCHE)))
+		{
+			if(state.table.isTakenFire(5))
+				metaversionList.add(0);
+			if(state.table.isTakenFire(0))
+				metaversionList.add(1);
+			if(state.table.isTakenFire(4))
+				metaversionList.add(2);
+			if(state.table.isTakenFire(1))
+				metaversionList.add(3);
+			if(state.table.isTakenFire(3))
+				metaversionList.add(4);
+			if(state.table.isTakenFire(2))
+				metaversionList.add(5);
+		}
 		return metaversionList;
 	}
 	@Override
@@ -48,12 +68,15 @@ public class ScriptFeuDebout extends Script{
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		//Les feux verticaux
 		//Ajouter une condition pour chaque feu pour savoir s'il est toujours là ?
-		versionList.add(0);
-		versionList.add(1);
-		versionList.add(2);
-		versionList.add(3);
-		versionList.add(4);
-		versionList.add(5);
+		if(!(state.robot.isTient_feu(Cote.DROIT)||state.robot.isTient_feu(Cote.GAUCHE)))
+		{
+			versionList.add(0);
+			versionList.add(1);
+			versionList.add(2);
+			versionList.add(3);
+			versionList.add(4);
+			versionList.add(5);
+		}
 		return versionList;
 	}
 	
@@ -120,11 +143,26 @@ public class ScriptFeuDebout extends Script{
 		{
 		    state.robot.tourner((float)0);			
 		}
+		
+		
+		if(!state.robot.isTient_feu(Cote.GAUCHE))
+			try {
+				state.robot.takefire(Cote.GAUCHE);
+			} catch (SerialException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		else if(state.robot.isFeu_tenu_rouge(Cote.DROIT))
+			try {
+				state.robot.takefire(Cote.DROIT);
+			} catch (SerialException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		/*
 		if(!state.robot.isTient_feu(Cote.GAUCHE))
 		{
-			if(id_version == 2  && id_version == 3 && id_version == 4 && id_version == 5 && id_version == 10 && id_version == 11)
-			{
-				//Pour les feux à pousser
+			//Pour les feux à pousser
 				
 				try {
 				    state.robot.milieu_pince(Cote.GAUCHE);
@@ -140,7 +178,7 @@ public class ScriptFeuDebout extends Script{
 					e.printStackTrace();
 				}
 				
-			}
+			
 			
 			
 			}
@@ -149,8 +187,7 @@ public class ScriptFeuDebout extends Script{
 		{
 			
 		    // TODO: cette condition est impossible à réaliser. Clément le sait-il?
-			if(id_version == 2  && id_version == 3 && id_version == 4 && id_version == 5 && id_version == 10 && id_version == 11)
-			{
+			
 				try {
 				
 				    state.robot.milieu_pince(Cote.DROIT);
@@ -165,8 +202,9 @@ public class ScriptFeuDebout extends Script{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 			}
-			}
+			
 		}
+		*/
 	}
 
 	protected void termine(GameState<?> state) {
