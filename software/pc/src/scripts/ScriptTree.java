@@ -111,7 +111,6 @@ public class ScriptTree extends Script{
 			recul = 50;
 		else
 			recul = 50;
-//		log.debug("II", this);
 
 		// on déploie les bras 
 		state.robot.rateau(PositionRateau.BAS, Cote.DROIT);
@@ -163,6 +162,7 @@ public class ScriptTree extends Script{
 		state.table.pickTree(id_version);
 		state.robot.set_vitesse_translation("arbre_avant");
 		state.robot.avancer(350, hooks);
+		state.table.pickTree(id_version);
 	}
 
 	@Override

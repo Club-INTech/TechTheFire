@@ -58,7 +58,10 @@ public class ScriptFresque extends Script {
 
 	@Override
 	public Vec2 point_entree(int id) {
-		return new Vec2(-150+id*150, 1700);
+	    if(id == 1)
+	        return new Vec2(0, 1700);
+	    else
+            return new Vec2(-150+id*150, 1400);
 	}
 	@Override
 	public int score(int id_version, final GameState<?> state) {
@@ -77,7 +80,7 @@ public class ScriptFresque extends Script {
 	{
 	    state.robot.tourner((float)-Math.PI/2);
 	    state.robot.bac_bas();
-	    state.robot.avancer_dans_mur(-150);
+	    state.robot.avancer_dans_mur(-250);
 	    state.robot.deposer_fresques();
 	    state.robot.avancer(300);
 	}

@@ -64,10 +64,10 @@ public class ScriptLances extends Script {
 		//if(couleur == "jaune")
 		if(id == 0)
 			//return new Vec2(400,1400);
-			return new Vec2(750,1400);
+			return new Vec2(750,1300);
 		else
 			//return new Vec2(-1200,1400);
-			return new Vec2(-750,1400);
+			return new Vec2(-750,1300);
 	}
 	
 	@Override

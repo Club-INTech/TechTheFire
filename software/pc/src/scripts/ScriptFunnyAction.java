@@ -70,7 +70,8 @@ public class ScriptFunnyAction extends Script {
 			throws MouvementImpossibleException, SerialException {
 		state.robot.tourner_sans_symetrie((float)(-1 * Math.PI/2));	// pas de symétrie
 		state.robot.rateau(PositionRateau.BAS, Cote.DROIT);
-		state.robot.sleep(threadtimer.temps_restant());
+		if(threadtimer.temps_restant() > 0)
+			state.robot.sleep(threadtimer.temps_restant());
 		state.robot.sleep(1500);
 		state.robot.lancerFilet();
 	}
