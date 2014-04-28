@@ -161,7 +161,7 @@ public class ScriptTree extends Script{
 		} while(cote == Cote.DROIT);
 		state.table.pickTree(id_version);
 		state.robot.set_vitesse_translation("arbre_avant");
-		state.robot.avancer(350, hooks);		
+		state.robot.avancer(308-recul, hooks);		
 	}
 
 	@Override
