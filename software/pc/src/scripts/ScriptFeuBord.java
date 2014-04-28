@@ -9,6 +9,8 @@ import hook.HookGenerator;
 import robot.Cote;
 import smartMath.Vec2;
 import strategie.GameState;
+import table.Colour;
+import table.Fire;
 import utils.Log;
 import utils.Read_Ini;
 
@@ -30,10 +32,17 @@ public class ScriptFeuBord extends Script {
 	{
 		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
 		// TODO
-		metaversionList.add(0);
-		metaversionList.add(1);
-		metaversionList.add(2);
-		metaversionList.add(3);
+		if(!(state.robot.isTient_feu(Cote.DROIT)||state.robot.isTient_feu(Cote.GAUCHE)))
+		{
+			if (state.table.isTakenFixedFire(0))
+				metaversionList.add(0);
+			if (state.table.isTakenFixedFire(3))
+				metaversionList.add(1);
+			if (state.table.isTakenFixedFire(2))
+				metaversionList.add(2);
+			if (state.table.isTakenFixedFire(1))
+				metaversionList.add(3);
+		}
 		return metaversionList;
 	}
 	@Override
@@ -47,15 +56,26 @@ public class ScriptFeuBord extends Script {
 	public ArrayList<Integer> version(GameState<?> state) {
 		// TODO
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		//Les feux dans les torches
-		//Ajouter une condition sur la présence de feux dans les torches
-		//Ca va nécessiter de créer d'autres versions encore
-		versionList.add(0);
-		versionList.add(1);
-		//Les feux verticaux
-		//Ajouter une condition pour chaque feu pour savoir s'il est toujours là ?
-		versionList.add(2);
-		versionList.add(3);
+		/*
+		 * arrayFixedFire[0] = new Fire(new Vec2(1485,1200), 0, 0, Colour.YELLOW);
+		arrayFixedFire[1] = new Fire(new Vec2(200,15), 7, 0, Colour.YELLOW);
+		arrayFixedFire[2] = new Fire(new Vec2(-200,15), 8, 0, Colour.RED);
+		arrayFixedFire[3] = new Fire(new Vec2(-1485,1200), 15, 0, Colour.YELLOW);
+		
+		 */
+		if(!(state.robot.isTient_feu(Cote.DROIT)||state.robot.isTient_feu(Cote.GAUCHE)))
+		{
+			if (state.table.isTakenFixedFire(0))
+				versionList.add(0);
+			if (state.table.isTakenFixedFire(3))
+				versionList.add(1);
+			//Les feux verticaux
+			//Ajouter une condition pour chaque feu pour savoir s'il est toujours là ?
+			if (state.table.isTakenFixedFire(2))
+				versionList.add(2);
+			if (state.table.isTakenFixedFire(1))
+				versionList.add(3);
+		}
 		return versionList;
 	}
 	

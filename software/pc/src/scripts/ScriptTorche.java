@@ -27,13 +27,16 @@ public class ScriptTorche extends Script {
 	{
 		
 		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
-		if (state.table.codeTorches()==3 || state.table.codeTorches() == 2)
+		if(!(state.robot.isTient_feu(Cote.DROIT)||state.robot.isTient_feu(Cote.GAUCHE)))
 		{
-			metaversionList.add(0);	
-		}
-		if(state.table.codeTorches() ==3|| state.table.codeTorches() == 1)
-		{
-			metaversionList.add(1);
+			if (state.table.codeTorches()==3 || state.table.codeTorches() == 2)
+			{
+				metaversionList.add(0);	
+			}
+			if(state.table.codeTorches() ==3|| state.table.codeTorches() == 1)
+			{
+				metaversionList.add(1);
+			}
 		}
 		return metaversionList;
 	}
@@ -62,13 +65,21 @@ public class ScriptTorche extends Script {
 		//Les feux dans les torches
 		//Ajouter une condition sur la présence de feux dans les torches
 		//Ca va nécessiter de créer d'autres versions encore
-		versionList.add(0);
-		versionList.add(1);
-		versionList.add(2);
-		versionList.add(3);
-		versionList.add(4);
-		versionList.add(5);
-		
+		if(!(state.robot.isTient_feu(Cote.DROIT)||state.robot.isTient_feu(Cote.GAUCHE)))
+		{
+			if (state.table.codeTorches()==3 || state.table.codeTorches() == 2)
+			{
+				versionList.add(0);
+				versionList.add(1);
+				versionList.add(2);
+			}
+			if(state.table.codeTorches() ==3|| state.table.codeTorches() == 1)
+			{
+				versionList.add(3);
+				versionList.add(4);
+				versionList.add(5);
+			}
+		}
 		return versionList;
 	}
 	
