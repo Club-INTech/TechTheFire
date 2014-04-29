@@ -27,13 +27,16 @@ public class ScriptTorche extends Script {
 	{
 		
 		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
-		if (state.table.codeTorches()==3 || state.table.codeTorches() == 2)
+		if(!(state.robot.isTient_feu(Cote.DROIT)||state.robot.isTient_feu(Cote.GAUCHE)))
 		{
-			metaversionList.add(0);	
-		}
-		if(state.table.codeTorches() ==3|| state.table.codeTorches() == 1)
-		{
-			metaversionList.add(1);
+			if (state.table.codeTorches()==3 || state.table.codeTorches() == 2)
+			{
+				metaversionList.add(0);	
+			}
+			if(state.table.codeTorches() ==3|| state.table.codeTorches() == 1)
+			{
+				metaversionList.add(1);
+			}
 		}
 		return metaversionList;
 	}
@@ -62,13 +65,21 @@ public class ScriptTorche extends Script {
 		//Les feux dans les torches
 		//Ajouter une condition sur la présence de feux dans les torches
 		//Ca va nécessiter de créer d'autres versions encore
-		versionList.add(0);
-		versionList.add(1);
-		versionList.add(2);
-		versionList.add(3);
-		versionList.add(4);
-		versionList.add(5);
-		
+		if(!(state.robot.isTient_feu(Cote.DROIT)||state.robot.isTient_feu(Cote.GAUCHE)))
+		{
+			if (state.table.codeTorches()==3 || state.table.codeTorches() == 2)
+			{
+				versionList.add(0);
+				versionList.add(1);
+				versionList.add(2);
+			}
+			if(state.table.codeTorches() ==3|| state.table.codeTorches() == 1)
+			{
+				versionList.add(3);
+				versionList.add(4);
+				versionList.add(5);
+			}
+		}
 		return versionList;
 	}
 	
@@ -178,6 +189,7 @@ public class ScriptTorche extends Script {
 			    state.robot.milieu_pince(Cote.GAUCHE);
 			    state.robot.fermer_pince(Cote.GAUCHE);
 			    state.robot.lever_pince(Cote.GAUCHE);
+			    
 			} catch (SerialException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -195,6 +207,11 @@ public class ScriptTorche extends Script {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			//Pour la stratégie, il faut dire qu'on a pris le feu dans la torche !!!
+			if(id_version == 0 || id_version == 1 ||id_version == 2)
+		    	state.table.torche_disparue(Cote.GAUCHE);
+		    else if(id_version == 3 || id_version == 4 || id_version == 5 )
+		    	state.table.torche_disparue(Cote.DROIT);
 		}
 	}
 
