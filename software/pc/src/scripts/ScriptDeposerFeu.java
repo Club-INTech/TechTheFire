@@ -125,6 +125,7 @@ public class ScriptDeposerFeu extends Script {
 			    state.robot.poserFeuEnRetournant(Cote.GAUCHE);
 			else
 			    state.robot.poserFeuBonCote(Cote.GAUCHE);
+			state.robot.setTientPas_feu(Cote.GAUCHE);
 		}
 		
 		if(state.robot.isTient_feu(Cote.DROIT))
@@ -133,10 +134,9 @@ public class ScriptDeposerFeu extends Script {
 			    state.robot.poserFeuEnRetournant(Cote.DROIT);
 			else
 			    state.robot.poserFeuBonCote(Cote.DROIT);
-		}
-		
+			state.robot.setTientPas_feu(Cote.DROIT);
+		}		
 		state.robot.avancer(-50);
-		
 	}
 
 	@Override
