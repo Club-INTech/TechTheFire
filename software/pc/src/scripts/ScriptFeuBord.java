@@ -142,7 +142,7 @@ public class ScriptFeuBord extends Script {
 				}
 			
 		}
-		else if(state.robot.isFeu_tenu_rouge(Cote.DROIT))
+		else if(state.robot.isTient_feu(Cote.DROIT))
 		{
 				try {
 				    state.robot.milieu_pince(Cote.DROIT);
@@ -161,6 +161,8 @@ public class ScriptFeuBord extends Script {
 				}
 			
 		}
+		//Et oui, il faut parler à la stratégie !!! GNNNNN
+		state.table.pickFixedFire(id_version);
 	}
 
 	@Override

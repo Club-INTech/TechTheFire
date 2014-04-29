@@ -189,6 +189,7 @@ public class ScriptTorche extends Script {
 			    state.robot.milieu_pince(Cote.GAUCHE);
 			    state.robot.fermer_pince(Cote.GAUCHE);
 			    state.robot.lever_pince(Cote.GAUCHE);
+			    
 			} catch (SerialException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -206,6 +207,11 @@ public class ScriptTorche extends Script {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			//Pour la stratégie, il faut dire qu'on a pris le feu dans la torche !!!
+			if(id_version == 0 || id_version == 1 ||id_version == 2)
+		    	state.table.torche_disparue(Cote.GAUCHE);
+		    else if(id_version == 3 || id_version == 4 || id_version == 5 )
+		    	state.table.torche_disparue(Cote.DROIT);
 		}
 	}
 
