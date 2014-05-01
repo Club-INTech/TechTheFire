@@ -13,7 +13,8 @@ import utils.Read_Ini;
 
 /**
  * Script de dépose de feu
- * @author pf, krissprolls
+ * @author pf
+ * @author krissprolls
  *
  */
 public class ScriptDeposerFeu extends Script {
@@ -106,7 +107,7 @@ public class ScriptDeposerFeu extends Script {
 			if(state.robot.isFeu_tenu_rouge(Cote.GAUCHE) ^ couleur == "rouge")
 			    state.robot.poserFeuEnRetournant(Cote.GAUCHE);
 			else
-			    state.robot.poserFeuBonCote(Cote.GAUCHE);
+			    state.robot.poserFeuBonCote(Cote.GAUCHE);			
 		}
 		
 		if(state.robot.isTient_feu(Cote.DROIT))

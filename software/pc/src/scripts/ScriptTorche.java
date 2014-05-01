@@ -31,11 +31,11 @@ public class ScriptTorche extends Script {
 		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
 		if(!(state.robot.isTient_feu(Cote.DROIT) && state.robot.isTient_feu(Cote.GAUCHE)))
 		{
-			if (state.table.codeTorches() == 3 || state.table.codeTorches() == 2)
+			if ((state.table.codeTorches() == 3 || state.table.codeTorches() == 2)  && !state.table.isTorchTaken(0))
 			{
 				metaversionList.add(0);	
 			}
-			if(state.table.codeTorches() == 3 || state.table.codeTorches() == 1)
+			if((state.table.codeTorches() == 3 || state.table.codeTorches() == 1) && !state.table.isTorchTaken(1))
 			{
 				metaversionList.add(1);
 			}
@@ -124,7 +124,7 @@ public class ScriptTorche extends Script {
 		else if(id_version ==5)
 			//Vec2(600,900)
 		    state.robot.tourner((float)(7*Math.PI/6));
-
+		state.robot.set_vitesse_translation("torche");
 		/*
 		
 		robot.prendre_torche(Cote.GAUCHE);
@@ -157,24 +157,32 @@ public class ScriptTorche extends Script {
 		{
 			//Pour les feux à ramasser dans les torches
 			try {
+				state.robot.prendre_torche(Cote.GAUCHE);
+				state.table.pickTorch(1);
+				/*
 			    state.robot.ouvrir_pince(Cote.GAUCHE);
 			    state.robot.milieu_pince(Cote.GAUCHE);
 			    state.robot.fermer_pince(Cote.GAUCHE);
 			    state.robot.lever_pince(Cote.GAUCHE);
-			    // TODO mettre à jour robot
+			    */
+				
 			    
 			} catch (SerialException e) {
 				e.printStackTrace();
 			}
 		}
-		else if(state.robot.isFeu_tenu_rouge(Cote.DROIT))
+		else if(!state.robot.isTient_feu(Cote.DROIT))
 		{		
 			//Pour les feux à ramasser dans les torches
 			try {
+				/*
 			    state.robot.ouvrir_pince(Cote.DROIT);
 			    state.robot.milieu_pince(Cote.DROIT);
 			    state.robot.fermer_pince(Cote.DROIT);
 			    state.robot.lever_pince(Cote.DROIT);
+			    */
+				state.robot.prendre_torche(Cote.DROIT);
+				state.table.pickTorch(0);
 			    // TODO mettre à jour robot, mais pas en utilisant torche disparue
 			} catch (SerialException e) {
 				e.printStackTrace();

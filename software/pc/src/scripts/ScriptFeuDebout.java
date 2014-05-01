@@ -158,6 +158,7 @@ public class ScriptFeuDebout extends Script{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		//state.table.pickFire(id_version);
 		/*
 		if(!state.robot.isTient_feu(Cote.GAUCHE))
 		{
