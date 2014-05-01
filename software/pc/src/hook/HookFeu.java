@@ -1,8 +1,9 @@
 package hook;
 
 import robot.Cote;
-import robot.Robot;
+import robot.RobotVrai;
 import robot.cartes.Capteurs;
+import strategie.GameState;
 import utils.Log;
 import utils.Read_Ini;
 
@@ -17,18 +18,18 @@ class HookFeu extends Hook {
 	private Capteurs capteur;
 	Cote cote;
 	
-	public HookFeu(Read_Ini config, Log log, Capteurs capteur, Cote cote)
+	public HookFeu(Read_Ini config, Log log, GameState<RobotVrai> real_state, Capteurs capteur, Cote cote)
 	{
-		super(config, log);
+		super(config, log, real_state);
 		this.capteur = capteur;
 		this.cote = cote;
 	}
 	
-	public boolean evaluate(final Robot robot)
+	public boolean evaluate()
 	{
 	    // TODO: si le robot détecte un feu à gauche et que sa pince gauche est prise, alors il prend le feu à droite...
 		// si on tient déjà un feu de ce côté...
-		if(robot.isTient_feu(cote))
+		if(real_state.robot.isTient_feu(cote))
 			return false;
 		
 		// on regarde à gauche ou à droite selon la valeur de "gauche"
