@@ -45,16 +45,6 @@ public class ScriptFresque extends Script {
 		}
 		return versionList;
 	}
-	@Override
-	public ArrayList<Integer> version(final GameState<?> state) {
-		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		if(state.robot.isFresquesPosees())
-			return versionList;
-		versionList.add(0);
-		versionList.add(1);
-		versionList.add(2);
-		return versionList;
-	}
 
 	@Override
 	public Vec2 point_entree(int id) {
@@ -88,13 +78,6 @@ public class ScriptFresque extends Script {
 	@Override
 	protected void termine(GameState<?> state) {
 		// vide
-	}
-	
-	@Override
-	public float proba_reussite()
-	{
-		// TODO
-		return 1;
 	}
 	
 	public String toString()

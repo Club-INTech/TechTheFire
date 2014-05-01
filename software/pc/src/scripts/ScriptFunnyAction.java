@@ -42,12 +42,6 @@ public class ScriptFunnyAction extends Script {
 			versionList.add(0);
 		return versionList;
 	}
-	@Override
-	public ArrayList<Integer> version(GameState<?> state) {
-		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		versionList.add(0);
-		return versionList;
-	}
 
 	@Override
 	public Vec2 point_entree(int id) {
@@ -74,12 +68,6 @@ public class ScriptFunnyAction extends Script {
 			state.robot.sleep(threadtimer.temps_restant());
 		state.robot.sleep(1500);
 		state.robot.lancerFilet();
-	}
-
-	@Override
-	public float proba_reussite()
-	{
-		return 1;
 	}
 
 	@Override

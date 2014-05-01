@@ -9,8 +9,6 @@ import hook.HookGenerator;
 import robot.Cote;
 import smartMath.Vec2;
 import strategie.GameState;
-import table.Colour;
-import table.Fire;
 import utils.Log;
 import utils.Read_Ini;
 
@@ -52,32 +50,6 @@ public class ScriptFeuBord extends Script {
 		versionList.add(id_meta);
 		return versionList;
 	}
-	@Override
-	public ArrayList<Integer> version(GameState<?> state) {
-		// TODO
-		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		/*
-		 * arrayFixedFire[0] = new Fire(new Vec2(1485,1200), 0, 0, Colour.YELLOW);
-		arrayFixedFire[1] = new Fire(new Vec2(200,15), 7, 0, Colour.YELLOW);
-		arrayFixedFire[2] = new Fire(new Vec2(-200,15), 8, 0, Colour.RED);
-		arrayFixedFire[3] = new Fire(new Vec2(-1485,1200), 15, 0, Colour.YELLOW);
-		
-		 */
-		if(!(state.robot.isTient_feu(Cote.DROIT)||state.robot.isTient_feu(Cote.GAUCHE)))
-		{
-			if (state.table.isTakenFixedFire(0))
-				versionList.add(0);
-			if (state.table.isTakenFixedFire(3))
-				versionList.add(1);
-			//Les feux verticaux
-			//Ajouter une condition pour chaque feu pour savoir s'il est toujours là ?
-			if (state.table.isTakenFixedFire(2))
-				versionList.add(2);
-			if (state.table.isTakenFixedFire(1))
-				versionList.add(3);
-		}
-		return versionList;
-	}
 	
 	@Override
 	public Vec2 point_entree(int id) {
@@ -85,8 +57,7 @@ public class ScriptFeuBord extends Script {
 		if(id ==0)
 			return new Vec2(-1200,1000);
 		else if(id ==1)
-			return new Vec2(1200, 1000);
-		
+			return new Vec2(1200, 1000);		
 		else if(id ==2)
 			return new Vec2(-200, 200);
 		else if(id ==3)
@@ -136,6 +107,7 @@ public class ScriptFeuBord extends Script {
 				state.robot.avancer(5);
 				state.robot.fermer_pince(Cote.GAUCHE);
 				state.robot.lever_pince(Cote.GAUCHE);
+		        state.robot.setTient_feu(Cote.GAUCHE);
 				} catch (SerialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -155,6 +127,7 @@ public class ScriptFeuBord extends Script {
 				    state.robot.avancer(5);
 				    state.robot.fermer_pince(Cote.DROIT);
 				    state.robot.lever_pince(Cote.DROIT);
+	                state.robot.setTient_feu(Cote.DROIT);
 				} catch (SerialException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -177,13 +150,6 @@ public class ScriptFeuBord extends Script {
 		catch(SerialException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public float proba_reussite()
-	{
-		// TODO
-		return 1;
 	}
 
 	public String toString()

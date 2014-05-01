@@ -16,9 +16,11 @@ import java.util.ArrayList;
 
 import exception.MouvementImpossibleException;
 import exception.SerialException;
+
 /**
  * Script de prise de fruits
- * @author pf, krissprolls
+ * @author pf
+ * @author krissprolls
  *
  */
 public class ScriptTree extends Script{
@@ -27,6 +29,7 @@ public class ScriptTree extends Script{
 	{
 		super(hookgenerator, config, log);
 	}
+
 	@Override 
 	public  ArrayList<Integer> meta_version(final GameState<?> state)
 	{
@@ -37,40 +40,33 @@ public class ScriptTree extends Script{
 				metaversionList.add(i);
 		return metaversionList;
 	}
+
 	@Override
-	public  ArrayList<Integer> version_asso(int id_meta)
+	public ArrayList<Integer> version_asso(int id_meta)
 	{
 		ArrayList<Integer> versionList = new ArrayList<Integer>();
 		versionList.add(id_meta);
 		return versionList;
 	}
-	@Override
-	public ArrayList<Integer> version(final GameState<?> state) {
-		ArrayList<Integer> versionsList = new ArrayList<Integer>();
-		for (int i = 0; i < 4; i++)
-			if (!state.table.isTreeTaken(i))
-				versionsList.add(i);
-		return versionsList;
-	}
 
 	@Override
-	public Vec2 point_entree(int id_version) {
-		Vec2 entree = null;
+	public Vec2 point_entree(int id_version){
 		//Les points d'entrée véritables sont mis en commentaire
 		//Quand tout marchera correctement, ça sera ces points qui faudra retenir
 		if (id_version == 0)
-			entree = new Vec2(1000, 700);
+			return new Vec2(1000, 700);
 			//1000,700
 		else if (id_version == 1)
-			entree = new Vec2(800, 500);
+			return new Vec2(800, 500);
 			//800,500
 		else if (id_version == 2)
-			entree = new Vec2(-800, 500);
+			return new Vec2(-800, 500);
 			//-800,500
 		else if (id_version == 3)
-			entree = new Vec2(-1000, 700);
+			return new Vec2(-1000, 700);
 			//-1000, 700
-		return entree;
+		log.critical("Version/Métaversion inconnue", this);
+		return null;
 	}
 	@Override
 	public int score(int id_version, final GameState<?> state) {
@@ -79,8 +75,10 @@ public class ScriptTree extends Script{
 		if (id_version <= 1)
 			res = state.table.nbrTotalTree(0) + state.table.nbrTotalTree(1);
 
-		else
+		else if(id_version <= 3)
 			res = state.table.nbrTotalTree(2) + state.table.nbrTotalTree(3);
+		else
+	        log.critical("Version/Métaversion inconnue", this);
 
 		return res;
 	}
@@ -100,17 +98,14 @@ public class ScriptTree extends Script{
 			state.robot.tourner((float)Math.PI);
 		else if (id_version == 1 || id_version == 2)
 			state.robot.tourner((float) (Math.PI / 2));
-		else if (id_version ==3)
+		else if (id_version == 3)
 			state.robot.tourner(0) ;
 		//Les reculs servent à calibrer l'avancement du robot lors de la prise des fruits
 		//50 est plutôt trop prudent
 		//30 est ce qui est à retenir pour id_version valant 0 et 3
 		//et 0 pour id_version 1 et 2
 		//résultats obtenus une semaine avant la pré-coupe
-		if(id_version == 0 ||id_version == 3)
-			recul = 50;
-		else
-			recul = 50;
+		recul = 50;
 
 		// on déploie les bras 
 		state.robot.rateau(PositionRateau.BAS, Cote.DROIT);
@@ -162,6 +157,7 @@ public class ScriptTree extends Script{
 		state.table.pickTree(id_version);
 		state.robot.set_vitesse_translation("arbre_avant");
 		state.robot.avancer(308-recul, hooks);		
+		state.robot.add_fruits(state.table.nbrTree(id_version, Cote.DROIT) + state.table.nbrTree(id_version, Cote.GAUCHE));
 	}
 
 	@Override
@@ -172,13 +168,6 @@ public class ScriptTree extends Script{
 		} catch (SerialException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public float proba_reussite()
-	{
-		// TODO
-		return 1;
 	}
 
 	public String toString()

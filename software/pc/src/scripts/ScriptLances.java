@@ -49,16 +49,6 @@ public class ScriptLances extends Script {
 	}
 
 	@Override
-	public ArrayList<Integer> version(final GameState<?> state) {
-		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		if  (state.robot.getNbrLances() > 0){
-			versionList.add(0);
-			versionList.add(1);
-		}
-		return versionList;
-	}
-
-	@Override
 	public Vec2 point_entree(int id) {
 		// Les points d'entrée ne sont pas symétriques car le lanceur n'est que d'un seul c��t��
 		//if(couleur == "jaune")
@@ -141,13 +131,6 @@ public class ScriptLances extends Script {
 		//robot.set_vitesse_translation("vitesse_mammouth");
 		//robot.avancer(600, hooks);
 		
-	}
-
-	@Override
-	public float proba_reussite()
-	{
-		// TODO
-		return 1;
 	}
 
 	@Override

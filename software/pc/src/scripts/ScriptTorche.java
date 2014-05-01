@@ -13,7 +13,8 @@ import utils.Read_Ini;
 
 /**
  * Script de récupération de feux sur les torches mobiles et les feux debout
- * @author pf, krissprolls
+ * @author pf
+ * @author krissprolls
  *
  */
 public class ScriptTorche extends Script {
@@ -22,18 +23,19 @@ public class ScriptTorche extends Script {
 	{
 		super(hookgenerator, config, log);
 	}
+
 	@Override 
 	public  ArrayList<Integer> meta_version(final GameState<?> state)
 	{
 		
 		ArrayList<Integer> metaversionList = new ArrayList<Integer>();
-		if(!(state.robot.isTient_feu(Cote.DROIT)||state.robot.isTient_feu(Cote.GAUCHE)))
+		if(!(state.robot.isTient_feu(Cote.DROIT) && state.robot.isTient_feu(Cote.GAUCHE)))
 		{
-			if (state.table.codeTorches()==3 || state.table.codeTorches() == 2)
+			if (state.table.codeTorches() == 3 || state.table.codeTorches() == 2)
 			{
 				metaversionList.add(0);	
 			}
-			if(state.table.codeTorches() ==3|| state.table.codeTorches() == 1)
+			if(state.table.codeTorches() == 3 || state.table.codeTorches() == 1)
 			{
 				metaversionList.add(1);
 			}
@@ -55,30 +57,6 @@ public class ScriptTorche extends Script {
 			versionList.add(3);
 			versionList.add(4);
 			versionList.add(5);
-		}
-		return versionList;
-	}
-	@Override
-	public ArrayList<Integer> version(GameState<?> state) {
-		// TODO
-		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		//Les feux dans les torches
-		//Ajouter une condition sur la présence de feux dans les torches
-		//Ca va nécessiter de créer d'autres versions encore
-		if(!(state.robot.isTient_feu(Cote.DROIT)||state.robot.isTient_feu(Cote.GAUCHE)))
-		{
-			if (state.table.codeTorches()==3 || state.table.codeTorches() == 2)
-			{
-				versionList.add(0);
-				versionList.add(1);
-				versionList.add(2);
-			}
-			if(state.table.codeTorches() ==3|| state.table.codeTorches() == 1)
-			{
-				versionList.add(3);
-				versionList.add(4);
-				versionList.add(5);
-			}
 		}
 		return versionList;
 	}
@@ -125,34 +103,28 @@ public class ScriptTorche extends Script {
 			throws MouvementImpossibleException, SerialException {
 		if(id_version ==0)
 			//Vec2(-600,900)
-		{
 		    state.robot.tourner(0);
-		}
+
 		else if(id_version ==1)
 			//Vec2(600,900);
-		{
 		    state.robot.tourner(0);
-		}			
+
 		else if(id_version ==2)
 			//Vec2(-600,900)
-		{
 		    state.robot.tourner((float)-Math.PI/6);
-		}	
+
 		else if(id_version ==3)
 			//Vec2(600,900)
-		{
 		    state.robot.tourner((float)-Math.PI/6);
-		}	
+
 		else if(id_version ==4)
 			//Vec2(-600,900)
-		{
 		    state.robot.tourner((float)(7*Math.PI/6));
-		}	
+
 		else if(id_version ==5)
 			//Vec2(600,900)
-		{
 		    state.robot.tourner((float)(7*Math.PI/6));
-		}
+
 		/*
 		
 		robot.prendre_torche(Cote.GAUCHE);
@@ -189,9 +161,9 @@ public class ScriptTorche extends Script {
 			    state.robot.milieu_pince(Cote.GAUCHE);
 			    state.robot.fermer_pince(Cote.GAUCHE);
 			    state.robot.lever_pince(Cote.GAUCHE);
+			    // TODO mettre à jour robot
 			    
 			} catch (SerialException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -203,15 +175,10 @@ public class ScriptTorche extends Script {
 			    state.robot.milieu_pince(Cote.DROIT);
 			    state.robot.fermer_pince(Cote.DROIT);
 			    state.robot.lever_pince(Cote.DROIT);
+			    // TODO mettre à jour robot, mais pas en utilisant torche disparue
 			} catch (SerialException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//Pour la stratégie, il faut dire qu'on a pris le feu dans la torche !!!
-			if(id_version == 0 || id_version == 1 ||id_version == 2)
-		    	state.table.torche_disparue(Cote.GAUCHE);
-		    else if(id_version == 3 || id_version == 4 || id_version == 5 )
-		    	state.table.torche_disparue(Cote.DROIT);
 		}
 	}
 
@@ -227,13 +194,6 @@ public class ScriptTorche extends Script {
 		catch(SerialException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public float proba_reussite()
-	{
-		// TODO
-		return 1;
 	}
 
 	public String toString()
