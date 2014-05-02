@@ -13,7 +13,8 @@ import utils.Read_Ini;
 
 /**
  * Script de dépose de feu
- * @author pf, krissprolls
+ * @author pf
+ * @author krissprolls
  *
  */
 public class ScriptDeposerFeu extends Script {
@@ -50,42 +51,24 @@ public class ScriptDeposerFeu extends Script {
 		}
 		return versionList;
 	}
-	@Override
-	public ArrayList<Integer> version(final GameState<?> state) {
-		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		if(state.robot.isTient_feu(Cote.DROIT) || state.robot.isTient_feu(Cote.GAUCHE))
-		{
-			versionList.add(0);
-			versionList.add(1);
-			versionList.add(2);
-			versionList.add(3);
-			versionList.add(4);
-		}
-		return versionList;
-	}
 
 	@Override
 	public Vec2 point_entree(int id) {
 		if(id == 0)
-		{
 			return new Vec2(-1150,233);			
-		}
+
 		else if(id == 1)
-		{
 			return new Vec2(1150,233);
-		}
+
 		else if(id == 2)
-		{
 			return new Vec2(0, 1270);
-		}
+
 		else if(id == 3)
-		{
 			return new Vec2(-391, 739);
-		}
+
 		else if(id == 4)
-		{
 			return new Vec2(391, 739);
-		}
+
 		return null;
 	}	
 	@Override
@@ -124,7 +107,7 @@ public class ScriptDeposerFeu extends Script {
 			if(state.robot.isFeu_tenu_rouge(Cote.GAUCHE) ^ couleur == "rouge")
 			    state.robot.poserFeuEnRetournant(Cote.GAUCHE);
 			else
-			    state.robot.poserFeuBonCote(Cote.GAUCHE);
+			    state.robot.poserFeuBonCote(Cote.GAUCHE);			
 		}
 		
 		if(state.robot.isTient_feu(Cote.DROIT))
@@ -133,10 +116,8 @@ public class ScriptDeposerFeu extends Script {
 			    state.robot.poserFeuEnRetournant(Cote.DROIT);
 			else
 			    state.robot.poserFeuBonCote(Cote.DROIT);
-		}
-		
+		}		
 		state.robot.avancer(-50);
-		
 	}
 
 	@Override
@@ -152,13 +133,6 @@ public class ScriptDeposerFeu extends Script {
 		catch(SerialException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	@Override
-	public float proba_reussite()
-	{
-		// TODO
-		return 1;
 	}
 	
 	public String toString()

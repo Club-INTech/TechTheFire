@@ -8,14 +8,13 @@ import hook.HookGenerator;
 import robot.Cote;
 import smartMath.Vec2;
 import strategie.GameState;
-import table.Colour;
-import table.Fire;
 import utils.Log;
 import utils.Read_Ini;
 
 /**
  * Script de récupération des feux debouts
  * Pour ceux qui préfèrent séparer les feux dans les torches 
+ * NON UTILISÉ (FAIT PAR HOOK)
  * @author  krissprolls
  *
  */
@@ -147,18 +146,19 @@ public class ScriptFeuDebout extends Script{
 		
 		if(!state.robot.isTient_feu(Cote.GAUCHE))
 			try {
-				state.robot.takefire(Cote.GAUCHE);
-			} catch (SerialException e) {
+//				state.robot.takefire(Cote.GAUCHE);
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		else if(state.robot.isFeu_tenu_rouge(Cote.DROIT))
 			try {
-				state.robot.takefire(Cote.DROIT);
-			} catch (SerialException e) {
+//				state.robot.takefire(Cote.DROIT);
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		//state.table.pickFire(id_version);
 		/*
 		if(!state.robot.isTient_feu(Cote.GAUCHE))
 		{

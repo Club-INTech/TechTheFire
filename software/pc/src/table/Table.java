@@ -166,25 +166,8 @@ public class Table implements Service {
 		return listObstaclesFixes.get(codeTorches());
 	}
 	
-	/**
-	 * Renvoie un code selon la présence ou non des torches mobiles
-	 * 3: les deux torches sont là
-	 * 2: la torche de gauche a disparue
-	 * 1: la torche de droite a disparue
-	 * 0: les deux torches sont absentes
-	 * @return ce code
-	 */
-	public int codeTorches()
-	{
-		int out = 0;
-		if(!arrayTorch[0].isDisparue())
-			out++;
-		out <<= 1;
-		if(!arrayTorch[1].isDisparue())
-			out++;
-		return out;
-	}
 	
+
 	public synchronized void creer_obstacle(final Vec2 position)
 	{
 		Vec2 position_sauv = position.clone();
@@ -207,6 +190,7 @@ public class Table implements Service {
 		    Obstacle obstacle = iterator.next();
 		    if (obstacle instanceof ObstacleProximite && ((ObstacleProximite) obstacle).death_date <= date)
 		    {
+		        System.out.println("Suppression d'un obstacle de proximité: "+obstacle);
 		        iterator.remove();
 				hashObstacles = indice++;
 		    }
@@ -275,6 +259,11 @@ public class Table implements Service {
 	public synchronized void pickFire (int id)
 	{
 		arrayFire[id].pickFire();
+		hashFire = indice++;
+	}
+	public synchronized void pickFixedFire(int id)
+	{
+		arrayFixedFire[id].pickFire();
 		hashFire = indice++;
 	}
 	public boolean isTakenFire(int id)
@@ -402,7 +391,34 @@ public class Table implements Service {
 		}
 	
 	//Torches
-	
+	/**
+	 * Renvoie un code selon la présence ou non des torches mobiles
+	 * 3: les deux torches sont là
+	 * 2: la torche de gauche a disparue
+	 * 1: la torche de droite a disparue
+	 * 0: les deux torches sont absentes
+	 * @return ce code
+	 */
+	public int codeTorches()
+	{
+		int out = 0;
+		if(!arrayTorch[0].isDisparue())
+			out++;
+		out <<= 1;
+		if(!arrayTorch[1].isDisparue())
+			out++;
+		return out;
+	}
+
+    public synchronized void pickTorch (int id)
+    {
+        arrayTorch[id].pickTorch();
+        hashFire = indice++;
+    }
+    public boolean isTorchTaken(int id)
+    {
+    	return arrayTorch[id].isTaken();
+    }
 	public int nearestTorch (final Vec2 position)
 	{
 		if(arrayTorch[0].getPosition().SquaredDistance(position) < arrayTorch[1].getPosition().SquaredDistance(position))
@@ -459,6 +475,8 @@ public class Table implements Service {
 					arrayFire[i].clone(ct.arrayFire[i]);
 				for(int i = 0; i < 4; i++)
 					arrayFixedFire[i].clone(ct.arrayFixedFire[i]);
+                for(int i = 0; i < 2; i++)
+                    arrayTorch[i].clone(ct.arrayTorch[i]);
 				ct.hashFire = hashFire;
 			}
 	
@@ -572,21 +590,27 @@ public class Table implements Service {
 	}
 	
 	/**
-	 * Indique si un obstacle de centre proche de la position indiquée existe.
+	 * Indique si un obstacle fixe de centre proche de la position indiquée existe.
 	 * Cela permet de ne pas détecter en obstacle mobile des obstacles fixes (comme les arbres).
 	 * De plus, ça allège le nombre d'obstacles.
 	 * @param position
 	 * @return
 	 */
 	public synchronized boolean obstacle_existe(Vec2 position) {
-	    Iterator<ObstacleCirculaire> iterator = listObstacles.iterator();
-	    while(iterator.hasNext())
-			if(obstacle_existe(position, iterator.next()))
-				return true;
+//	    Iterator<ObstacleCirculaire> iterator = listObstacles.iterator();
+//	    while(iterator.hasNext())
+//			if(obstacle_existe(position, iterator.next()))
+//				return true;
         Iterator<Obstacle> iterator2 = listObstaclesFixes.get(codeTorches()).iterator();
 		while(iterator2.hasNext())
-			if(obstacle_existe(position, iterator2.next()))
+		{
+		    Obstacle o = iterator2.next();
+			if(obstacle_existe(position, o))
+			{
+			    System.out.println("Obstacle: "+o);
 				return true;
+			}
+		}
 		return false;
 	}
 	

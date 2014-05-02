@@ -12,6 +12,7 @@ class Torch extends Game_Element {
 //	private Fire[] fires;
 	private boolean disparue = false; // True si elle est dégommée
 	public int rayon = 80;
+    private boolean taken  = false ;    // Booléen indiquant si le feu a été pris
 
 /*	public Torch(Vec2 position, Fire fire0, Fire fire1, Fire fire2)
 	{
@@ -37,7 +38,17 @@ class Torch extends Game_Element {
 		return disparue;
 	}
 	
-	public void clone(Torch other)
+	public void pickTorch()
+	{
+	    taken = true;
+	}
+
+    public boolean isTaken()
+    {
+        return taken;
+    }
+
+   public void clone(Torch other)
 	{
 		other.disparue = disparue;
 	}

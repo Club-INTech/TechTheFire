@@ -12,7 +12,9 @@ import utils.Read_Ini;
 
 /**
  * Script de dépose de fruits
- * @author pf, raspbeguy, krissprolls 
+ * @author pf
+ * @author raspbeguy
+ * @author krissprolls 
  *
  */
 
@@ -38,17 +40,6 @@ public class ScriptDeposerFruits extends Script {
 			versionList.add(0);
 			versionList.add(1);
 		}
-		return versionList;
-	}
-
-	@Override
-	public ArrayList<Integer> version(GameState<?> state) {
-		ArrayList<Integer> versionList = new ArrayList<Integer>();
-		if (state.robot.get_nombre_fruits_bac() >0)
-		{
-			versionList.add(0);
-			versionList.add(1);
-		}		
 		return versionList;
 	}
 
@@ -85,11 +76,6 @@ public class ScriptDeposerFruits extends Script {
 		} catch (SerialException e) {
 			e.printStackTrace();
 		}
-	}
-	@Override
-	public float proba_reussite()
-	{
-		return 1;
 	}
 
 	public String toString()
