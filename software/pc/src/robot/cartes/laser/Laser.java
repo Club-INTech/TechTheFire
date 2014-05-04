@@ -8,7 +8,7 @@ import smartMath.Vec2;
 import utils.Log;
 import utils.Read_Ini;
 import container.Service;
-import exception.SerialException;
+import exceptions.serial.SerialException;
 
 /**
  * Classe qui gère la balise laser
@@ -121,9 +121,9 @@ public class Laser implements Service {
 	 */
 	private boolean ping_balise(int id) throws SerialException
 	{
-		serie.communiquer("ping", 1);
-		String[] ping = serie.communiquer(String.valueOf(id), 1);
-		return ping[0].equals("NO_RESPONSE");
+	    // TODO (de PF) vérifier la méthode, mais on faisait comme ça l'année dernière
+	    String[] ping = serie.communiquer("ping_all", balises.length);	    
+		return ping[id].equals("aucune réponse");
 	}
 
 	/**

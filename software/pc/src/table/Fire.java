@@ -1,5 +1,6 @@
 package table;
 
+import enums.Colour;
 import smartMath.Vec2;
 
 public class Fire extends Game_Element {
