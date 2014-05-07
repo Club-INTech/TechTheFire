@@ -7,7 +7,7 @@
 #include <libintech/capteur_srf05.hpp>
 #include <libintech/algorithm.hpp>
 
-typedef ring_buffer<uint16_t, 4> ringBufferC; 
+typedef ring_buffer<uint16_t, 8> ringBufferC; //avant c'était 4 au lieu de 8
 
 INITIALISE_INTERRUPT_MANAGER();
 
@@ -92,7 +92,6 @@ int main() {
 	else
 	  uart0::printfln("? g=%d %d r=%d\n",medVD,medBD,medRD);
       }
-      //uart0::printfln("red = %d, blue = %d, green = %d", medR/100, medB/100, medG/100);
     }
   }
 }
