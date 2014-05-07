@@ -51,6 +51,7 @@ class Torch extends Game_Element {
    public void clone(Torch other)
 	{
 		other.disparue = disparue;
+		other.taken = taken;
 	}
 	
 /*
