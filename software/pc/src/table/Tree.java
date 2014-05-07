@@ -2,7 +2,8 @@ package table;
 
 import smartMath.Vec2;
 
-public class Tree extends Game_Element {
+public class Tree extends Game_Element implements Cloneable
+{
 
 	// Indice dans arrayTree:
 	//depuis le haut vers le bas, de 0 à 3;
@@ -33,11 +34,22 @@ public class Tree extends Game_Element {
 		// De plus, 0 et 3 sont les fruits les plus proches du robot.
 	}
 
-	public void clone(Tree tree)
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Tree clone()
 	{
-		// Si l'arbre est pris, on ne prend même pas la peine de copier ses fruits
-		tree.taken = taken;
+		try {
+			return (Tree) super.clone();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
+
 	
 	public int nbrLeft ()
 	{
