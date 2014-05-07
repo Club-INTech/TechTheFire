@@ -6,20 +6,25 @@ import hook.Hook;
 import smartMath.Vec2;
 import utils.Log;
 import utils.Read_Ini;
-import exception.MouvementImpossibleException;
-import exception.RobotChronoException;
-import exception.SerialException;
+import enums.Cote;
+import enums.PositionRateau;
+import exceptions.deplacements.MouvementImpossibleException;
+import exceptions.serial.SerialException;
+import exceptions.strategie.RobotChronoException;
 
 /**
  * Robot particulier qui fait pas bouger le robot réel, mais détermine la durée des actions
- * @author pf, krissprolls
+ * @author pf
+ * @author (krissprolls)
  *
  */
 
 public class RobotChrono extends Robot {
 
-	private float vitesse_mmpms;
-	private float vitesse_rpms;
+	private double vitesse_mmpms;
+	private double vitesse_rpms;
+	private Vec2 position;
+	private double orientation;
 	
 	// Durée en millisecondes
 	private int duree = 0;
@@ -35,19 +40,15 @@ public class RobotChrono extends Robot {
 	}
 	
 	@Override
-	public void setOrientation(float orientation) {
+	public void setOrientation(double orientation) {
 		this.orientation = orientation;
 	}
 
 	// La plupart de ces méthodes resteront vides
 
 	@Override
-	public void stopper(boolean avec_blocage)
-	{
-	}
-	
-	@Override
-	protected void avancer(int distance, ArrayList<Hook> hooks, int nbTentatives, boolean retenterSiBlocage, boolean sansLeverException)
+    public void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
+            throws MouvementImpossibleException
 	{
 		try {
 			dureePositive((long)(((float)Math.abs(distance))/vitesse_mmpms));
@@ -77,12 +78,17 @@ public class RobotChrono extends Robot {
 	
 	public void initialiser_compteur(int distance_initiale)
 	{
-		try {
-			dureePositive((long)(((float)distance_initiale)/vitesse_mmpms));
-		} catch (RobotChronoException e) {
-			e.printStackTrace();
+		if(distance_initiale != 0)
+		{
+			try {
+				dureePositive((long)(((float)distance_initiale)/vitesse_mmpms));
+			} catch (RobotChronoException e) {
+				e.printStackTrace();
+			}
+			duree = (int) (((float)distance_initiale)/vitesse_mmpms);
 		}
-		duree = (int) (((float)distance_initiale)/vitesse_mmpms);
+		else 
+			distance_initiale = 0;
 	}
 	public int get_compteur()
 	{
@@ -97,22 +103,24 @@ public class RobotChrono extends Robot {
 	}
 
 	@Override
-	protected void tourner(float angle, ArrayList<Hook> hooks,
-			int nombre_tentatives, boolean sans_lever_exception,
-			boolean symetrie_effectuee, boolean retenter_si_blocage)
-			throws MouvementImpossibleException
+    public void tourner(double angle, ArrayList<Hook> hooks, boolean mur)
+            throws MouvementImpossibleException
 	{
-		float delta = angle-orientation;
+		double delta = angle-orientation;
 		if(delta < 0)
-			delta += 2*Math.PI;
+			delta *= -1;
+		while(delta > 2*Math.PI)
+			delta -= 2*Math.PI;
 		if(delta > Math.PI)
 			delta = 2*(float)Math.PI - delta;
 		orientation = angle;
-		
-		try {
-			dureePositive((long)(delta/vitesse_rpms));
-		} catch (RobotChronoException e) {
-			e.printStackTrace();
+		if(delta != 0) 
+		{
+			try {
+				dureePositive((long)(delta/vitesse_rpms));
+			} catch (RobotChronoException e) {
+				e.printStackTrace();
+			}
 		}
 		duree += delta/vitesse_rpms;
 	}
@@ -120,7 +128,9 @@ public class RobotChrono extends Robot {
 	@Override
 	public void tirerBalle()
 	{
+	    super.tirerBalle();
 		// durée "nulle" car appelé par un hook
+		duree += 1500; // TODO
 	}
 	@Override
 	public void lancerFilet()
@@ -128,16 +138,16 @@ public class RobotChrono extends Robot {
 		duree += 1000; // TODO
 	}
 	@Override
-	public void suit_chemin(ArrayList<Vec2> chemin, ArrayList<Hook> hooks, boolean retenter_si_blocage, boolean symetrie_effectuee, boolean trajectoire_courbe, boolean sans_lever_exception) throws MouvementImpossibleException
+    public void suit_chemin(ArrayList<Vec2> chemin, ArrayList<Hook> hooks)
+            throws MouvementImpossibleException
 	{
 		for(Vec2 point: chemin)
 			va_au_point(point);
 	}
 	
-	@Override
-	protected void va_au_point(Vec2 point, ArrayList<Hook> hooks, boolean trajectoire_courbe, int nombre_tentatives, boolean retenter_si_blocage, boolean symetrie_effectuee, boolean sans_lever_exception, boolean enchainer)
+	public void va_au_point(Vec2 point)
 	{
-		if(couleur == "rouge")
+		if(symetrie)
 			point.x *= -1;
 		try {
 			dureePositive((long)(position.distance(point)/vitesse_mmpms));
@@ -155,24 +165,22 @@ public class RobotChrono extends Robot {
 	}
 
 	@Override
-	public void bac_haut()
+	public void bac_haut() throws SerialException
 	{
+		super.bac_haut();
 		duree += 1000; // TODO
 	}
 
 	@Override
 	public void rateau(PositionRateau position, Cote cote)
 	{
-		duree += 1000; // TODO
+		duree += 200; // TODO
 	}
 
 	@Override
-	public void deposer_fresques() {
-	}
-
-	@Override
-	public void takefire(Cote cote) {
-		duree += 2000; // TODO
+	public void deposer_fresques() throws SerialException {
+		super.deposer_fresques();
+		duree +=2000; //TODO
 	}
 	
 	/**
@@ -202,17 +210,19 @@ public class RobotChrono extends Robot {
 	
 	private void dureePositive(long duree) throws RobotChronoException
 	{
-		if(duree < 0)
+		if(duree < -0.001)
 			throw new RobotChronoException();
 	}
 
 	@Override
 	public void poserFeuBonCote(Cote cote) throws SerialException {
+	    super.poserFeuBonCote(cote);
 		duree += 1000; // TODO
 	}
 
 	@Override
 	public void poserFeuEnRetournant(Cote cote) throws SerialException {
+        super.poserFeuEnRetournant(cote);
 		duree += 1000; // TODO
 	}
 
@@ -258,7 +268,29 @@ public class RobotChrono extends Robot {
 
 	@Override
 	public void prendre_torche(Cote cote) throws SerialException {
+		super.prendre_torche(cote);
 	    duree += 1000; // TODO
 	}
-	
+
+    @Override
+    public void stopper()
+    {
+    }
+
+    @Override
+    public Vec2 getPosition()
+    {
+        return position.clone();
+    }
+
+    @Override
+    public double getOrientation()
+    {
+        return orientation;
+    }
+    
+    @Override
+    public void setInsiste(boolean insiste)
+    {}
+
 }

@@ -22,7 +22,8 @@ public class JUnit_MemoryManagerTest extends JUnit_Test {
 	private GameState<RobotVrai> state;
 	private MemoryManager memorymanager;
 	
-	@Before
+	@SuppressWarnings("unchecked")
+    @Before
 	public void setUp() throws Exception {
 		super.setUp();
 		log.debug("JUnit_MemoryManagerTest.setUp()", this);
@@ -94,7 +95,7 @@ public class JUnit_MemoryManagerTest extends JUnit_Test {
 	        state.table.pickFire(0);
 	        state.table.pickTree(0);
 	        Assert.assertTrue(!state.table.equals(cloned.table));
-            Assert.assertTrue(!state.pathfinding.equals(cloned.pathfinding));
+            Assert.assertTrue(!state.pathfinding.equals(cloned.pathfinding)); // TODO
 	    }
 
 }

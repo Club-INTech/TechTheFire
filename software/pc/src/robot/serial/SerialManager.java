@@ -7,7 +7,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import exception.SerialManagerException;
+import exceptions.serial.SerialManagerException;
 
 /**
  * Instancie toutes les s�ries, si on lui demande gentillement!
@@ -28,8 +28,8 @@ public class SerialManager
 	private Hashtable<String, Serial> series = new Hashtable<String, Serial>();
 
 	//Pour chaque carte, on connait a l'avance son nom, son ping et son baudrate
-	private SpecificationCard carteAsservissement = new SpecificationCard("serieAsservissement", 0, 9600);
-	private SpecificationCard carteCapteursActionneurs = new SpecificationCard("serieCapteursActionneurs", 3, 9600);
+	private SpecificationCard carteAsservissement = new SpecificationCard("serieAsservissement", 0, 57600);
+	private SpecificationCard carteCapteursActionneurs = new SpecificationCard("serieCapteursActionneurs", 3, 57600);
 	private SpecificationCard carteLaser = new SpecificationCard("serieLaser", 4, 57600);
 
 	//On stock les cartes dans une liste
@@ -104,10 +104,10 @@ public class SerialManager
 				{
 					//Creation d'une serie de test
 					Serial serialTest = new Serial(log, "carte de test de ping");
-
 					serialTest.initialize(this.connectedSerial.get(k), baudrate);
-
-					if (serialTest.ping() != null)
+					
+					
+					if(serialTest.ping() != null)
 						id = Integer.parseInt(serialTest.ping());
 					else 
 					{

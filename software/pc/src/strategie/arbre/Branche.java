@@ -2,6 +2,7 @@ package strategie.arbre;
 
 import java.util.ArrayList;
 
+import exceptions.strategie.PathfindingException;
 import robot.RobotChrono;
 import scripts.Script;
 import smartMath.Vec2;
@@ -79,13 +80,15 @@ public class Branche
 	{
 		if(!isActionCharacteisticsComputed)
 		{
-			//scoreScript = script.meta_score(metaversion, state);
-			//dureeScript = script.metacalcule(metaversion, state, useCachedPathfinding);
-			
-			// Substitut de test en attendant que les scipts buggent moins.
-			scoreScript = 2;
-			dureeScript = 12000;	// 12 sec !
-			
+			scoreScript = script.meta_score(metaversion, state);
+			try
+			{
+				dureeScript = script.metacalcule(metaversion, state, useCachedPathfinding);
+			}
+			catch (PathfindingException e)
+			{
+				dureeScript = -1;
+			}
 			isActionCharacteisticsComputed = true;
 		}
 	}
@@ -132,13 +135,22 @@ public class Branche
 		int id = script.version_asso(metaversion).get(0);
 		int A = 1;
 		int B = 1;
-		float prob = script.proba_reussite();
+		float prob = 1;
 		
 		//abandon de prob_deja_fait
 		Vec2[] position_ennemie = state.table.get_positions_ennemis();
 		float pos = (float)1.0 - (float)(Math.exp(-Math.pow((double)(script.point_entree(id).distance(position_ennemie[0])),(double)2.0)));
 		// pos est une valeur qui décroît de manière exponentielle en fonction de la distance entre le robot adverse et là où on veut aller
-		localNote = (scoreScript*A*prob/dureeScript+pos*B)*prob;
+	//	localNote = (scoreScript*A*prob/dureeScript+pos*B)*prob;
+		
+		if(scoreScript != 0)
+			localNote = (float)scoreScript*1000/(float)dureeScript;
+		else 
+			localNote = 1.0f/(float)dureeScript;	// les arbres ne rapportent pas de points et sont donc choisi en fonction de leur proximité. Attention a ce que ce 1/durée ne soit pas supérieur a un autre script
+		
+		
+		
+	//	System.out.println("localNote = " + localNote + "	scoreScript = " + scoreScript + "	dureeScript = " + dureeScript);
 		
 //		log.debug((float)(Math.exp(-Math.pow((double)(script.point_entree(id).distance(position_ennemie[0])),(double)2.0))), this);
 		

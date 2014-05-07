@@ -16,7 +16,8 @@ import utils.Log;
 import utils.Read_Ini;
 import utils.Sleep;
 import container.Service;
-import exception.ScriptException;
+import exceptions.strategie.PathfindingException;
+import exceptions.strategie.ScriptException;
 import smartMath.Vec2;
 
 /**
@@ -29,7 +30,6 @@ public class Strategie implements Service {
 
 	// Dépendances
 	private MemoryManager memorymanager;
-	private ThreadTimer threadtimer;
 	private ScriptManager scriptmanager;
 	private GameState<RobotVrai> real_state;
 	private Log log;
@@ -47,13 +47,13 @@ public class Strategie implements Service {
 	// Prochain script à exécuter si l'actuel se passe bien
 	private volatile NoteScriptVersion prochainScript;
 	
-	public Strategie(MemoryManager memorymanager, ThreadTimer threadtimer, ScriptManager scriptmanager, GameState<RobotVrai> real_state, Read_Ini config, Log log)
+	public Strategie(MemoryManager memorymanager, ScriptManager scriptmanager, GameState<RobotVrai> real_state, Read_Ini config, Log log)
 	{
 		this.memorymanager = memorymanager;
-		this.threadtimer = threadtimer;
 		this.scriptmanager = scriptmanager;
 		this.real_state = real_state;
 		this.log = log;
+		prochainScript = new NoteScriptVersion();
 		maj_config();
 	}
 	
@@ -62,24 +62,25 @@ public class Strategie implements Service {
 	 */
 	public void boucle_strategie()
 	{
-		while(!threadtimer.match_demarre)
+		while(!ThreadTimer.match_demarre)
 			Sleep.sleep(20);
 
 		log.debug("Stratégie lancée", this);
-		while(!threadtimer.fin_match)
+		while(!ThreadTimer.fin_match)
 		{
-			synchronized(prochainScript)
-			{
-				if(prochainScript != null)
+			if(prochainScript != null && prochainScript.script != null)
+				synchronized(prochainScript)
 				{
-					scriptEnCours = prochainScript.clone();
-					prochainScript = null;
+					if(prochainScript != null)
+					{
+						scriptEnCours = prochainScript.clone();
+						prochainScript = null;
+					}
+					else
+						scriptEnCours = null;
 				}
-				else
-					scriptEnCours = null;
-			}
 
-			if(scriptEnCours != null)
+			if(scriptEnCours != null && scriptEnCours.script != null)
 			{
 				boolean dernier = (nbScriptsRestants() == 1);
 				log.debug("Stratégie fait: "+scriptEnCours+", dernier: "+dernier, this);
@@ -103,11 +104,7 @@ public class Strategie implements Service {
 			else
 			{
 				log.critical("Aucun ordre n'est à disposition. Attente.", this);
-				Sleep.sleep(25);/**
-				 * Méthode qui, à partir de la durée de freeze et de l'emplacement des ennemis, tire des conclusions.
-				 * Exemples: l'ennemi vide cet arbre, il a posé sa fresque ici, ...
-				 * Modifie aussi la variable TTL Time To Live!
-				 */
+				Sleep.sleep(25);
 			}
 
 		}
@@ -149,15 +146,15 @@ public class Strategie implements Service {
 			{
 				//Il y a un blocage de l'ennemi, réfléchissons un peu et agissons optimalement
 			}
-			if (real_state.table.distanceTree(positionsfreeze[i], i_min_fire) < distance_influence && duree_freeze[i] > duree_standard)
+			if (real_state.table.distanceTree(positionsfreeze[i], i_min_tree) < distance_influence && duree_freeze[i] > duree_standard)
 			{
 			    real_state.table.pickTree(i_min_tree);
 			}
-			if(real_state.table.distanceFire(positionsfreeze[i], i_min_tree) < distance_influence && duree_freeze[i] > duree_standard)
+			if(real_state.table.distanceFire(positionsfreeze[i], i_min_fire) < distance_influence && duree_freeze[i] > duree_standard)
 			{
 			    real_state.table.pickFire(i_min_fire);
 			}
-			if(real_state.table.distanceFresco(positionsfreeze[i], i_min_tree) < distance_influence && duree_freeze[i] > duree_standard)
+			if(real_state.table.distanceFresco(positionsfreeze[i], i_min_fresco) < distance_influence && duree_freeze[i] > duree_standard)
 			{
 			    real_state.table.appendFresco(i_min_fresco);
 			}
@@ -197,16 +194,27 @@ public class Strategie implements Service {
 		// Le TTL est une durée en ms sur laquelle on estime que le robot demeurera immobile
 		
 	} 
-	public float[] meilleurVersion(int meta_id, Script script, GameState<RobotChrono> state)
+	public float[] meilleurVersion(int meta_id, Script script, GameState<RobotChrono> state) throws PathfindingException
 	{
-		int id = 0;
-		float meilleurNote = 0;
+		int id = -1;
+		float meilleurNote = -1;
 		int score;
-		int duree_script; 
+		int duree_script;
+		if(script == null)
+			throw new PathfindingException();
+			
 		for(int i : script.version_asso(meta_id))
 		{
 			score = script.score(id, state);
-			duree_script = (int)script.calcule(id, state, true);
+			try
+			{
+				duree_script = (int)script.calcule(i, state, true);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				continue;
+			}
 			if(calculeNote(score,duree_script, i,script, state)>meilleurNote)
 			{
 				id = i;
@@ -214,6 +222,9 @@ public class Strategie implements Service {
 			}
 			
 		}
+		if(id == -1)
+			throw new PathfindingException();
+		
 		float[] a= {id, meilleurNote};
 		return a;
 	}
@@ -230,7 +241,7 @@ public class Strategie implements Service {
 	private float calculeNote(int score, int duree, int id, Script script, GameState<?> state)
 	{
 		// TODO
-		
+		/*
 		int A = 1;
 		int B = 1;
 		float prob = script.proba_reussite();
@@ -239,11 +250,13 @@ public class Strategie implements Service {
 		Vec2[] position_ennemie = state.table.get_positions_ennemis();
 		float pos = (float)1.0 - (float)(Math.exp(-Math.pow((double)(script.point_entree(id).distance(position_ennemie[0])),(double)2.0)));
 		// pos est une valeur qui décroît de manière exponentielle en fonction de la distance entre le robot adverse et là où on veut aller
-		float note = (score*A*prob/duree+pos*B)*prob;
+		float note = (score*A*prob/duree+pos*B)*prob;*/
 		
 //		log.debug((float)(Math.exp(-Math.pow((double)(script.point_entree(id).distance(position_ennemie[0])),(double)2.0))), this);
-		
-		return note;
+		if (score != 0)
+			return (float)score/(float)duree;
+		else
+			return 1.0f/(float)duree;
 	}
 	
 
@@ -261,7 +274,7 @@ public class Strategie implements Service {
 		int id = script.version_asso(meta_id).get(0);
 		int A = 1;
 		int B = 1;
-		float prob = script.proba_reussite();
+		float prob = 1;
 		
 		//abandon de prob_deja_fait
 		Vec2[] position_ennemie = state.table.get_positions_ennemis();
@@ -274,105 +287,12 @@ public class Strategie implements Service {
 		return note;
 	}
 
-	/**
-	 * Evaluation des scripts pour un robot et une certaine profondeur
-	 * @param profondeur
-	 * @param id_robot
-	 * @return le meilleur triplet NoteScriptVersion
-	 * @throws ScriptException
-	 */
-/*	public NoteScriptMetaversion evaluation(int profondeur, int id_robot) throws ScriptException
-	{
-		return _evaluation(System.currentTimeMillis(), 0, profondeur, id_robot);
-	}
-*/
-	/**
-	 * Evaluation des scripts pour un robot et une certaine profondeur, à partir d'une date future
-	 * @param date
-	 * @param profondeur
-	 * @param id_robot
-	 * @return le meilleur triplet NoteScriptVersion
-	 * @throws ScriptException
-	 */
-/*	public NoteScriptMetaversion evaluation(long date, int profondeur, int id_robot) throws ScriptException
-	{
-		return _evaluation(date, 0, profondeur, id_robot);
-	}
-
-	private NoteScriptMetaversion _evaluation(long date, int duree_totale, int profondeur, int id_robot) throws ScriptException
-	{
-		if(profondeur == 0)
-			return new NoteScriptMetaversion();
-		
-		NoteScriptMetaversion meilleur = new NoteScriptMetaversion(-1, null, -1);
-		// TODO : Give a value to TTL
-		int duree_connaissances = TTL;
-		
-		// Ittération sur les scripts
-		for(String nom_script : scriptmanager.getNomsScripts())
-		{
-			Script script = scriptmanager.getScript(nom_script);
-			ArrayList<Integer> metaversions = script.meta_version(	memorymanager.getCloneRobotChrono(profondeur),
-																	memorymanager.getCloneTable(profondeur), 
-																	memorymanager.getClonePathfinding(profondeur)	);
-			// TODO corriger les scripts pour que ça n'arrive pas
-			if(metaversions == null)
-				break;
-			
-			
-			
-			// Ittération sur les métaversions des scripts
-			for(int meta_id : metaversions)
-			{
-				
-				try
-				{
-					Table cloned_table = memorymanager.getCloneTable(profondeur);
-					RobotChrono cloned_robotchrono = memorymanager.getCloneRobotChrono(profondeur);
-					Pathfinding cloned_pathfinding = memorymanager.getClonePathfinding(profondeur);
-
-					int duree_script = (int)script.metacalcule(meta_id, cloned_robotchrono, cloned_table, cloned_pathfinding, duree_totale > duree_connaissances);
-					
-					// met a jour la table après exécution du script
-					cloned_table.supprimerObstaclesPerimes(date+duree_script);
-
-					float noteScript = calculeMetaNote(	script.meta_score(meta_id, cloned_robotchrono, cloned_table),
-														duree_script,
-														meta_id,
-														script	);
-
-					NoteScriptMetaversion out = _evaluation(date + duree_script, duree_script, profondeur-1, id_robot);
-					out.note += noteScript;
-
-					if(out.note > meilleur.note)
-					{
-						meilleur.note = out.note;
-						meilleur.script = script;
-						meilleur.metaversion = meta_id;
-					}
-				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
-				}
-				
-				
-			}
-			
-			
-		}
-		return meilleur;
-	}
-	
-	*/
-
-	
 	/* Méthode qui calcule la note de cette branche en calculant celles de ses sous branches, puis en combinant leur notes
 	 * C'est là qu'est logé le DFS
 	 * 
 	 * @param profondeur : la profondeur d'exploration de l'arbre, 1 pour n'explorer qu'un niveau
 	 */
-	public NoteScriptMetaversion evaluate()	// TODO : add an argument to infuence the tree size
+	public NoteScriptMetaversion evaluate(ArrayList<NoteScriptMetaversion> errorList)	// TODO : add an argument to infuence the tree size
 	{
 		/*
 		 * 	Algorithme : Itterative Modified DFS
@@ -405,21 +325,41 @@ public class Strategie implements Service {
 		GameState<RobotChrono> mState = memorymanager.getClone(0);
 		Branche current;
 		
+		
+		
+		
 		// racourccis pour les racines, afin du calcul du max final :
 		ArrayList<Branche> rootList = new ArrayList<Branche>();
 		
 		// Pour le critère d'arrèt d'exploration de l'arbre : un TTL ira bien pour l'instant :
 		// les action a anticiper doivent commencer dans les 30 prochaines secondes
-		int		TTL = 20000;	// 30 sec d'anticipation 
+
+		//Config pour 1 sec d'exécution sur raspbe
+		int		TTL = 26000;	// les actions anticipés doivent débuter dans les 14 prochaines secondes   
+		int maxProf	= 99999;	// En moyenne, réduire ce nombre consuit a sabrer les branches les plus prometteuses
+	
+		//Config pour 4 sec d'exécution sur raspbe
+	//	int		TTL = 25000;	// les actions anticipés doivent débuter dans les 14 prochaines secondes   
+	//	int maxProf	= 3;
+		
+		
+		
+		long TrueAStarTTL = 8000;	// A partir de quand on considère qu'on ne sais plus ou est l'ennemi, et qu'on peut passer sur cache
+		int TimeBeforeGiveUp	= 3000;	// Si on reste bloqué dans l'arbre, on garde un oeil sur la montre pour être sur de pouvoir retenter sa chance
+		
+		long startTime = System.currentTimeMillis();
 		int Branchcount = 0;
+		boolean temp;
+		boolean branchHasChild;
 		
 		
 		// ajoute tous les scrips disponibles scripts
 		for(String nom_script : scriptmanager.getNomsScripts())
 		{
+
 			try
 			{
-				mScript = scriptmanager.getScript(nom_script);			// ici 	getScript foire une fois sur 2
+				mScript = scriptmanager.getScript(nom_script);
 			}
 			catch(ScriptException e)
 			{
@@ -435,10 +375,27 @@ public class Strategie implements Service {
 			// ajoute toutes les métaversions de tous les scipts
 			for(int metaversion : metaversionList)
 			{
+				
+				// n'ajoute pas les branches exclues par argument 
+				if (errorList != null)
+				{
+					temp = false;
+					for(NoteScriptMetaversion n : errorList)
+					{
+						if(n != null && n.script != null && mScript.toString() == n.script.toString() && metaversion == n.metaversion)
+							temp = true;
+					}
+					if(temp)
+						continue;
+				}
+				
+				
 				//log.debug("Ajout d'une racine", this);
+				mState = memorymanager.getClone(0);
+				mState.pathfinding.setPrecision(4);
 				scope.push( new Branche(	TTL,							// Il reste tout le TTL sur chacune des racines
-											false,							// N'utilise pas le cache pour le premier niveau de profondeur 
-											0,								// différence de profondeur entre la racine et ici, donc 0 dans notre cas
+											true,							// N'utilise pas le cache pour le premier niveau de profondeur 
+											1,								// différence de profondeur entre la racine et ici, donc 0 dans notre cas
 											mScript, 						// Une branche par script et par métaversion
 											metaversion, 
 											mState	) );					// état de jeu
@@ -446,71 +403,110 @@ public class Strategie implements Service {
 			}	
 		}
 
+
+		// TODO ?	Ajuster le critère d'arret d'expansion ici en fonction de scope size ?
 		
 		
-
-
+		log.debug("scope.size() :" + scope.size(), this);
 		// Boucle principale d'exploration des branches
-		while (scope.size() != 0)
-		{
-			//log.debug("Nouveau tour de boucle", this);
-			//log.debug("Taille de la stack :" + scope.size(), this);
-			current = scope.lastElement();
-			
-			// Condition d'ajout des sous-branches : respecter le critère d'arret d'expansion, et ne pas les ajouter 2 fois.
-			if ( current.TTL - current.dureeScript > 0 && (current.sousBranches.size() == 0) )
+		if(scope.size() > 1)
+			while (scope.size() != 0)
 			{
-				// ajoute a la pile a explorer l'ensemble des scripts disponibles pour cet étage		
-				mState = memorymanager.getClone(current.profondeur);
 				
-				// ajoute tous les scrips disponibles
-				for(String nomScript : scriptmanager.getNomsScripts())	// Ces scripts sont ils bien ôtés de ceux que j'ai déjà effectué dans une branche en amont ?
+				// Sécurité pour être certain que le DFS ne tombe pas en boucle infinie
+				if(startTime + TimeBeforeGiveUp < System.currentTimeMillis())
 				{
-					try
-					{
-						mScript = scriptmanager.getScript(nomScript);						// ici 	getScript marche correctement
-					}
-					catch(Exception e)
-					{
-						e.printStackTrace();
-					}
-					
-					metaversionList = mScript.meta_version(	mState	);
-					// TODO corriger les scripts pour que ça n'arrive pas
-					if(metaversionList == null)
-						continue;
-					
-					
-					// ajoute toutes les métaversions de tous les scipts
-					for(int metaversion : metaversionList)
-					{
-						// Mrrrou ?
-					    //Att, il faut executer le script a ce moment la sur la branche parente (via scipet::metacalcule) sinon l'état n'est pas changé
-					                                //attn, profondeur n'est pas la position bsolue mais la taille de l'abre en aval
-						scope.push( new Branche(	(int)(current.TTL - current.dureeScript),	// TTL restant : celui du restant moins la durée de son action	
-													current.profondeur >= 2,					// Utiliser le cache dès le second niveau de profondeur
-													current.profondeur+1,						// différence de profondeur entre la racine et ici, donc 1 + celle du parent
-													mScript, 									// Une branche par script et par métaversion
-													metaversion, 
-													mState	) );								// état de jeu
-						
-						// enregistre cette branche comme sous branche de son parent
-						current.sousBranches.add(scope.lastElement());
-					}
+					log.debug(TimeBeforeGiveUp + "ms since IA calculation started : Giving up", this);
+					break;
 				}
 				
 				
-			}
-			else	// Soit on a atteint la profondeur maximale, soit les enfants ont étés traités donc on calcule la note de ce niveau
-			{
-				current.computeNote();
-			//	log.debug("note courrante :" + current.note, this);
-				Branchcount++;
-				scope.pop();
-			}
-			
-		}	// fin boucle principale d'exploration
-	//	log.debug("Explored "+ Branchcount + " branches", this);
+				//log.debug("Nouveau tour de boucle", this);
+				//log.debug("Taille de la stack :" + scope.size(), this);
+				current = scope.lastElement();			
+					mState = memorymanager.getClone(current.profondeur-1);
+					current.computeActionCharacteristics();
+				
+				// Condition d'ajout des sous-branches : respecter le critère d'arret d'expansion, et ne pas les ajouter 2 fois.
+				if ( current.TTL - current.dureeScript > 0 && maxProf >= current.profondeur && (current.sousBranches.size() == 0) )
+				{
+					// ajoute a la pile a explorer l'ensemble des scripts disponibles pour cet étage
+					
+					
+					// On vérifiera si la branche peut déployer des enfants jusqu'a son TTL
+					branchHasChild = false;
+					// ajoute tous les scrips disponibles
+					for(String nomScript : scriptmanager.getNomsScripts())
+					{
+					
+						try
+						{
+							mScript = scriptmanager.getScript(nomScript);
+						}
+						catch(Exception e)
+						{
+							e.printStackTrace();
+						}
+						
+						metaversionList = mScript.meta_version(	mState	);
+						// TODO corriger les scripts pour que ça n'arrive pas
+						if(metaversionList == null)
+							continue;
+						
+						
+						// ajoute toutes les métaversions de tous les scipts
+						for(int metaversion : metaversionList)
+						{
+	
+							// n'ajoute pas les branches exclues par argument 
+							if (errorList != null)
+							{
+								temp = false;
+								for(NoteScriptMetaversion n : errorList)
+								{
+									if(n != null && n.script != null && mScript.toString() == n.script.toString() && metaversion == n.metaversion)
+										temp = true;
+								}
+								if(temp)
+									continue;
+							}
+							
+							//log.debug("profondeur parente : "  + current.profondeur,this);
+							//log.debug("robot position : "  + mState.robot.getPosition(),this);
+							//log.debug("Ajout d'une branche avec script" + nomScript + " et metaversion : " + metaversion, this);
+							
+							mState = memorymanager.getClone(current.profondeur-1);
+							mState.pathfinding.setPrecision(5);
+							current.computeActionCharacteristics();
+							Branchcount++;
+							branchHasChild = true;
+							scope.push( new Branche(	(int)(current.TTL - current.dureeScript),	// TTL restant : celui du restant moins la durée de son action	
+														mState.time_depuis_racine >= TrueAStarTTL || current.profondeur > 1,//true,//current.profondeur >= 2,					// Utiliser le cache dès le second niveau de profondeur
+														current.profondeur+1,						// différence de profondeur entre la racine et ici, donc 1 + celle du parent
+														mScript, 									// Une branche par script et par métaversion
+														metaversion, 
+														mState	) );								// état de jeu
+							
+							// enregistre cette branche comme sous branche de son parent
+							current.sousBranches.add(scope.lastElement());
+						}
+					}
+					
+					// on tue la branche si elle n'a pas été capable de déployer d'enfants
+						// (Sinon elle reste en haut de stack avec du TTL et on bloucle infinie sur la recherche d'enfants)
+					if(branchHasChild == false)
+						current.TTL = 0;
+					
+					
+				}
+				else	// Soit on a atteint la profondeur maximale, soit les enfants ont étés traités donc on calcule la note de ce niveau
+				{
+					current.computeNote();
+					scope.pop();
+				}
+				
+			}	// fin boucle principale d'exploration
+		log.debug("Explored "+ Branchcount + " branches", this);
 		
 		
 		// la meilleure action a une meilleure note que les autres branches. Donc on calcule le max des notes des branches 
@@ -546,7 +542,7 @@ public class Strategie implements Service {
 		{
 			try {
 				Script script = scriptmanager.getScript(nom_script);
-				if(script.version(real_state).size() >= 1)
+				if(script.meta_version(real_state).size() >= 1)
 					compteur++;		
 			} catch (ScriptException e) {
 				e.printStackTrace();
@@ -576,12 +572,9 @@ public class Strategie implements Service {
 	 * Permet au thread de stratégie de définir le prochain script à faire
 	 * @param prochainScript
 	 */
-	public void setProchainScript(NoteScriptVersion prochainScript)
+	public synchronized void setProchainScript(NoteScriptVersion prochainScript)
 	{
-		synchronized(this.prochainScript)
-		{
 			this.prochainScript = prochainScript;
-		}
 	}
 	
 	public boolean besoin_ProchainScript()

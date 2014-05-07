@@ -8,7 +8,7 @@ import smartMath.Vec2;
 import utils.Log;
 import utils.Read_Ini;
 import container.Service;
-import exception.SerialException;
+import exceptions.serial.SerialException;
 
 /**
  * Classe qui gère la balise laser
@@ -121,8 +121,9 @@ public class Laser implements Service {
 	 */
 	private boolean ping_balise(int id) throws SerialException
 	{
-		String[] ping = serie.communiquer("ping_all", balises.length);
-		return ping[id] != "aucune réponse";
+	    // TODO (de PF) vérifier la méthode, mais on faisait comme ça l'année dernière
+	    String[] ping = serie.communiquer("ping_all", balises.length);	    
+		return ping[id].equals("aucune réponse");
 	}
 
 	/**
@@ -133,6 +134,7 @@ public class Laser implements Service {
 	{
 		try {
 			String[] reponse = serie.communiquer("freq", 1);
+			//System.out.println(reponse[0]);
 			return Float.parseFloat(reponse[0]);
 		}
 		catch(Exception e)
@@ -152,17 +154,17 @@ public class Laser implements Service {
 	public Vec2 position_balise(int id) throws SerialException
 	{
 		String chaines[] = {"value", Integer.toString(id)};
-		String[] reponse = serie.communiquer(chaines, 2);
+		String[] reponse = serie.communiquer(chaines, 3);
 		
-		if(reponse[0] == "NO_RESPONSE" || reponse[1] == "NO_RESPONSE"
-				|| reponse[0] == "OLD_VALUE" || reponse[1] == "OLD_VALUE"
-				|| reponse[0] == "UNVISIBLE" || reponse[1] == "UNVISIBLE")
+		if(reponse[0].equals("NO_RESPONSE") || reponse[1].equals("NO_RESPONSE")
+				|| reponse[0].equals("OLD_VALUE") || reponse[1].equals("OLD_VALUE")
+				|| reponse[0].equals("UNVISIBLE") || reponse[1].equals("UNVISIBLE"))
 			return null;
 
         // Fréquence actuelle du moteur
 		float freq = frequence_moteur();
-		
-        // Valeur de la distance, sur l'échelle du timer 8 bit
+
+		// Valeur de la distance, sur l'échelle du timer 8 bit
 		float timer = Float.parseFloat(reponse[0]);
 
         // Délai du passage des deux lasers, en seconde

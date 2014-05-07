@@ -12,7 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.Map;
 
-import exception.PathfindingException;
+import exceptions.strategie.PathfindingException;
 import pathfinding.SearchSpace.Grid2DSpace;
 import smartMath.Vec2;
 
@@ -116,13 +116,31 @@ class AStar
 		chemin.clear();
 
 		// Si le départ ou l'arrivée est dans un obstacle, on lève une exception
-		if(!espace.canCross(arrivee) || !espace.canCross(depart))
+		
+		// Exeption levée si le départ est dans un obstacle
+		if( !espace.canCross(depart))
+		{
+			//Affiche la map : pour debug
+		//	System.out.println("Pathfinding : Depart (" + depart.x  + "; " + depart.y + ") is in a obstacle.  arrivee was valid (" + arrivee.x  + "; " + arrivee.y + ")");
+		//	printWorkingMap(depart, arrivee);	// a mettre si on veut comprendre le trajet qui foire.
 			throw new PathfindingException();
+		}
+		// Exeption levée si l'arrivée est dans un obstacle
+		else if(!espace.canCross(arrivee) )
+		{    
+			//Affiche la map : pour debug
+		//	System.out.println("Pathfinding : arrivee (" + arrivee.x  + "; " + arrivee.y + ") is in a obstacle. depart was valid (" + depart.x  + "; " + depart.y + ")");
+		//	printWorkingMap(depart, arrivee);	// a mettre si on veut comprendre le trajet qui foire.
+			throw new PathfindingException();	
+		}
+		// Petite optimisation
 		else if(espace.canCrossLine(depart, arrivee))
 		{
 			chemin.add(arrivee);
 			return chemin;
 		}
+		
+		
 
 		closedset.clear();		// The set of nodes already evaluated.
 		openset.clear();
@@ -154,9 +172,8 @@ class AStar
 	    	
 	    	if (current.x == arrivee.x && current.y == arrivee.y)
 	    	{
-	    		chemin.clear();
     			chemin.add( new Vec2(arrivee.x,arrivee.y));
-    			if (arrivee.x != depart.x && arrivee.y != depart.y && came_from.get(current) != null)
+    			if ( (arrivee.x != depart.x || arrivee.y != depart.y) && came_from.get(current) != null)
     			{
 		    		temp = came_from.get(current);
 		    		while ( temp.x != depart.x || temp.y != depart.y )
@@ -169,6 +186,7 @@ class AStar
     			}
     			// Le chemin final ne doit pas contenir le point de départ (plus pratique pour Script et pour le HPA*)
 //    			chemin.add(0, new Vec2(depart.x,depart.y));
+
 	    		return chemin;	//  reconstruct path
 	    	}
 	    	
@@ -199,8 +217,18 @@ class AStar
 	    		    	
 	    }// while
 	    
-	    //printWorkingMap(depart, arrivee);	// a mettre si on veut comprendre le trajet qui foire.
-	    throw new PathfindingException();	// Exeption lancée lorsque l'arrivée n'est pas atteignable à partir du point de départ.
+	    
+	    
+	    
+	    
+	    //Exeption lancée lorsque l'arrivée n'est pas atteignable à partir du point de départ.
+
+		//Affiche la map : pour debug
+		System.out.println("Pathfinding : There is no traject between (" + depart.x  + "; " + depart.y + ") and (" + arrivee.x  + "; " + arrivee.y + ")");
+		printWorkingMap(depart, arrivee);
+	    throw new PathfindingException();	
+	    
+	    
 	}	// process
 
 	
@@ -223,7 +251,6 @@ class AStar
 	
 	// Debug
 	// affihche l'espace de recherche 
-	@SuppressWarnings("unused")
 	private void printWorkingMap(Vec2 depart, Vec2 arrivee)
 	{
 		String out = "";
@@ -241,12 +268,13 @@ class AStar
 				else if(espace.canCross(j, k))
 					out += '.';
 				else
-					out += 'X';	
+					out += 'x';	
 			}
 			
 			out +='\n';
 		}
 		System.out.println(out);
+		System.out.println("AStar : Working map printed as requested : Grid2DSpace size : " + espace.getSizeX()  + " x " + espace.getSizeY());
 	}
 	
 	

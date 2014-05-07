@@ -18,23 +18,6 @@ import threads.ThreadTimer;
 public class JUnit_ThreadsTest extends JUnit_Test {
 
 	@Test
-	public void test_threadPosition() throws Exception
-	{
-		Deplacements deplacements = (Deplacements)container.getService("Deplacements");
-		deplacements.set_x(0);
-		deplacements.set_y(1500);
-		deplacements.set_orientation(0);
-		deplacements.set_vitesse_translation(80);
-		RobotVrai robotvrai = (RobotVrai) container.getService("RobotVrai");
-		container.getService("threadPosition");
-		container.demarreThreads();
-		deplacements.set_x(110);
-		deplacements.set_y(1500);
-		Thread.sleep(150);
-		Assert.assertTrue(robotvrai.getPosition().equals(new Vec2(110,1500)));	
-	}
-
-	@Test
 	public void test_arret() throws Exception
 	{
 		Deplacements deplacements = (Deplacements)container.getService("Deplacements");
@@ -75,10 +58,10 @@ public class JUnit_ThreadsTest extends JUnit_Test {
 	public void test_fin_match() throws Exception
 	{
 		config.set("temps_match", 3);
-		ThreadTimer threadtimer = (ThreadTimer) container.getService("threadTimer");
+		container.getService("threadTimer");
 		long t1 = System.currentTimeMillis();
 		container.demarreTousThreads();
-		while(!threadtimer.fin_match)
+		while(!ThreadTimer.fin_match)
 		{
 			Thread.sleep(500);
 			if(System.currentTimeMillis()-t1 >= 4000)
@@ -90,15 +73,15 @@ public class JUnit_ThreadsTest extends JUnit_Test {
 	@Test
 	public void test_demarrage_match() throws Exception
 	{
-		ThreadTimer threadtimer = (ThreadTimer) container.getService("threadTimer");
+		container.getService("threadTimer");
 		System.out.println("Veuillez mettre le jumper");
 		Thread.sleep(2000);
 		container.demarreThreads();
 		Thread.sleep(200);
-		Assert.assertTrue(!threadtimer.match_demarre);
+		Assert.assertTrue(!ThreadTimer.match_demarre);
 		System.out.println("Veuillez retirer le jumper");
 		Thread.sleep(2000);
-		Assert.assertTrue(threadtimer.match_demarre);
+		Assert.assertTrue(ThreadTimer.match_demarre);
 	}
 
 	@Test

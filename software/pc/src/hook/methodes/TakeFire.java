@@ -1,7 +1,7 @@
 package hook.methodes;
 
-import robot.Cote;
-import robot.Robot;
+import enums.Cote;
+import robot.RobotVrai;
 import hook.Executable;
 
 /**
@@ -12,27 +12,24 @@ import hook.Executable;
 
 public class TakeFire implements Executable {
 
-	private Robot robot;
+	private RobotVrai robot;
 	private Cote cote;
 	
-	public TakeFire(Robot robot, Cote cote)
+	public TakeFire(RobotVrai robot, Cote cote)
 	{
 		this.robot = robot;
 		this.cote = cote;
 	}
 
-	public void execute() {
+	@Override
+	public boolean execute() {
 		try {
 			robot.takefire(cote);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return true; // le robot doit repartir
 	}
-
-	@Override
-	public boolean bougeRobot() {
-		return true;
-	}	
 
 	
 }

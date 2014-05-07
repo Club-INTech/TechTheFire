@@ -5,8 +5,6 @@ import strategie.GameState;
 import hook.Callback;
 import hook.Executable;
 import hook.Hook;
-import hook.HookGenerator;
-import robot.Cote;
 import robot.RobotChrono;
 import robot.RobotVrai;
 import utils.Log;
@@ -14,14 +12,15 @@ import utils.Read_Ini;
 import container.Service;
 import hook.methodes.DisparitionTorche;
 import hook.methodes.TakeFire;
+import hook.sortes.HookGenerator;
 
 import java.util.ArrayList;
 
-import exception.ConfigException;
-import exception.MouvementImpossibleException;
-import exception.PathfindingException;
-import exception.ScriptException;
-import exception.SerialException;
+import enums.Cote;
+import exceptions.deplacements.MouvementImpossibleException;
+import exceptions.serial.SerialException;
+import exceptions.strategie.PathfindingException;
+import exceptions.strategie.ScriptException;
 /**
  * Classe abstraite dont hériteront les différents scripts. S'occupe le robotvrai et robotchrono de manière à ce que ce soit transparent pour les différents scripts
  * @author pf
@@ -45,17 +44,8 @@ public abstract class Script implements Service {
 		Script.config = config;
 		Script.log = log;
 		
-		try {
-			couleur = config.get("couleur");
-		} catch (ConfigException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			rayon_robot = Integer.parseInt(config.get("rayon_robot"));
-		} catch (NumberFormatException | ConfigException e) {
-			e.printStackTrace();
-		}
+		couleur = config.get("couleur");
+		rayon_robot = Integer.parseInt(config.get("rayon_robot"));
 }
 		
 	/**
@@ -90,7 +80,7 @@ public abstract class Script implements Service {
 
 		try
 		{
-		    state.robot.va_au_point_pathfinding(state.pathfinding, point_entree, hooks_chemin, retenter_si_blocage, false, true, false);
+		    state.robot.va_au_point_pathfinding(state.pathfinding, point_entree, hooks_chemin);
 			execute(id_version, state);
 		}
 		catch (Exception e)
@@ -106,9 +96,8 @@ public abstract class Script implements Service {
 		
 	}
 	
-	public long metacalcule(int id_version, GameState<RobotChrono> state, boolean use_cache)
+	public long metacalcule(int id_version, GameState<RobotChrono> state, boolean use_cache) throws PathfindingException
 	{	    
-	    // TODO est-ce qu'elle prennent toutes le meme temps? Ou prendre le min?
 		long duree = calcule(version_asso(id_version).get(0), state, use_cache);
 		state.time_depuis_debut += duree;
         state.time_depuis_racine += duree;
@@ -118,21 +107,15 @@ public abstract class Script implements Service {
 	/**
 	 * Calcule le temps d'exécution de ce script (grâce à robotChrono)
 	 * @return le temps d'exécution
+	 * @throws PathfindingException 
 	 */
-	public long calcule(int id_version, GameState<RobotChrono> state, boolean use_cache)
+	public long calcule(int id_version, GameState<RobotChrono> state, boolean use_cache) throws PathfindingException
 	{
 		Vec2 point_entree = point_entree(id_version);
 		state.robot.set_vitesse_translation("entre_scripts");
 		state.robot.set_vitesse_rotation("entre_scripts");
 		
-		try {
-			System.out.println("Le point d'entrée se situe en ("+point_entree.x+","+point_entree.y+")");
-			state.robot.initialiser_compteur(state.pathfinding.distance(state.robot.getPosition(), point_entree, use_cache));
-		} catch (PathfindingException e1) {
-			// En cas de problème du pathfinding, on évalue la longueur du chemin
-			state.robot.initialiser_compteur((int)(state.robot.getPosition().distance(point_entree)*1.5));
-			e1.printStackTrace();
-		}
+		state.robot.initialiser_compteur(state.pathfinding.distance(state.robot.getPosition(), point_entree, use_cache));
 		state.robot.setPosition(point_entree);
 
 		try {
@@ -156,11 +139,6 @@ public abstract class Script implements Service {
 	 */
 	public abstract ArrayList<Integer> meta_version(final GameState<?> state);
 		
-	/**
-	 * Renvoie le tableau des versions d'un script
-	 * @return le tableau des versions possibles
-	 */
-	public abstract ArrayList<Integer> version(final GameState<?> state);
 
 	/**
 	 * Retourne la position d'entrée associée à la version id
@@ -169,14 +147,22 @@ public abstract class Script implements Service {
 	 */
 	public abstract Vec2 point_entree(int id);
 	/**
-	 * Grande 
 	 * Renvoie le score que peut fournir une méta-version d'un script
 	 * @return le score
 	 */
-	public int meta_score(int id_version, GameState<?> state)
+	
+	public int meta_score(int id_metaversion, GameState<?> state)
 	{
-		return score(version_asso(id_version).get(0), state);
+	    ArrayList<Integer> versions = version_asso(id_metaversion);
+        if(versions == null)
+            return -1;
+	    int max = versions.get(0);
+	    for(Integer v: versions)
+	        if(score(v, state) > score(max, state))
+	            max = v;
+		return score(max, state);
 	}
+
 	/**
 	 * Renvoie le score que peut fournir une version d'un script
 	 * @return le score
@@ -188,12 +174,6 @@ public abstract class Script implements Service {
 	 * @return le poids
 	 */
 	public abstract int poids(final GameState<?> state);
-
-	/**
- 	 * Donne la probabilité que le script réussisse
-	 * @return la proba que la script réussisse, en supposant que l'ennemi n'y soit pas
-	 */
-	public abstract float proba_reussite();
 
 	/**
 	 * Exécute le script, avec RobotVrai ou RobotChrono

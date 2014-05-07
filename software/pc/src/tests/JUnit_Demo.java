@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import hook.Callback;
 import hook.Executable;
 import hook.Hook;
-import hook.HookGenerator;
 import hook.methodes.TakeFire;
+import hook.sortes.HookGenerator;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import robot.Cote;
+import enums.Cote;
 import robot.RobotChrono;
 import robot.RobotVrai;
 import scripts.Script;
@@ -28,7 +28,8 @@ public class JUnit_Demo extends JUnit_Test {
 	private HookGenerator hookgenerator;
 	private GameState<RobotVrai> state;
 	
-	@Before
+	@SuppressWarnings("unchecked")
+    @Before
 	public void setUp() throws Exception {
 		super.setUp();
 		config.set("couleur", "jaune");

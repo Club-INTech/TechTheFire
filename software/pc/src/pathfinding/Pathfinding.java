@@ -4,14 +4,13 @@ import java.util.ArrayList;
 
 import pathfinding.SearchSpace.Grid2DSpace;
 import smartMath.Vec2;
-import table.ObstacleCirculaire;
 import table.Table;
+import table.obstacles.ObstacleCirculaire;
 import utils.DataSaver;
 import utils.Log;
 import utils.Read_Ini;
 import container.Service;
-import exception.ConfigException;
-import exception.PathfindingException;
+import exceptions.strategie.PathfindingException;
 
 
 /**
@@ -25,7 +24,7 @@ import exception.PathfindingException;
  *
  */
 
-public class Pathfinding implements Service
+public class Pathfinding implements Service, Cloneable
 {
 	// Dépendances
 	private final Table table;	// Final: protection contre le changement de référence.
@@ -75,11 +74,7 @@ public class Pathfinding implements Service
 	 */
 	public void maj_config()
 	{
-		try {
-			nb_precisions = Integer.parseInt(config.get("nb_precisions"));
-		} catch (NumberFormatException | ConfigException e) {
-			e.printStackTrace();
-		}
+		nb_precisions = Integer.parseInt(config.get("nb_precisions"));
 
 		hashTableSaved = new int[nb_precisions];
 
@@ -128,7 +123,7 @@ public class Pathfinding implements Service
 			{
 				code_torches_actuel = table.codeTorches();
 				try {
-					distance_cache = (CacheHolder) DataSaver.charger("cache/distance-"+code_torches_actuel+".cache");
+//					distance_cache = (CacheHolder) DataSaver.charger("cache/distance-"+code_torches_actuel+".cache");
 				}
 				catch(Exception e)
 				{
@@ -207,6 +202,9 @@ public class Pathfinding implements Service
 		if(solver.espace.canCrossLine(depart, arrivee))
 			return (int)depart.distance(arrivee);
 		
+		if(depart.x > 1500 || depart.x < -1500 || depart.y > 2000 || depart.y < 0 || arrivee.x > 1500 || arrivee.x < -1500 || arrivee.y > 2000 || arrivee.y < 0)
+			throw new PathfindingException();
+		
 		if(!use_cache || distance_cache == null)
 		{
 			ArrayList<Vec2> result = chemin(depart, arrivee);
@@ -246,5 +244,19 @@ public class Pathfinding implements Service
 	        return false;
 	    return table.equals(((Pathfinding)other).table);
 	}
+	
+	@Override
+	public Pathfinding clone()
+	{
+		try {
+			return (Pathfinding) super.clone();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	
 }
