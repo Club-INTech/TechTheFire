@@ -1,6 +1,6 @@
 package robot.cartes.laser;
 
-import exception.MatriceException;
+import exceptions.MatriceException;
 import smartMath.Matrn;
 
 /**

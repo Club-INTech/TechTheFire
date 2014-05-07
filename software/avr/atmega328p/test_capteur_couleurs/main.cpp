@@ -7,7 +7,7 @@
 #include <libintech/capteur_srf05.hpp>
 #include <libintech/algorithm.hpp>
 
-typedef ring_buffer<uint16_t, 4> ringBufferC; 
+typedef ring_buffer<uint16_t, 8> ringBufferC; 
 
 INITIALISE_INTERRUPT_MANAGER();
 
@@ -92,7 +92,6 @@ int main() {
 	else
 	  uart0::printfln("? g=%d %d r=%d\n",medVD,medBD,medRD);
       }
-      //uart0::printfln("red = %d, blue = %d, green = %d", medR/100, medB/100, medG/100);
     }
   }
 }
@@ -149,7 +148,7 @@ void interruption_int1(){
            s1 = D5
            s2 = D4
            s3 = D7
-           out = D2
+           out = D2 et D3
 
 Valeurs: RIEN: r=14 b=11/12 g=13
          JAUNE: r=13/17 b=12 g=11

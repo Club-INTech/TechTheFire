@@ -53,7 +53,7 @@ class Communication
 
 	{
 		serial_pc::init();
-		serial_pc::change_baudrate (9600);
+		serial_pc::change_baudrate (57600);
 		serial_pc::activer_acquittement(true);
 		serial_ax12::init();
 		serial_ax12::change_baudrate (9600);
