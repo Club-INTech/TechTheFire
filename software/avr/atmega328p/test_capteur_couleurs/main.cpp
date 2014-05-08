@@ -37,7 +37,7 @@ int main() {
   D6::low();
 
   timer0::mode(timer0::MODE_COUNTER);
-  timer0::set_prescaler(timer0::prescaler::PRESCALER_1024);
+  timer0::set_prescaler(timer0::prescaler::PRESCALER_256); //1024 ou 256 ou 64
 
   timer0::counter::overflow_interrupt::attach(interruption_timer);
   timer0::counter::overflow_interrupt::enable();
