@@ -7,7 +7,7 @@
 #include <libintech/capteur_srf05.hpp>
 #include <libintech/algorithm.hpp>
 
-typedef ring_buffer<uint16_t, 8> ringBufferC; 
+typedef ring_buffer<uint16_t, 10> ringBufferC; 
 
 INITIALISE_INTERRUPT_MANAGER();
 
