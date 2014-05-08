@@ -6,8 +6,8 @@ Robot::Robot() :
 			,angle_origine_(0.0)
 			,etat_rot_(true)
 			,etat_tra_(true)
-			,translation(0.25,9.0,0.0)
-			,rotation(0.8,15.0,0.0)
+			,translation(0.45,9.0,0.0) // 0.45,11.5 pour 150 0.45 12.5 pour 170
+			,rotation(0.8,15.0,0.0)  //0,85, 15.0
 {
 	TWI_init();
 	serial_t_::init();
