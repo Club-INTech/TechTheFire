@@ -3,20 +3,6 @@ import java.io.InputStreamReader;
 
 import org.junit.runner.JUnitCore;
 
-import pathfinding.Pathfinding;
-import container.Container;
-import exception.ScriptException;
-import robot.RobotChrono;
-import robot.RobotVrai;
-import robot.cartes.Capteurs;
-import scripts.Script;
-import scripts.ScriptManager;
-import smartMath.Vec2;
-import table.Table;
-import threads.ThreadTimer;
-import utils.Log;
-import utils.Read_Ini;
-
 /*
  * TODO pour le lanceur final:
  * - ne pas oublier container.destructeur();
@@ -628,4 +614,3 @@ public class lanceur
  * 
  * 
  * */
- 
