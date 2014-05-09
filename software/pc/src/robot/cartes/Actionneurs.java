@@ -192,10 +192,28 @@ public class Actionneurs implements Service {
 		log.debug("Balle tirée", this);
 		serie.communiquer("tourne", 0);		
 	}
+	
+    public void recharger() throws SerialException
+    {
+        log.debug("Barillet rechargé", this);
+        serie.communiquer("reload", 0);     
+    }
+    
 	public void lancerFilet() throws SerialException
 	{
 		log.debug("Filet lancé", this);
 		serie.communiquer("tf", 0);
 	}
-
+	public void renverserFeuGauche() throws SerialException
+	{
+		log.debug("Renverser feu gauche", this);
+		serie.communiquer("ag", 0);
+		serie.communiquer("0", 0);
+	}
+	public void renverserFeuDoite() throws SerialException
+	{
+		log.debug("Renverser feu droit",this);
+		serie.communiquer("ad", 0);
+		serie.communiquer("300", 0);
+	}
 }
