@@ -75,21 +75,21 @@ int main() {
       medVD = mediane(ringBufferValeursVD);
 
       if(medRG/medVG == 0)
-	uart0::printfln("ROUGE g=%d b=%d r=%d et ",medVG,medBG,medRG);
+	uart0::printfln("D2: ROUGE g=%d b=%d r=%d et ",medVG,medBG,medRG);
       else{
       if(medRG/medVG == 1)
-	uart0::printfln("JAUNE g=%d b=%d r=%d et ",medVG,medBG,medRG);
+	uart0::printfln("D2: JAUNE g=%d b=%d r=%d et ",medVG,medBG,medRG);
       else
-	uart0::printfln("? g=%d %d r=%d et",medVG,medBG,medRG);
+	uart0::printfln("D2: ? g=%d %d r=%d et",medVG,medBG,medRG);
       }
 
       if(medRD/medVD == 0)
-	uart0::printfln("ROUGE g=%d b=%d r=%d\n",medVD,medBD,medRD);
+	uart0::printfln("D3: ROUGE g=%d b=%d r=%d\n",medVD,medBD,medRD);
       else{
 	if(medRD/medVD == 1)
-	  uart0::printfln("JAUNE g=%d b=%d r=%d\n",medVD,medBD,medRD);
+	  uart0::printfln("D3: JAUNE g=%d b=%d r=%d\n",medVD,medBD,medRD);
 	else
-	  uart0::printfln("? g=%d %d r=%d\n",medVD,medBD,medRD);
+	  uart0::printfln("D3: ? g=%d %d r=%d\n",medVD,medBD,medRD);
       }
     }
   }
