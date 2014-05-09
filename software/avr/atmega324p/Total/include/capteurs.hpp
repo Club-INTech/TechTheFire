@@ -30,6 +30,8 @@ class Capteurs
 
         typedef CapteurInfrarouge< AVR_ADC<0> > capteur_infra1_type;
         capteur_infra1_type inf1;
+	typedef CapteurInfrarouge< AVR_ADC<1> > capteur_infra2_type;
+	capteur_infra2_type inf2;
 
     private:
         uint8_t bufferContactGauche[TAILLE_BUFFER];

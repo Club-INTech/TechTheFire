@@ -45,6 +45,7 @@ ISR(TIMER0_OVF_vect) //overflow du timer 2, qui appelle le refresh d'un ou des c
     {
         communication.capteurs.us1.refresh();
         communication.capteurs.inf1.refresh();
+	communication.capteurs.inf2.refresh();
     }
     overflow++;
     overflow%=5;

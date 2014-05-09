@@ -271,11 +271,16 @@ class Communication
         }
 
 	// infrarouge
-        else if (strcmp(ordre, "ir_av")==0)
+        else if (strcmp(ordre, "ir_g")==0)
         {
             serial_pc::print(capteurs.inf1.value());
+	    serial_pc::print(capteurs.inf2.value());
         }
-
+        else if (strcmp(ordre, "ir_d")==0)
+        {
+	  //TODO dans capteurs.hpp    serial_pc::print(capteurs.inf1.value());
+        }
+		
 	// Ultrasons SRF05
         else if (strcmp(ordre, "us_av")==0)
         {
@@ -314,7 +319,7 @@ class Communication
 	{
 //	  uint16_t positionPrecedente = (pinceGauche.getPosition_0_1023());
 //	  uint16_t positionActuelle = positionPrecedente ;
-	  pinceGauche.goTo(150);
+	  pinceGauche.goTo(153);
 /*	  for(int i=0; i<7;i++)
 	      {
 		_delay_ms(100);
@@ -325,19 +330,20 @@ class Communication
 	}
 	void basGauche ()
 	{
-		positionGauche.goTo(230);
-		orientationGauche.goTo(70);
+		positionGauche.goTo(210);
+		orientationGauche.goTo(82);
 	}
 	void milieuGauche ()
 	{
 		positionGauche.goTo(140);
-		orientationGauche.goTo(150);
+		orientationGauche.goTo(155);
 	}
 	void hautGauche ()
 	{
+	  retablirGauche();
 	  	positionGauche.goTo(60);
 		_delay_ms(300);
-		orientationGauche.goTo(200);
+		orientationGauche.goTo(110);
 		_delay_ms(200);
 		orientationGauche.goTo(125); //cet ajout a pour but de mettre la pince verticale, qu'elle prenne moins de place.
 	}
@@ -388,13 +394,13 @@ void posGauche ()
 
 	void ouvrirDroite ()
 	{
-		pinceDroite.goTo (213);
+		pinceDroite.goTo (200);
 	}
 	void fermerDroite ()
 	{
 //	  uint16_t positionPrecedente = (pinceDroite.getPosition_0_1023());
 //	  uint16_t positionActuelle = positionPrecedente ;
-	  pinceDroite.goTo(123);
+	  pinceDroite.goTo(130);
 /*	  for(int i=0; i<7; i++)
 	      {
 		_delay_ms(100);
@@ -407,30 +413,31 @@ void posGauche ()
 	}
 	void basDroite ()
 	{
-		orientationDroite.goTo(70);
-		positionDroite.goTo(230);
+		positionDroite.goTo(215);
+		orientationDroite.goTo(220);
 	}
     void ouvrirBasDroite ()
 	{
-		orientationDroite.goTo(70);
-		positionDroite.goTo(230);
+		positionDroite.goTo(215);
+		orientationDroite.goTo(220);
         _delay_ms(250);
         ouvrirDroite();
 	}
 		
     void milieuDroite ()
 	{
-		orientationDroite.goTo(145);
 		positionDroite.goTo(150);
+		orientationDroite.goTo(155);
 	}
  
 	void hautDroite ()
 	{
-	  	positionDroite.goTo(60);
+	  retablirDroite();
+	  	positionDroite.goTo(70);
 		_delay_ms(450);
-		orientationDroite.goTo(240);
+		orientationDroite.goTo(200);
 		_delay_ms(200);
-		orientationDroite.goTo(130);
+		orientationDroite.goTo(175);
 	}
   void posDroite ()
   {

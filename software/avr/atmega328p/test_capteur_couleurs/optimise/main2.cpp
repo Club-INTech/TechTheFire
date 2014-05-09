@@ -8,12 +8,14 @@
 #include <libintech/algorithm.hpp>
 
 typedef ring_buffer<uint16_t, 10> ringBufferC; 
+typedef ring_buffer<uint16_t, 8> ringBufferF; 
 
 INITIALISE_INTERRUPT_MANAGER();
 
 ringBufferC ringBufferValeursRG, ringBufferValeursRD, ringBufferValeursBG, ringBufferValeursBD, ringBufferValeursVG, ringBufferValeursVD;
+ringBufferF ringBufferValeursFG, ringBufferValeursFD; 
 int flag = 0;
-uint16_t counterG = 0, counterD = 0, countRG = 0, countRD = 0, countVG = 0,countVD = 0, countBG = 0,countBD = 0, medRG, medRD, medVG, medVD, medBG, medBD;
+uint16_t counterG = 0, counterD = 0, countRG = 0, countRD = 0, countVG = 0,countVD = 0, countBG = 0,countBD = 0, medRG, medRD, medVG, medVD, medBG, medBD, medFG, medFD;
 
 void interruption_timer();
 void interruption_int0();
@@ -74,24 +76,57 @@ int main() {
       ringBufferValeursVD.append(countVD);
       medVD = mediane(ringBufferValeursVD);
 
-      if(medRG/medVG == 0)
-	uart0::printfln("ROUGE g=%d b=%d r=%d et ",medVG,medBG,medRG);
-      else{
-      if(medRG/medVG == 1)
-	uart0::printfln("JAUNE g=%d b=%d r=%d et ",medVG,medBG,medRG);
-      else
-	uart0::printfln("? g=%d %d r=%d et",medVG,medBG,medRG);
+      if(medRG/medVG == 0){
+	ringBufferValeursFG.append(0);
+	//	uart0::printfln("ROUGE g=%d b=%d r=%d et ",medVG,medBG,medRG);
+	medFG = mediane(ringBufferValeursFG);
       }
-      //uart0::printfln("red = %d, blue = %d, green = %d", medR/100, medB/100, medG/100);
-
-      if(medRD/medVD == 0)
-	uart0::printfln("ROUGE g=%d b=%d r=%d\n",medVD,medBD,medRD);
       else{
-	if(medRD/medVD == 1)
-	  uart0::printfln("JAUNE g=%d b=%d r=%d\n",medVD,medBD,medRD);
+	if(medRG/medVG == 1){
+	ringBufferValeursFG.append(2);
+      //	uart0::printfln("JAUNE g=%d b=%d r=%d et ",medVG,medBG,medRG);
+	medFG = mediane(ringBufferValeursFG);
+	}
+	else{
+	ringBufferValeursFG.append(1);
+      //	uart0::printfln("? g=%d %d r=%d et",medVG,medBG,medRG);
+	medFG = mediane(ringBufferValeursFG);
+	}
+      }
+      if(medFG == 0)
+	uart0::printfln("ROUGE  et ");
+      else{
+	if(medFG == 2)
+	  uart0::printfln("JAUNE  et ");
 	else
-	  uart0::printfln("? g=%d %d r=%d\n",medVD,medBD,medRD);
+	  uart0::printfln("? et ");
       }
+
+      if(medRD/medVD == 0){
+	//uart0::printfln("ROUGE g=%d b=%d r=%d\n",medVD,medBD,medRD);
+	ringBufferValeursFD.append(1);
+	medFD = mediane(ringBufferValeursFD);
+      }
+      else{
+	if(medRD/medVD == 1){
+	  //uart0::printfln("JAUNE g=%d b=%d r=%d\n",medVD,medBD,medRD);
+	  ringBufferValeursFD.append(2);
+	  medFD = mediane(ringBufferValeursFD);
+	}
+	else{
+	  //uart0::printfln("? g=%d %d r=%d\n",medVD,medBD,medRD);
+	  ringBufferValeursFD.append(0);
+	  medFD = mediane(ringBufferValeursFD);
+	}
+      }
+      if(medFD == 0)
+	uart0::printfln("ROUGE\n");
+      else{
+	if(medFD == 2)
+	  uart0::printfln("JAUNE\n");
+	else
+	  uart0::printfln("?\n");
+      } 
     }
   }
 }
