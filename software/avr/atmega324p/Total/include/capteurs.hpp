@@ -58,7 +58,7 @@ Capteurs()
 
 void maj()
 {
-  uint8_t retenueAvant = C0::read(); // TODO pour les nouvelles cartes, cela sera B1
+  uint8_t retenueAvant = B1::read(); // TODO actuel : C0 pour les nouvelles cartes, cela sera B1
     for(uint8_t i=0; i<TAILLE_BUFFER; i++)
     {
         uint8_t retenueApres = bufferContactDroit[i]&(1<<7)>>7;
@@ -67,7 +67,7 @@ void maj()
         retenueAvant = retenueApres;
     }
 
-    retenueAvant = C1::read(); // TODO pour les nouvelles cartes, cela sera B0 
+    retenueAvant = B0::read(); // TODO actuel : C1 pour les nouvelles cartes, cela sera B0 
     for(uint8_t i=0; i<TAILLE_BUFFER; i++)
     {
         uint8_t retenueApres = bufferContactMilieu[i]&(1<<7)>>7;
@@ -76,7 +76,7 @@ void maj()
         retenueAvant = retenueApres;
     }
 
-    retenueAvant = C3::read(); // TODO pour les nouvelles cartes, cela sera B2
+    retenueAvant = B2::read(); // TODO actuel C3 pour les nouvelles cartes, cela sera B2
     for(uint8_t i=0; i<TAILLE_BUFFER; i++)
     {
         uint8_t retenueApres = bufferContactGauche[i]&(1<<7)>>7;

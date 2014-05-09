@@ -73,11 +73,15 @@ class Communication
 		{
 			this->ouvrirGauche ();
 		}
+		else if ( strcmp ( ordre , "obg" ) == 0 )
+		{
+			this->ouvrirBasGauche ();
+		}
 		else if ( strcmp ( ordre , "od" ) == 0 )		       
 		{
 			this->ouvrirDroite ();
 		}
-        else if ( strcmp ( ordre , "obd" ) == 0 )		       
+		else if ( strcmp ( ordre , "obd" ) == 0 )		       
 		{
 			this->ouvrirBasDroite ();
 		}
@@ -128,6 +132,10 @@ class Communication
 		else if ( strcmp ( ordre , "od" ) == 0 )
 		{
 			this->ouvrirDroite ();
+		}
+		else if ( strcmp ( ordre , "obd" ) == 0 )
+		{
+			this->ouvrirBasDroite ();
 		}
 		else if ( strcmp ( ordre , "fd" ) == 0 )
 		{
@@ -180,22 +188,16 @@ class Communication
 		{
        	       		this -> tombeDroite ();
 		}
-		/*
-		  else if (strcmp (ordre, "hrd") ==0)
-		  {
-		    this -> remonterEtRetablirDroite ();
-		  }
-		else if (strcmp (ordre, "hrg") ==0)
-		  {
-		    this -> remonterEtRetablirGauche ();
-		  }
-		*/
 		else if (strcmp (ordre, "test")==0)
 		  {
 		    this -> test ();
 		  }
 
 	//Actions bac
+		else if ( strcmp ( ordre , "btb" ) == 0 )  //btb = bac tres bas
+		{
+			this->bacTresBas ();
+		}
 		else if ( strcmp ( ordre , "bb" ) == 0 )  //bb = bac bas
 		{
 			this->bacBas ();
@@ -334,21 +336,29 @@ class Communication
 	}
 	void milieuGauche ()
 	{
-		positionGauche.goTo(140);
+		positionGauche.goTo(130);
 		orientationGauche.goTo(155);
 	}
 	void hautGauche ()
 	{
 	  retablirGauche();
-	  	positionGauche.goTo(60);
-		_delay_ms(300);
-		orientationGauche.goTo(110);
-		_delay_ms(200);
-		orientationGauche.goTo(125); //cet ajout a pour but de mettre la pince verticale, qu'elle prenne moins de place.
+	  	positionGauche.goTo(65);
+		_delay_ms(250);
+		orientationGauche.goTo(130); //cet ajout a pour but de mettre la pince verticale, qu'elle prenne moins de place.
 	}
-void retournerGauche ()
+  void ouvrirBasGauche ()
+  {
+    positionGauche.goTo(210);
+    orientationGauche.goTo(82);
+    _delay_ms(250);
+    ouvrirGauche();
+  }
+  void retournerGauche ()
   {
     retourneurGauche.goTo (240);
+    _delay_ms(300);
+    positionGauche.goTo(170);
+    orientationGauche.goTo(145);
   }
   void retablirGauche ()
   {
@@ -361,7 +371,7 @@ void posGauche ()
         uint16_t i;
 	serial_pc::read (i);
 	positionGauche.goTo(i);
-	orientationGauche.goTo(300-i);
+	orientationGauche.goTo(290-i);
   }
 
  void tombeGauche ()
@@ -373,22 +383,11 @@ void posGauche ()
 	{
 
 	  pinceGauche.goTo (60);
-	  orientationGauche.goTo(175);
-	  positionGauche.goTo(115);
+	  positionGauche.goTo(100);
+	  orientationGauche.goTo(190);
 	}
 
 
-  /*
-  void remonterEtRetablirGauche ()
-  {
-    orientationGauche.goTo(120);
-	positionGauche.goTo(120);
-	_delay_ms(500);
-	retourneurGauche.goTo (60);
-	hautGauche();
-  }
-  inutile pour l'instant
-  */
 //actions de la pince droite
 
 	void ouvrirDroite ()
@@ -425,7 +424,7 @@ void posGauche ()
 		
     void milieuDroite ()
 	{
-		positionDroite.goTo(150);
+		positionDroite.goTo(140);
 		orientationDroite.goTo(155);
 	}
  
@@ -433,10 +432,8 @@ void posGauche ()
 	{
 	  retablirDroite();
 	  	positionDroite.goTo(70);
-		_delay_ms(450);
-		orientationDroite.goTo(200);
-		_delay_ms(200);
-		orientationDroite.goTo(175);
+		_delay_ms(250);
+		orientationDroite.goTo(170);
 	}
   void posDroite ()
   {
@@ -444,13 +441,13 @@ void posGauche ()
         uint16_t i;
 	serial_pc::read (i);
 	positionDroite.goTo(i);
-	orientationDroite.goTo(290-i);
+	orientationDroite.goTo(i+10);
   }
 void torcheDroite ()
 	{
-	  pinceDroite.goTo (213);
-	  positionDroite.goTo(120);
-	  orientationDroite.goTo(170);
+	  ouvrirDroite ();
+	  positionDroite.goTo(105);
+	  orientationDroite.goTo(115);
 	}
   void tombeDroite ()
   {
@@ -460,6 +457,9 @@ void torcheDroite ()
  void retournerDroite ()
   {
     retourneurDroite.goTo (60);
+    _delay_ms(300);
+    positionDroite.goTo(160);
+    orientationDroite.goTo(145);
   }
   void retablirDroite ()
   {
@@ -469,16 +469,7 @@ void torcheDroite ()
 	{
 	  pinceDroite.goTo(160);
 	}
-  /* void remonterEtRetablirDroite ()
-  {
-    	orientationDroite.goTo(145);
-	positionDroite.goTo(180);
-	_delay_ms(500);
-	retourneurDroite.goTo (240);
-	hautDroite();
-  }
-  inutile pour le moment
-  */
+
   // test généralisé
   void test ()
   {
@@ -488,6 +479,10 @@ void torcheDroite ()
 
 //action du bac
 
+	void bacTresBas ()
+	{
+		bac.goTo (40);
+	}
 	void bacBas ()
 	{
 		bac.goTo (60);
