@@ -274,11 +274,10 @@ class Communication
         else if (strcmp(ordre, "ir_g")==0)
         {
             serial_pc::print(capteurs.inf1.value());
-	    serial_pc::print(capteurs.inf2.value());
         }
         else if (strcmp(ordre, "ir_d")==0)
         {
-	  //TODO dans capteurs.hpp    serial_pc::print(capteurs.inf1.value());
+    	    serial_pc::print(capteurs.inf2.value());
         }
 		
 	// Ultrasons SRF05
