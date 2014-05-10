@@ -9,11 +9,11 @@ class Fruit {
 		this.good = good;
 	}
 	
-/*	public void clone(Fruit fruit)
+	public void setNoir()
 	{
-		fruit.good = good;
+	    this.good = false;
 	}
-	*/
+
 	public boolean isGood() {
 		return good;
 	}

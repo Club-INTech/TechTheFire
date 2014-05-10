@@ -12,44 +12,26 @@ public class Tree extends Game_Element implements Cloneable
 	private boolean taken = false;
 	private final Fruit arrayFruit[] = new Fruit[6];
 
-	// combien gauche()
-	// combien droit()
-
 	/**
 	 * Constructeur public
 	 * @param position
 	 */
-	public Tree(Vec2 position)
+	public Tree(Vec2 position, int indice_noir)
 	{
 		super(position);
-		this.arrayFruit[0] = new Fruit(true);
-		this.arrayFruit[1] = new Fruit(true);
-		this.arrayFruit[2] = new Fruit(true);
-		this.arrayFruit[3] = new Fruit(true);
-		this.arrayFruit[4] = new Fruit(true);
-		this.arrayFruit[5] = new Fruit(true);
+		for(int i = 0; i < 6; i++)
+	        this.arrayFruit[i] = new Fruit(i != indice_noir);
+
 		// Convention par Guy (spammez moi si je me trompe) :
 		// 0-2 : partie gauche de l'arbre
 		// 3-5 : partie droite de l'arbre
 		// De plus, 0 et 3 sont les fruits les plus proches du robot.
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
-	@Override
-	public Tree clone()
+	public void clone(Tree ct)
 	{
-		try {
-			return (Tree) super.clone();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
+	    ct.taken = taken;
 	}
-
 	
 	public int nbrLeft ()
 	{
@@ -96,12 +78,4 @@ public class Tree extends Game_Element implements Cloneable
 		this.taken = true;
 	}
 	
-	public Vec2 getPosition()
-	{
-		return this.position;
-	}
-	public Fruit[] getArrayFruit()
-	{
-		return this.arrayFruit;
-	}
 }
