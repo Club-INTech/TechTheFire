@@ -8,19 +8,16 @@
 #include <libintech/algorithm.hpp>
 
 typedef ring_buffer<uint16_t, 10> ringBufferC; 
-typedef ring_buffer<uint16_t, 100> ringBufferM;
 
 INITIALISE_INTERRUPT_MANAGER();
 
 ringBufferC ringBufferValeursRG, ringBufferValeursRD, ringBufferValeursBG, ringBufferValeursBD, ringBufferValeursVG, ringBufferValeursVD;
-ringBufferM ringBufferValeursMG, ringBufferValeursMD;
-int flag = 0, i;
-uint16_t counterG = 0, counterD = 0, countRG = 0, countRD = 0, countVG = 0,countVD = 0, countBG = 0,countBD = 0, medRG, medRD, medVG, medVD, medBG, medBD, moyG, moyD;
+int flag = 0;
+uint16_t counterG = 0, counterD = 0, countRG = 0, countRD = 0, countVG = 0,countVD = 0, countBG = 0,countBD = 0, medRG, medRD, medVG, medVD, medBG, medBD;
 
 void interruption_timer();
 void interruption_int0();
 void interruption_int1();
-void moyenne(ringBufferM r);
 
 int main() {
 
@@ -56,80 +53,44 @@ int main() {
   char buffer[17];  
 
   while(1){
-    for(i=0; i<100; i++){
-      uart0::read(buffer);
-      if(!strcmp(buffer,"?")){
-	
-	ringBufferValeursRG.append(countRG);
-	medRG = mediane(ringBufferValeursRG);
-	
-	ringBufferValeursRD.append(countRD);
-	medRD = mediane(ringBufferValeursRD);
-
-	ringBufferValeursBG.append(countBG);
-	medBG = mediane(ringBufferValeursBG);
-
-	ringBufferValeursBD.append(countBD);
-	medBD = mediane(ringBufferValeursBD);
-
-	ringBufferValeursVG.append(countVG);
-	medVG = mediane(ringBufferValeursVG);
-	
-	ringBufferValeursVD.append(countVD);
-	medVD = mediane(ringBufferValeursVD);
-
-	if(medRG/medVG == 0){
-	  //uart0::printfln("D2: ROUGE g=%d b=%d r=%d et ",medVG,medBG,medRG);
-	  ringBufferValeursMG.append(0);
-	  moyG = moyenne(ringBufferValeursMG);
-	}
-	else{
-	  if(medRG/medVG == 1){
-	    //uart0::printfln("D2: JAUNE g=%d b=%d r=%d et ",medVG,medBG,medRG);
-	    ringBufferValeursMG.append(2);
-	    moyG = moyenne(ringBufferValeursMG);
-	  }	  
-	  else{
-	    //uart0::printfln("D2: ? g=%d %d r=%d et",medVG,medBG,medRG);
-	    ringBufferValeursMG.append(1);
-	    moyG = moyenne(ringBufferValeursMG);
-	  }	  
-	}
+    uart0::read(buffer);
+    if(!strcmp(buffer,"?")){
       
-	if(medRD/medVD == 0){
-	  //uart0::printfln("D3: ROUGE g=%d b=%d r=%d\n",medVD,medBD,medRD);
-	  ringBufferValeursMD.append(0);
-	  moyD = moyenne(ringBufferValeursMD);
-	}	
-	else{
-	  if(medRD/medVD == 1){
-	    //uart0::printfln("D3: JAUNE g=%d b=%d r=%d\n",medVD,medBD,medRD);
-	    ringBufferValeursMD.append(2);
-	    moyD = moyenne(ringBufferValeursMD);
-	  }
-	  else{
-	    //uart0::printfln("D3: ? g=%d %d r=%d\n",medVD,medBD,medRD);
-	    ringBufferValeursMD.append(1);
-	    moyD = moyenne(ringBufferValeursMD);
-	  }
-	}
-      }
-    }
-    if(moyG == 0)
-      uart0::printfln("D2: ROUGE g=%d b=%d r=%d et ",medVG,medBG,medRG);
-    else{
-      if(moyG == 2)
+      ringBufferValeursRG.append(countRG);
+      medRG = mediane(ringBufferValeursRG);
+
+      ringBufferValeursRD.append(countRD);
+      medRD = mediane(ringBufferValeursRD);
+
+      ringBufferValeursBG.append(countBG);
+      medBG = mediane(ringBufferValeursBG);
+
+      ringBufferValeursBD.append(countBD);
+      medBD = mediane(ringBufferValeursBD);
+
+      ringBufferValeursVG.append(countVG);
+      medVG = mediane(ringBufferValeursVG);
+
+      ringBufferValeursVD.append(countVD);
+      medVD = mediane(ringBufferValeursVD);
+
+      if(medRG/medVG == 0)
+	uart0::printfln("D2: ROUGE g=%d b=%d r=%d et ",medVG,medBG,medRG);
+      else{
+      if(medRG/medVG == 1)
 	uart0::printfln("D2: JAUNE g=%d b=%d r=%d et ",medVG,medBG,medRG);
       else
 	uart0::printfln("D2: ? g=%d %d r=%d et",medVG,medBG,medRG);
-    }
-    if(moyD == 0)
-     uart0::printfln("D3: ROUGE g=%d b=%d r=%d\n",medVD,medBD,medRD);
-    else{
-      if(moyG == 2)
-	uart0::printfln("D3: JAUNE g=%d b=%d r=%d\n",medVD,medBD,medRD);
-      else
-	uart0::printfln("D3: ? g=%d %d r=%d\n",medVD,medBD,medRD);
+      }
+
+      if(medRD/medVD == 0)
+	uart0::printfln("D3: ROUGE g=%d b=%d r=%d\n",medVD,medBD,medRD);
+      else{
+	if(medRD/medVD == 1)
+	  uart0::printfln("D3: JAUNE g=%d b=%d r=%d\n",medVD,medBD,medRD);
+	else
+	  uart0::printfln("D3: ? g=%d %d r=%d\n",medVD,medBD,medRD);
+      }
     }
   }
 }
