@@ -21,22 +21,24 @@ public class FiltrageLaser implements Service {
 
 	public FiltrageLaser(Read_Ini config, Log log)
 	{
-		dt = (double)0.2;
-		double[][] tab_x = {{1400.}, {100.},{0.},{0.}};
-		Matrn x = new Matrn(tab_x);
-		double[][] tab_p = {{30,0,0,0},{0,30,0,0},{0,0,10,0},{0,0,0,10}};
-		Matrn p = new Matrn(tab_p);
-		double[][] tab_f = {{1,0,dt,0},{0,1,0,dt},{0,0,1,0},{0,0,0,1}};
-		Matrn f = new Matrn(tab_f);
-		double[][] tab_h = {{1,0,0,0},{0,1,0,0}};
-		Matrn h = new Matrn(tab_h);
-		double[][] tab_r = {{900,0},{0,900}};
-		Matrn r = new Matrn(tab_r);
-		double[][] tab_q = {{Math.pow(dt, 3)/3., 0, Math.pow(dt, 2.)/2., 0},{0, Math.pow(dt, 3.)/3., 0, Math.pow(dt, 2.)/2},{Math.pow(dt, 2.)/2., 0, 4*dt, 0},{0, Math.pow(dt, 2.)/2, 0, 4*dt}};
+		this.dt = (double)0.2;
+		double[][] tab_x = {{1400.}, {100.},{0.},{0.}}; 
+		Matrn x = new Matrn(tab_x); //vecteur d'état au départ
+		double[][] tab_p = {{30.,0.,0.,0.},{0.,30.,0.,0.},{0.,0.,10.,0.},{0.,0.,0.,10.}};
+		Matrn p = new Matrn(tab_p); // incertitude initiale
+		double[][] tab_f = {{1,0,this.dt,0},{0,1,0,this.dt},{0,0,1,0},{0,0,0,1}};
+		Matrn f = new Matrn(tab_f); //matrice de transition
+		double[][] tab_h = {{1.,0.,0.,0.},{0.,1.,0.,0.}};
+		Matrn h = new Matrn(tab_h); //matrice d'observation
+		double[][] tab_r = {{900.,0.},{0.,900.}};
+		Matrn r = new Matrn(tab_r); // incertitude sur la mesure
+		double[][] tab_q = {{Math.pow(this.dt, 3)/3., 0, Math.pow(this.dt, 2.)/2., 0},{0, Math.pow(this.dt, 3.)/3., 0, Math.pow(this.dt, 2.)/2},{Math.pow(this.dt, 2.)/2., 0, 4*this.dt, 0},{0, Math.pow(this.dt, 2.)/2, 0, 4*this.dt}};
 		Matrn q = new Matrn(tab_q);
-		filtre_kalman = new Kalman(x, p, f, h, r, q); 
-		historique = new Vec2[3];
-		valeurs_rejetees = 0;
+		q.multiplier_scalaire(30);
+		this.filtre_kalman = new Kalman(x, p, f, h, r, q); 
+		this.historique = new Vec2[3];
+		this.valeurs_rejetees = 0;
+		this.last_point = null; //pas certain
 		//double acceleration = null; 
 		//Je sais pas à quoi acceleration servait dans le code python, puisqu'il était inutile...
 		
@@ -49,22 +51,22 @@ public class FiltrageLaser implements Service {
 	
 	public Matrn etat_robot_adverse()
 	{
-		return filtre_kalman.x;
+		return this.filtre_kalman.x;
 		//Veut-on vraiment retourner le type Matrn? Pas certain ! Mais c'est plutôt pratique
 	}
 	
 	
 	public void update_dt(float new_dt)
 	{
-		dt = new_dt;
-		filtre_kalman.f.matrice[0][2] = new_dt; //encore visibilité !
-		filtre_kalman.f.matrice[1][3] = new_dt; //et toujours !!
+		this.dt = new_dt;
+		this.filtre_kalman.f.matrice[0][2] = new_dt; //encore visibilité !
+		this.filtre_kalman.f.matrice[1][3] = new_dt; //et toujours !!
 	}
 
 	
 	public Vec2 position()
 	{
-		return last_point;
+		return this.last_point;
 		//hésitation observée dans le code python, en voici une interprétation
 	}
 	

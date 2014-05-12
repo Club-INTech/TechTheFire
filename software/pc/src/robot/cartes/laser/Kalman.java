@@ -61,7 +61,7 @@ class Kalman {
 			try {
 				y = z.soustraire(this.h.multiplier(this.x));
 				Matrn s = this.h.multiplier(this.p).multiplier(this.h.transpose()).additionner(this.r);
-				Matrn k = this.p.multiplier(p).multiplier(this.h.transpose()).multiplier(s.inverser());
+				Matrn k = this.p.multiplier(this.h.transpose()).multiplier(s.inverser());
 				this.x.additionner_egal(k.multiplier(y));
 				this.p = (this.ident.soustraire(k.multiplier(this.h))).multiplier(this.p);
 			} catch (MatriceException e) {
