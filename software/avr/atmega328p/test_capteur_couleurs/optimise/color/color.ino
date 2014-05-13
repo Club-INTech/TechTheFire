@@ -1,3 +1,7 @@
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <libintech/SimpleTimer.h>
+#include <libintech/timer.hpp>
 
 #define S0 3
 #define S1 4
@@ -5,12 +9,13 @@
 #define S3 6
 #define IN 2
 
-#define DUMP_VAR(x)		\
+/*#define DUMP_VAR(x)		\
 {				\
 	Serial.print(#x);	\
 	Serial.print(" : ");    \
 	Serial.println(x);	\
 }
+*/
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -26,7 +31,7 @@ enum Colors{
 
 int colorCount=0;
 int currentcolor=0;
-IntervalTimer myTimer;
+SimpleTimer myTimer;
 int colorValues[4]={0,0,0,0};
 
 void setup() 
@@ -101,7 +106,7 @@ void loop()
   float T;
   float L;
   if(M==red) {
-    /Serial.println("r");
+    //Serial.println("r");
     T=60.+(green-blue)/(M-m);
   } else if (M==green){
     //Serial.println("g");
