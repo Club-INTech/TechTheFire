@@ -1,155 +1,156 @@
-#include <stdint.h>
 #include <avr/io.h>
-#include <libintech/gpio.hpp>
-#include <libintech/uart.hpp>
+#include <avr/interrupt.h>
+#include <libintech/SimpleTimer.h>
 #include <libintech/timer.hpp>
-#include <libintech/isr.hpp>
-#include <libintech/capteur_srf05.hpp>
-#include <libintech/algorithm.hpp>
 
-typedef ring_buffer<uint16_t, 10> ringBufferC; 
+#define S0 3
+#define S1 4
+#define S2 5
+#define S3 6
+#define IN 2
 
-INITIALISE_INTERRUPT_MANAGER();
+/*
+#define DUMP_VAR(x)		\
+{				\
+  uart0::printfln(#x);		\
+  uart0::printfln(" : ");	\
+  uart0::printfln(x);		\
+}
+*/
 
-ringBufferC ringBufferValeursRG, ringBufferValeursRD, ringBufferValeursBG, ringBufferValeursBD, ringBufferValeursVG, ringBufferValeursVD;
-int flag = 0;
-uint16_t counterG = 0, counterD = 0, countRG = 0, countRD = 0, countVG = 0,countVD = 0, countBG = 0,countBD = 0, medRG, medRD, medVG, medVD, medBG, medBD;
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-void interruption_timer();
-void interruption_int0();
-void interruption_int1();
+enum Colors{
+  RED=0,
+  GREEN=1,
+  BLUE=2,
+  WHITE=3
+};
 
-int main() {
+#define OFFSET 70
 
-  D6::output();
-  D5::output();
-  D4::output();
-  D7::output();
-  D2::input();
-  D3::input();
+int colorCount=0;
+int currentcolor=0;
+SimpleTimer myTimer;
+int colorValues[4]={0,0,0,0};
 
-  uart0::init();
-  uart0::change_baudrate(9600); // vitesse de connection: 9600
+void setup() 
+{ 
+  Serial.begin(115200);
+  pinMode(S1,OUTPUT);
+  pinMode(S2,OUTPUT);
+  pinMode(S3,OUTPUT);
+  pinMode(S0,OUTPUT);
+  pinMode(IN,INPUT);
+  digitalWrite(S0,LOW);
+  digitalWrite(S1,HIGH);
+  myTimer.begin(nextColor, 100000);
+  
+  attachInterrupt(IN, count, CHANGE);
+  attachInterrupt(2, count, CHANGE);
+  attachInterrupt(3, count, CHANGE);
+  attachInterrupt(4, count, CHANGE);
+  attachInterrupt(5, count, CHANGE);
+  attachInterrupt(6, count, CHANGE);
+} 
 
-  D7::low();
-  D4::high();
-  D5::high();
-  D6::low();
 
-  timer0::mode(timer0::MODE_COUNTER);
-  timer0::set_prescaler(timer0::prescaler::PRESCALER_1024); //1024 ou 256 ou 64
+void count()
+{
+  colorCount++;
+}
 
-  timer0::counter::overflow_interrupt::attach(interruption_timer);
-  timer0::counter::overflow_interrupt::enable();
 
-  int0::mode(int0::LOW_LEVEL);
-  int0::attach(interruption_int0);
-  int0::enable();
+void nextColor()
+{
+  detachInterrupt(IN);
+  colorValues[currentcolor]=colorCount;
+  colorCount=0;
+  currentcolor=(currentcolor+1)%4;
+  switch (currentcolor) {
+  case RED:
+    digitalWrite(S2,LOW);
+    digitalWrite(S3,LOW);
+    break;
+  case GREEN:
+    digitalWrite(S2,HIGH);
+    digitalWrite(S3,HIGH);
+    break;
+  case BLUE:
+    digitalWrite(S2,LOW);
+    digitalWrite(S3,HIGH);
+    break;
+  case WHITE:
+    digitalWrite(S2,HIGH);
+    digitalWrite(S3,LOW);
+    break;
+  }
+  attachInterrupt(IN, count, CHANGE);
+}
 
-  int1::mode(int1::LOW_LEVEL);
-  int1::attach(interruption_int1);
-  int1::enable();
-
-  char buffer[17];  
-
-  while(1){
-    uart0::read(buffer);
-    if(!strcmp(buffer,"?")){
-      
-      ringBufferValeursRG.append(countRG);
-      medRG = mediane(ringBufferValeursRG);
-
-      ringBufferValeursRD.append(countRD);
-      medRD = mediane(ringBufferValeursRD);
-
-      ringBufferValeursBG.append(countBG);
-      medBG = mediane(ringBufferValeursBG);
-
-      ringBufferValeursBD.append(countBD);
-      medBD = mediane(ringBufferValeursBD);
-
-      ringBufferValeursVG.append(countVG);
-      medVG = mediane(ringBufferValeursVG);
-
-      ringBufferValeursVD.append(countVD);
-      medVD = mediane(ringBufferValeursVD);
-
-      if(medRG/medVG == 0)
-	uart0::printfln("D2: ROUGE g=%d b=%d r=%d et ",medVG,medBG,medRG);
-      else{
-      if(medRG/medVG == 1)
-	uart0::printfln("D2: JAUNE g=%d b=%d r=%d et ",medVG,medBG,medRG);
-      else
-	uart0::printfln("D2: ? g=%d %d r=%d et",medVG,medBG,medRG);
-      }
-
-      if(medRD/medVD == 0)
-	uart0::printfln("D3: ROUGE g=%d b=%d r=%d\n",medVD,medBD,medRD);
-      else{
-	if(medRD/medVD == 1)
-	  uart0::printfln("D3: JAUNE g=%d b=%d r=%d\n",medVD,medBD,medRD);
-	else
-	  uart0::printfln("D3: ? g=%d %d r=%d\n",medVD,medBD,medRD);
+void loop() 
+{
+  delay(100);
+  
+  colorValues[RED]=MAX(colorValues[RED]-OFFSET,0);
+  colorValues[GREEN]=MAX(colorValues[GREEN]-OFFSET,0);
+  colorValues[BLUE]=MAX(colorValues[BLUE]-OFFSET,0);
+  colorValues[WHITE]=MAX(colorValues[WHITE]-3*OFFSET,0);
+  
+  float red=((float)colorValues[RED]/(float)colorValues[WHITE])*255.;
+  float blue=((float)colorValues[BLUE]/(float)colorValues[WHITE])*255.;
+  float green=((float)colorValues[GREEN]/(float)colorValues[WHITE])*255.;
+  
+  float M = MAX(MAX(red,green),blue);  
+  float m = MIN(MIN(red,green),blue);
+  float T;
+  float L;
+  if(M==red) {
+    //Serial.println("r");
+    T=60.+(green-blue)/(M-m);
+  } else if (M==green){
+    //Serial.println("g");
+    T=120.+(blue-red)/(M-m);    
+  } else if (M==blue){
+    //Serial.println("b");
+    T=240.+(red-green)/(M-m);    
+  }
+  
+  L=MIN(255,255.*(float)colorValues[WHITE]/3000.);
+  
+  //DUMP_VAR(colorValues[RED]);
+  //DUMP_VAR(colorValues[GREEN]);
+  //DUMP_VAR(colorValues[BLUE]);
+  //DUMP_VAR(colorValues[WHITE]);
+  //DUMP_VAR(red);
+  //DUMP_VAR(green);
+  //DUMP_VAR(blue);
+  //DUMP_VAR(T);
+  //DUMP_VAR(L);
+  
+  if(L<10)
+  {
+    Serial.println("NOIR");
+  } else if (L>190){
+    Serial.println("BLANC");
+  } else {
+    if (T>100) {
+      Serial.println("VERT");
+    } else {
+      if (L>40) {
+        Serial.println("JAUNE");
+      }else{
+        Serial.println("ROUGE");
       }
     }
   }
+  
+  
+  
+  Serial.println("");
 }
 
-void interruption_timer()
-{
 
-	flag++;
-	if(flag == 1)
-	{
-		countRG = counterG;
-		countRD = counterD;
-		D4::high(); 
-		D7::high();
 
-	}
-	else if(flag == 2)
-	{
 
-		countVG = counterG;
-		countVD = counterD;
-		D4::low();
-		D7::high();
-
-	}
-	else if(flag == 3)
-	{
-
-		countBG = counterG;
-		countBD = counterD;
-		D4::low();
-		D7::low();
-	}
-	else if(flag == 4)
-	{
-
-		flag = 0;
-	}
-	counterG = 0;
-	counterD = 0;
-}
-
-void interruption_int0()
-{
-  counterG++;
-}
-
-void interruption_int1(){
-
-  counterD++;
-}
-
-/*Cablage: s0 = D6
-           s1 = D5
-           s2 = D4
-           s3 = D7
-           out = D2 et D3
-
-Valeurs: RIEN: r=14 b=11/12 g=13
-         JAUNE: r=13/17 b=12 g=11
-         ROUGE: r=15 b=14/7 g=17
-*/ 
