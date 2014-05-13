@@ -144,6 +144,51 @@ public class Laser implements Service {
 		}
 
 	}
+	/**
+	 * Récupère la valeur (rayon, angle) d'une balise
+	 * Et renvoie la position relative de la balise dans le système de coordonnées du laser.
+	 * @param id
+	 * @return point
+	 * @throws SerialException 
+	 */
+	public Vec2 position_balise_relative(int id) throws SerialException
+	{
+		String chaines[] = {"value", Integer.toString(id)};
+		String[] reponse = serie.communiquer(chaines, 3);
+		
+		if(reponse[0].equals("NO_RESPONSE") || reponse[1].equals("NO_RESPONSE")
+				|| reponse[0].equals("OLD_VALUE") || reponse[1].equals("OLD_VALUE")
+				|| reponse[0].equals("UNVISIBLE") || reponse[1].equals("UNVISIBLE"))
+			return null;
+
+        // Fréquence actuelle du moteur
+		float freq = frequence_moteur();
+
+		// Valeur de la distance, sur l'échelle du timer 8 bit
+		float timer = Float.parseFloat(reponse[0]);
+
+        // Délai du passage des deux lasers, en seconde
+        float delai = 128 * timer / 20000000;
+        
+        // Calcul de la distance (en mm)
+        float ecart_laser = 35;
+        float theta = (float) (delai * freq * 2 * Math.PI);
+
+        if(theta == 0)
+        {
+            log.warning("Division par zéro dans le calcul d'angle : freq = "+Float.toString(freq)+", delai = "+Float.toString(delai), this);
+            return null;
+        }
+
+        int distance = (int) (ecart_laser / Math.sin(theta / 2));
+
+        // Angle
+        float angle = Float.parseFloat(reponse[1]);
+        
+        // Changement dans le repère de la table
+        Vec2 point = new Vec2((int)(distance * Math.cos(angle)), (int)(distance * Math.sin(angle)));
+        return point;
+	}
 	
 	/**
 	 * Récupère la valeur (rayon, angle) d'une balise
