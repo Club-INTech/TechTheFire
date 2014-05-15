@@ -45,7 +45,7 @@ Capteurs()
     timer_capteur_us::mode(timer_capteur_us::MODE_COUNTER);
     timer_refresh::mode(timer_refresh::MODE_COUNTER);
     timer_capteur_us::set_prescaler(timer_capteur_us::prescaler::PRESCALER_64);
-    timer_refresh::set_prescaler(timer_refresh::prescaler::PRESCALER_1024);
+    timer_refresh::set_prescaler(timer_refresh::prescaler::PRESCALER_1024); //normal = 1024
     timer_refresh::counter::overflow_interrupt::enable(); 
     for(uint8_t i=0; i<TAILLE_BUFFER; i++)
     {
@@ -58,7 +58,7 @@ Capteurs()
 
 void maj()
 {
-  uint8_t retenueAvant = B1::read(); // TODO actuel : C0 pour les nouvelles cartes, cela sera B1
+  uint8_t retenueAvant = C0::read(); // TODO actuel : C0 pour les nouvelles cartes, cela sera B1
     for(uint8_t i=0; i<TAILLE_BUFFER; i++)
     {
         uint8_t retenueApres = bufferContactDroit[i]&(1<<7)>>7;
@@ -67,7 +67,7 @@ void maj()
         retenueAvant = retenueApres;
     }
 
-    retenueAvant = B0::read(); // TODO actuel : C1 pour les nouvelles cartes, cela sera B0 
+    retenueAvant = C1::read(); // TODO actuel : C1 pour les nouvelles cartes, cela sera B0 
     for(uint8_t i=0; i<TAILLE_BUFFER; i++)
     {
         uint8_t retenueApres = bufferContactMilieu[i]&(1<<7)>>7;
