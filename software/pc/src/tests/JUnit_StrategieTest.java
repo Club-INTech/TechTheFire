@@ -40,7 +40,6 @@ public class JUnit_StrategieTest extends JUnit_Test {
 		pathfinder = (Pathfinding) container.getService("Pathfinding");
 		table = (Table) container.getService("Table");
 		robotchrono = new RobotChrono(config, log);
-		pathfinder.update_simple_pathfinding();
 	}
 
 //	@Test
@@ -88,7 +87,7 @@ public class JUnit_StrategieTest extends JUnit_Test {
 		}
 		log.debug("Strategie Performance test starting", this);
 		
-		int testCount = 10000;
+		int testCount = 100;
 		long startTime = System.nanoTime();
 		for (int i = 0; i < testCount; i++)
 			strategie.evaluate(null);

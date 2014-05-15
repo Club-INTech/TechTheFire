@@ -1,7 +1,6 @@
 package scripts.fruits;
 
 import robot.RobotVrai;
-import robot.Vitesse;
 import scripts.Script;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -17,6 +16,7 @@ import java.util.ArrayList;
 
 import enums.Cote;
 import enums.PositionRateau;
+import enums.Vitesse;
 import exceptions.deplacements.MouvementImpossibleException;
 import exceptions.serial.SerialException;
 
@@ -30,21 +30,22 @@ public class ScriptTree extends Script{
 
     private ArrayList<ArrayList<Hook>> hooks = null;
     
+	@SuppressWarnings("unchecked")
 	public ScriptTree(HookGenerator hookgenerator, Read_Ini config, Log log)
 	{
 		super(hookgenerator, config, log);
         ArrayList<Integer> versionList = new ArrayList<Integer>();
         versionList.add(0);
-        versions.add(versionList);
+        versions.add((ArrayList<Integer>) versionList.clone());
         versionList.clear();
         versionList.add(1);
-        versions.add(versionList);
+        versions.add((ArrayList<Integer>) versionList.clone());
         versionList.clear();
         versionList.add(2);
-        versions.add(versionList);
+        versions.add((ArrayList<Integer>) versionList.clone());
         versionList.clear();
         versionList.add(3);
-        versions.add(versionList);
+        versions.add((ArrayList<Integer>) versionList.clone());
 	}
 
 	@Override 
@@ -139,8 +140,16 @@ public class ScriptTree extends Script{
 		state.robot.set_vitesse(Vitesse.ARBRE_AVANT);
 		
 		state.robot.add_fruits(state.table.nbrTree(id_version, Cote.DROIT) + state.table.nbrTree(id_version, Cote.GAUCHE));
+		
 		state.table.pickTree(id_version);
-		state.robot.avancer(350, hooks.get(id_version));
+		
+		
+		if(hooks != null)
+		    state.robot.avancer(350, hooks.get(id_version));
+		else
+            state.robot.avancer(350, null);
+		    
+		// TODO ? utilité ?
 		state.robot.sleep(1000);
 	}
 

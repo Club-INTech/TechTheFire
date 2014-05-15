@@ -129,7 +129,7 @@ public class Pathfinding implements Service, Cloneable
 	 * Méthode appelée par le thread de capteur. Met à jour les obstacles de la recherche de chemin en les demandant à table
 	 * On consulte pour cela l'attribut table qui a été modifié de l'extérieur.
 	 */
-	public void update_astar()
+	private void update_astar()
 	{		
 		/* La table est modifiée. Il faut donc modifier la map.
 		 */		
@@ -144,7 +144,7 @@ public class Pathfinding implements Service, Cloneable
 			{
 				code_torches_actuel = table.codeTorches();
 				try {
-					distance_cache = (CacheHolder) DataSaver.charger("cache/distance-"+code_torches_actuel+".cache");
+//					distance_cache = (CacheHolder) DataSaver.charger("cache/distance-"+code_torches_actuel+".cache");
 				}
 				catch(Exception e)
 				{
@@ -168,7 +168,7 @@ public class Pathfinding implements Service, Cloneable
 		
 	}
 	
-    public void update_simple_pathfinding()
+    private void update_simple_pathfinding()
     {
         synchronized(table) // Mutex sur la table, afin qu'elle ne change pas pendant qu'on met à jour le pathfinding
         {
@@ -213,13 +213,24 @@ public class Pathfinding implements Service, Cloneable
 	{
 	    try {
 	        // De base, on utilise le simple pathfinding
+	        update_simple_pathfinding();
 	        return simplepathfinding.chemin(depart, arrivee);
 	    }
 	    catch(PathfindingException e)
 	    {
-	        log.warning("Pathfinding simple a échoué,  utilisation du A*", this);
-	        // En cas de problème, on utilise le A*
-	        return cheminAStar(depart, arrivee);
+	        try {
+    	        log.warning("Pathfinding simple a échoué,  utilisation du A*", this);
+    	        // En cas de problème, on utilise le A*
+                update_astar();
+    	        return cheminAStar(depart, arrivee);
+	        }
+	        catch(PathfindingException e2)
+	        {
+	            log.critical("Echec de tous les pathfindings. Ligne droite.", this);
+	            ArrayList<Vec2> chemin = new ArrayList<Vec2>();
+	            chemin.add(arrivee);
+	            return chemin;
+	        }
 	    }
 	}
 	
@@ -265,7 +276,7 @@ public class Pathfinding implements Service, Cloneable
 		if(solver.espace.canCrossLine(depart, arrivee))
 			return (int)depart.distance(arrivee);
 		
-		if(depart.x > 1500 || depart.x < -1500 || depart.y > 2000 || depart.y < 0 || arrivee.x > 1500 || arrivee.x < -1500 || arrivee.y > 2000 || arrivee.y < 0)
+		if(depart == null || arrivee == null || depart.x > 1500 || depart.x < -1500 || depart.y > 2000 || depart.y < 0 || arrivee.x > 1500 || arrivee.x < -1500 || arrivee.y > 2000 || arrivee.y < 0)
 			throw new PathfindingException();
 		
 		if(!use_cache || distance_cache == null)

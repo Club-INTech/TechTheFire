@@ -3,10 +3,10 @@ package scripts.feux;
 import java.util.ArrayList;
 
 import enums.Cote;
+import enums.Vitesse;
 import exceptions.deplacements.MouvementImpossibleException;
 import exceptions.serial.SerialException;
 import hook.sortes.HookGenerator;
-import robot.Vitesse;
 import scripts.Script;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -138,13 +138,13 @@ public class ScriptTorche extends Script {
 		{
 			cote = Cote.GAUCHE;
 			decalage = -130;
-			avancement = 120;
+			avancement = 130;
 		}
 		else if(!state.robot.isTient_feu(Cote.DROIT))
 		{	
 			cote = Cote.DROIT;
 			decalage = 110;
-			avancement = 110;
+			avancement = 130;
 		}
 		state.robot.set_vitesse(Vitesse.PRISE_FEU);
 		try {
