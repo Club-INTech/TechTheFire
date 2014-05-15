@@ -234,10 +234,11 @@ public class Laser implements Service {
         float angle = Float.parseFloat(reponse[1]);
 
         // Changement dans le repère de la table
-        Vec2 point = robotvrai.getPosition();
+        Vec2 point = new Vec2(0, 1000);
         double orientation = robotvrai.getOrientation();
         
         point.Plus(new Vec2((int)(distance * Math.cos(angle + orientation)), (int)(distance * Math.sin(angle + orientation))));
+        robotvrai.setPosition(point);
         return point;
 	}
 	
