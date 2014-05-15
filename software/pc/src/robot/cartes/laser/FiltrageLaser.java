@@ -1,5 +1,7 @@
 package robot.cartes.laser;
 
+import java.util.Stack;
+
 import smartMath.Vec2;
 
 
@@ -17,7 +19,7 @@ public class FiltrageLaser implements Service {
 	private Kalman filtre_kalman;
 	private Vec2 last_point;
 	private int valeurs_rejetees;
-	private Vec2[] historique;
+	private Stack<Vec2> historique;
 
 	public FiltrageLaser(Read_Ini config, Log log)
 	{
@@ -36,9 +38,9 @@ public class FiltrageLaser implements Service {
 		Matrn q = new Matrn(tab_q);
 		q.multiplier_scalaire(30);
 		this.filtre_kalman = new Kalman(x, p, f, h, r, q); 
-		this.historique = new Vec2[3];
+		this.historique = new Stack<Vec2>();
 		this.valeurs_rejetees = 0;
-		this.last_point = null; //pas certain
+		this.last_point = new Vec2();
 		//double acceleration = null; 
 		//Je sais pas à quoi acceleration servait dans le code python, puisqu'il était inutile...
 		
@@ -88,13 +90,13 @@ public class FiltrageLaser implements Service {
 	
 	private boolean filtrage_acceleration(Vec2 pointm0)
 	{
-		if(historique.length != 3)
+		if(historique.size() != 3)
 		{
 			return true;
 		}
-		Vec2 pointm1 = historique[2];
-		Vec2 pointm2 = historique[1];
-//		Vec2 pointm3 = historique[0];
+		Vec2 pointm1 = historique.pop();
+		Vec2 pointm2 = historique.pop();
+//		Vec2 pointm3 = historique.pop();
 		Vec2 vitesse_actuelle = pointm0.MinusNewVector(pointm1);
 		Vec2 vitesse_m1 = pointm1.MinusNewVector(pointm2);
 //		Vec2 vitesse_m2 = pointm2.MinusNewVector(pointm3);

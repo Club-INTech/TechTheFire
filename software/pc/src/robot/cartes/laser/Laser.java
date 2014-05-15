@@ -107,6 +107,10 @@ public class Laser implements Service {
 					}
 					balises_ok++;
 				}
+				else
+				{
+					log.warning("balise n°"+b.id+" ne répond pas.", this);
+				}
 			} catch (SerialException e) {
 				e.printStackTrace();
 			}
@@ -123,7 +127,7 @@ public class Laser implements Service {
 	{
 	    // TODO (de PF) vérifier la méthode, mais on faisait comme ça l'année dernière
 	    String[] ping = serie.communiquer("ping_all", balises.length);	    
-		return ping[id].equals("aucune réponse");
+		return !ping[id].equals("aucune réponse");
 	}
 
 	/**
@@ -226,10 +230,9 @@ public class Laser implements Service {
         }
 
         int distance = (int) (ecart_laser / Math.sin(theta / 2));
-
         // Angle
         float angle = Float.parseFloat(reponse[1]);
-        
+
         // Changement dans le repère de la table
         Vec2 point = robotvrai.getPosition();
         double orientation = robotvrai.getOrientation();
@@ -258,10 +261,11 @@ public class Laser implements Service {
 			{
 				try {
 					String chaines[] = {"value", Integer.toString(b.id)};
-					String[] reponse = serie.communiquer(chaines, 2);
-					if(!(reponse[0] == "NO_RESPONSE" || reponse[1] == "NO_RESPONSE"
-							|| reponse[0] == "OLD_VALUE" || reponse[1] == "OLD_VALUE"
-							|| reponse[0] == "UNVISIBLE" || reponse[1] == "UNVISIBLE"))
+					String[] reponse = serie.communiquer(chaines, 3);
+					//System.out.println(reponse[0]/* + " " + reponse[1] + " " + reponse[2]*/);
+					if(!(reponse[0].equals("NO_RESPONSE") || reponse[1].equals("NO_RESPONSE")
+							|| reponse[0].equals("OLD_VALUE") || reponse[1].equals("OLD_VALUE")
+							|| reponse[0].equals("UNVISIBLE") || reponse[1].equals("UNVISIBLE")))
 					{
 						float angle = Float.parseFloat(reponse[1]);
 						n++;
