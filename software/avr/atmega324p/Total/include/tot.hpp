@@ -192,7 +192,10 @@ class Communication
 		  {
 		    this -> test ();
 		  }
-
+		else if (strcmp (ordre, "testPos")==0)
+		  {
+		    this -> testPosition ();
+		  }
 	//Actions bac
 		else if ( strcmp ( ordre , "btb" ) == 0 )  //btb = bac tres bas
 		{
@@ -476,6 +479,13 @@ void torcheDroite ()
     positionDroite.goToB(200);
   }
 
+  void testPosition ()
+  {
+  	serial_pc::printfln ( "angle?" );
+	uint16_t i;
+	serial_pc::read (i);
+	positionDroite.goToB(i);
+  }
 
 //action du bac
 
@@ -566,7 +576,7 @@ void torcheDroite ()
 		filet.goTo (0);
 	}
 
-
+  
 
 };
 
