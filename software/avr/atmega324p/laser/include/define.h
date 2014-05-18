@@ -12,8 +12,6 @@
 
 #define BALISE_NUMBER     		2
 
-#define OFFSET_FACTOR 	  		0.5
-
 #if MODE_XBEE_S8 == 1
 
 // Adresses des balises (Xbee S8)
