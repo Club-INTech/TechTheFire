@@ -216,29 +216,29 @@ public class Laser implements Service {
 		// Valeur de la distance, sur l'échelle du timer 8 bit
 		float timer = Float.parseFloat(reponse[0]);
 
-		// Délai du passage des deux lasers, en seconde
-		float delai = 128 * timer / 20000000;
+        // Délai du passage des deux lasers, en seconde
+        float delai = 128 * timer / 20000000;
+        
+        // Calcul de la distance (en mm)
+        float ecart_laser = 35;
+        float theta = (float) (delai * freq * 2 * Math.PI);
 
-		// Calcul de la distance (en mm)
-		float ecart_laser = 35;
-		float theta = (float) (delai * freq * 2 * Math.PI);
+        if(theta == 0)
+        {
+            log.warning("Division par zéro dans le calcul d'angle : freq = "+Float.toString(freq)+", delai = "+Float.toString(delai), this);
+            return null;
+        }
 
-		if(theta == 0)
-		{
-			log.warning("Division par zéro dans le calcul d'angle : freq = "+Float.toString(freq)+", delai = "+Float.toString(delai), this);
-			return null;
-		}
+        int distance = (int) (ecart_laser / Math.sin(theta / 2));
+        // Angle
+        float angle = Float.parseFloat(reponse[1]);
 
-		int distance = (int) (ecart_laser / Math.sin(theta / 2));
-		// Angle
-		float angle = Float.parseFloat(reponse[1]);
-
-		// Changement dans le repère de la table
-		Vec2 point = robotvrai.getPosition();
-		double orientation = robotvrai.getOrientation();
-
-		point.Plus(new Vec2((int)(distance * Math.cos(angle + orientation)), (int)(distance * Math.sin(angle + orientation))));
-		return point;
+        // Changement dans le repère de la table
+        Vec2 point = robotvrai.getPosition();
+        double orientation = robotvrai.getOrientation();
+        
+        point.Plus(new Vec2((int)(distance * Math.cos(angle + orientation)), (int)(distance * Math.sin(angle + orientation))));
+        return point;
 	}
 
 	/**
