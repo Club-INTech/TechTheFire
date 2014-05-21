@@ -57,6 +57,8 @@ class Communication
 		serial_pc::activer_acquittement(true);
 		serial_ax12::init();
 		serial_ax12::change_baudrate (9600);
+		B4::output();
+		B3::output();
 	}
 
 //fonction d'execution des ordres
@@ -267,12 +269,12 @@ class Communication
 	//Actions ventilo
         else if (strcmp(ordre, "von") == 0)
         {
-        	D4::high();
+        	B4::high();
 	// c'est plus D4, c'est la pin connectée au PWM
         }
         else if (strcmp(ordre, "voff") ==0)
         {
-        	D4::low();
+        	B4::low();
         }
 
 	// infrarouge
