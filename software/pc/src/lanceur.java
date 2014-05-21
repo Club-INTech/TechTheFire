@@ -1,7 +1,14 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
-import org.junit.runner.JUnitCore;
+import robot.RobotVrai;
+import robot.cartes.Capteurs;
+import robot.hautniveau.DeplacementsHautNiveau;
+import scripts.Script;
+import scripts.ScriptManager;
+import smartMath.Vec2;
+import strategie.GameState;
+import utils.Read_Ini;
+import utils.Sleep;
+import container.Container;
+import enums.Vitesse;
 
 /*
  * TODO pour le lanceur final:
@@ -12,11 +19,50 @@ import org.junit.runner.JUnitCore;
 public class lanceur
 {
 	
-	private static Test test = new Test();
-	
-	public static void main(String[] args)
+	public static void main(String[] args) throws Exception
 	{
-		JUnitCore.main("tests.JUnit_StrategieTest");
+      Container container = new Container();
+      Read_Ini config = (Read_Ini) container.getService("Read_Ini");
+//      Log log = (Log) container.getService("Log");
+//      HookGenerator hookgenerator = (HookGenerator) container.getService("HookGenerator");
+      ScriptManager scriptmanager = (ScriptManager) container.getService("ScriptManager");
+      @SuppressWarnings("unchecked")
+    GameState<RobotVrai> real_state = (GameState<RobotVrai>) container.getService("RealGameState");
+      
+      // Pas de capteurs avant le racalage
+      Capteurs capteurs = (Capteurs) container.getService("Capteur");
+      config.set("capteurs_on", false);
+      capteurs.maj_config();
+      
+      RobotVrai robotvrai = (RobotVrai)container.getService("RobotVrai");
+      robotvrai.initialiser_actionneurs_deplacements();
+      robotvrai.recaler();
+      robotvrai.avancer(120);
+      robotvrai.set_vitesse(Vitesse.DEBUT);
+      robotvrai.tourner(-1.6*Math.PI/3);
+      System.out.println(robotvrai.getPosition());
+      
+      DeplacementsHautNiveau deplacements = (DeplacementsHautNiveau)container.getService("DeplacementsHautNiveau");
+
+      container.getService("threadCapteurs");
+      container.demarreThreads();
+      config.set("capteurs_on", false);
+      
+      while(!capteurs.demarrage_match())
+          Sleep.sleep(100);
+      config.set("capteurs_on", true);
+      deplacements.setConsigne(new Vec2(-1300, 1200));
+      
+/*      Hook hook = hookgenerator.hook_abscisse_gauche(-900);   
+      ArrayList<Hook> hooks = new ArrayList<Hook>();
+      Executable arret = new Arret(dep);
+      hook.ajouter_callback(new Callback(arret, true));
+      hooks.add(hook);*/
+
+    deplacements.va_au_point_gestion_exception(null, null, true, false, false);
+    Script s = (Script)scriptmanager.getScript("ScriptTree");
+    s.agit(2, real_state, true);
+      
 	}
 //		test.test();
 //		Container container;

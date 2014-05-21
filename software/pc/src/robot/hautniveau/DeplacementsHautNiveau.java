@@ -6,6 +6,7 @@ import container.Service;
 //import hook.Callback;
 //import hook.Executable;
 import hook.Hook;
+import enums.Vitesse;
 //import hook.methodes.ChangeConsigne;
 //import hook.sortes.HookGenerator;
 import exceptions.deplacements.BlocageException;
@@ -65,10 +66,14 @@ public class DeplacementsHautNiveau implements Service
     public void recaler()
     {
         try {
-        	deplacements.desactiver_asservissement_rotation();
             avancer(-200, null, true);
+            deplacements.set_vitesse_translation(200);
+            deplacements.desactiver_asservissement_rotation();
             avancer(-200, null, true);
-           
+            deplacements.activer_asservissement_rotation();
+            deplacements.set_vitesse_translation(Vitesse.RECALER.PWM_translation);
+
+
             position.x = 1500 - 165;
             if(symetrie)
             {
@@ -86,7 +91,11 @@ public class DeplacementsHautNiveau implements Service
             tourner(-Math.PI/2, null, false);
 
             avancer(-600, null, true);
+            deplacements.set_vitesse_translation(200);
+            deplacements.desactiver_asservissement_rotation();
             avancer(-200, null, true);
+            deplacements.activer_asservissement_rotation();
+            deplacements.set_vitesse_translation(Vitesse.RECALER.PWM_translation);
             position.y = 2000 - 165;
             deplacements.set_y(2000 - 165);
             Sleep.sleep(500);
@@ -94,6 +103,7 @@ public class DeplacementsHautNiveau implements Service
             orientation = -Math.PI/2;
             setOrientation(-Math.PI/2);
             //Normalement on se trouve à (1500 - 165 - 100 = 1225 ; 2000 - 165 - 100 = 1725)
+            deplacements.activer_asservissement_rotation();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -366,10 +376,10 @@ public class DeplacementsHautNiveau implements Service
 
             // Correction de la trajectoire ou reprise du mouvement
             // Si on ne fait que relancer et qu'on a interdit la trajectoire courbe, on attend à la rotation.
-            if(relancer || trajectoire_courbe)
+            if(relancer)
             {
                 log.debug("On relance", this);
-                va_au_point_symetrie(!relancer || trajectoire_courbe, marche_arriere, trajectoire_courbe);
+                va_au_point_symetrie(false, marche_arriere, trajectoire_courbe);
             }
             else
                 update_x_y_orientation();
