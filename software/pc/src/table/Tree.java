@@ -32,6 +32,10 @@ public class Tree extends Game_Element implements Cloneable
 	{
 	    ct.taken = taken;
 	}
+	public Fruit[] getArrayFruit()
+	{
+		return arrayFruit;
+	}
 	
 	public int nbrLeft ()
 	{
