@@ -13,23 +13,27 @@ import hook.Executable;
 public class TakeFire implements Executable {
 
 	private RobotVrai robot;
-	private Cote cote;
+	private Cote coteReel, cotePrise;
 	
-	public TakeFire(RobotVrai robot, Cote cote)
+	public TakeFire(RobotVrai robot)
 	{
 		this.robot = robot;
-		this.cote = cote;
 	}
 
 	@Override
 	public boolean execute() {
 		try {
-			robot.takefire(cote);
+			robot.takefire(cotePrise, coteReel);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return true; // le robot doit repartir
 	}
 
+	public void setColour(Cote cotePrise, Cote coteReel)
+	{
+        this.cotePrise = cotePrise;
+        this.coteReel = coteReel;
+	}
 	
 }
