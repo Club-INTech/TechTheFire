@@ -29,14 +29,9 @@ public class lanceur
 		Container container = new Container();
 		Read_Ini config = (Read_Ini) container.getService("Read_Ini");
 
-		
-		
-
 		@SuppressWarnings("unchecked")
 		GameState<RobotVrai> real_state = (GameState<RobotVrai>) container.getService("RealGameState");
 		Strategie strategie = (Strategie) container.getService("Strategie");
-		
-		
 		
 		real_state.robot.initialiser_actionneurs_deplacements();
 		real_state.robot.recaler();
@@ -48,59 +43,32 @@ public class lanceur
 		Capteurs capteurs = (Capteurs) container.getService("Capteur");
 		config.set("capteurs_on", false);
 		capteurs.maj_config();
-		container.getService("threadCapteurs");
-		container.demarreThreads();
-		
-
-		
-		//TODO, je sais pa ssi c'est nécessaire j ne crois pas
-      /*
-       * HookGenerator hookgenerator = (HookGenerator) container.getService("HookGenerator");
-	      Hook hook = hookgenerator.hook_abscisse_gauche(-900);   
-	      ArrayList<Hook> hooks = new ArrayList<Hook>();
-	      Executable arret = new Arret(dep);
-	      hook.ajouter_callback(new Callback(arret, true));
-	      hooks.add(hook);
-
-      */
-		
-			// Timer : 
-			//container.getService("threadTimer"); // ???
-		
-			/*
-			RobotChrono robotchrono = new RobotChrono(config, log);
-			robotchrono.maj_config();
-			*/
-
 			
 			/*On aura 3 inputs 
 			Le premier pour la couleur du robot avec 0 pour jaune et 1 pour rouge
 			Le deuxième pour les arbres 0 et 3 (on donne pour 0 et pour le 3 ça sera calculé facilement)
 			Le troisième pour les arbres 1 et 2 (one donne pour 1 et pour les 2 ça sera calculé facilement) 
 			La position des fruits dans un arbre est expliqué dans la classe Tree
-			*/
-			
+			*/			
 			
 			//--------------------------------------------------------------
 			//Début des paramétrages
 			String couleur = "";
-			while(!couleur.contains("0") && !couleur.contains("1"))
+			while(!couleur.contains("rouge") && !couleur.contains("jaune"))
 			{
-				System.out.println("Rentrez 0 pour jaune et 1 pour rouge : ");
+				System.out.println("Rentrez \"jaune\" ou \"rouge\" : ");
 				BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in)); 
 				 
 				couleur = keyboard.readLine(); 
 				
-				
-				if(couleur.contains("0"))
-					config.set("couleur","jaune");
-				else if(couleur.contains("1"))
-					config.set("couleur", "rouge");
+				if(couleur.contains("rouge"))
+					config.set("couleur","rouge");
+				else if(couleur.contains("jaune"))
+					config.set("couleur", "jaune");
 				
 			}
 			real_state.robot.maj_config();
-						
-			
+									
 			//Pour les fruits noirs
 			String pos_noir1 = "";
 			String pos_noir2 = "";
@@ -178,9 +146,6 @@ public class lanceur
 				}
 					
 			}
-			
-			real_state.robot.initialiser_actionneurs_deplacements();
-			real_state.robot.recaler();
 			
 			 while(!capteurs.demarrage_match())
 					 Sleep.sleep(100);
