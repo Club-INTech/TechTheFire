@@ -147,8 +147,8 @@ public class lanceur
 					
 			}
 			
-			 while(!capteurs.demarrage_match())
-					 Sleep.sleep(100);
+			 /*while(!capteurs.demarrage_match())
+					 Sleep.sleep(100);*/
 			container.demarreTousThreads();
 			strategie.boucle_strategie();
 	}
