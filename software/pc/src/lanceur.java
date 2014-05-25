@@ -38,8 +38,8 @@ public class lanceur
       
 		//DeplacementsHautNiveau deplacements = (DeplacementsHautNiveau)container.getService("DeplacementsHautNiveau");
 		
-		 //Normalement fait par boucle_strategie()
-		  // Pas de capteurs avant le racalage
+		//Normalement fait par boucle_strategie()
+		// Pas de capteurs avant le recalage
 		Capteurs capteurs = (Capteurs) container.getService("Capteur");
 		config.set("capteurs_on", false);
 		capteurs.maj_config();
@@ -151,5 +151,7 @@ public class lanceur
 					 Sleep.sleep(100);*/
 			container.demarreTousThreads();
 			strategie.boucle_strategie();
+			//Le match s'arrête
+			container.destructeur();
 	}
 }
