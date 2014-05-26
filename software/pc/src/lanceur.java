@@ -3,14 +3,22 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import org.junit.runner.JUnitCore;
+
+
+
+
 //import robot.RobotChrono;
 import robot.RobotVrai;
 import robot.cartes.Capteurs;
+import smartMath.Vec2;
 import strategie.GameState;
 import strategie.Strategie;
+import tests.JUnit_StrategieThreadTest;
 //import sun.rmi.runtime.Log;
 //import threads.ThreadTimer;
 import utils.Read_Ini;
+import utils.Sleep;
 import container.Container;
 
 
@@ -25,6 +33,7 @@ public class lanceur
 	public static void main(String[] args) throws Exception
 	{
 		
+		
 		Container container = new Container();
 		Read_Ini config = (Read_Ini) container.getService("Read_Ini");
 
@@ -34,6 +43,11 @@ public class lanceur
 		
 		real_state.robot.initialiser_actionneurs_deplacements();
 		real_state.robot.recaler();
+
+		Vec2 initpos = new Vec2(1000,1400);
+		real_state.robot.setPosition(initpos);
+		Sleep.sleep(100);
+	
       
 		//DeplacementsHautNiveau deplacements = (DeplacementsHautNiveau)container.getService("DeplacementsHautNiveau");
 		
