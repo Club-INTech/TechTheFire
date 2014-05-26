@@ -105,16 +105,19 @@ public class ScriptTorche extends Script {
 		int avancement = 120;
 		if(id_version ==0)
 			//Vec2(-600,900)
-			angle = (float)Math.PI/2;
+			angle = 1.5707f;
+			//(float)Math.PI/2;
 		else if(id_version ==1)
 			//Vec2(600,900);
-			angle = (float)Math.PI/2;
+			angle = 1.5707f;
+			//(float)Math.PI/2;
 		
 		else if(id_version ==2)
 			//X = -600+600*cos(-pi/6)
 			//Y = 900+600*sin(-pi/6)
 			//Vec2(-80,600);
-			angle = (float)-Math.PI/6;
+			angle = .5235f;
+			//(float)-Math.PI/6;
 		/*
 		else if(id_version ==3)
 			//X = 600+400*cos(-pi/6)
@@ -132,7 +135,8 @@ public class ScriptTorche extends Script {
 			//X = 600+600*cos(7*pi/6)
 			//Y = 900+600*sin(7*pi/6)
 			//Vec2(80,600);
-		    angle = (float)(7*Math.PI/6);
+		    angle = 3.6651f;
+		    //(float)(7*Math.PI/6);
 		
 		Cote cote = Cote.GAUCHE;
 		
@@ -150,7 +154,7 @@ public class ScriptTorche extends Script {
 		}
 		state.robot.set_vitesse(Vitesse.PRISE_FEU);
 		try {
-			state.robot.tourner(angle+(float)Math.PI/2);
+			state.robot.tourner(angle+1.5707f);
 			state.robot.avancer(decalage);
 			state.robot.tourner(angle);
 			state.robot.avancer(avancement);
@@ -174,12 +178,14 @@ public class ScriptTorche extends Script {
 			//Vec2(-600,900)
 		{
             state.table.torche_disparue(Cote.GAUCHE);
+            state.robot.setTient_feu(cote);
 			state.robot.setFeu_tenu_rouge(cote, Colour.RED);
 		}
 		else if(id_version ==1)
 			//Vec2(600,900);
 		{
 			state.table.torche_disparue(Cote.DROIT);
+			state.robot.setTient_feu(cote);
 			state.robot.setFeu_tenu_rouge(cote, Colour.YELLOW);
 		}
 		else if(id_version ==2)
@@ -188,6 +194,7 @@ public class ScriptTorche extends Script {
 			//Vec2(-80,600);
 		{
             state.table.torche_disparue(Cote.GAUCHE);
+            state.robot.setTient_feu(cote);
 			state.robot.setFeu_tenu_rouge(cote, Colour.RED);
 		}
 		/*
@@ -209,6 +216,7 @@ public class ScriptTorche extends Script {
 			//Vec2(80,600);
 		{
 			state.table.torche_disparue(Cote.DROIT);
+			state.robot.setTient_feu(cote);
 			state.robot.setFeu_tenu_rouge(cote, Colour.YELLOW);
 		}
 		
@@ -243,5 +251,11 @@ public class ScriptTorche extends Script {
 	
 	public void maj_config()
 	{
+	}
+	
+	@Override
+	public float probaDejaFait(int id_metaversion, GameState<?> state)
+	{
+		return 0.5f;	// non surveilllé
 	}
 }

@@ -52,19 +52,19 @@ public class ScriptDeposerFeu extends Script {
 	@Override
 	public Vec2 point_entree(int id) {
 		if(id == 0)
-			return new Vec2(-800,466);			
+			return new Vec2(-1190, 350);			
 
 		else if(id == 1)
-			return new Vec2(800,466);
+			return new Vec2(1190, 350);
 
 		else if(id == 2)
-			return new Vec2(0, 1400);
+			return new Vec2(0, 1370);
 
 		else if(id == 3)
-			return new Vec2(-782, 528);
+			return new Vec2(-270, 710);
 
 		else if(id == 4)
-			return new Vec2(782, 528);
+			return new Vec2(+270, 770);
 
 		return null;
 		
@@ -93,34 +93,47 @@ public class ScriptDeposerFeu extends Script {
 		//Suivant là où on va poser, on doit se positionner différemment
 		
 		if (id_version == 0)
-			angle = 3.92f;		//(float)(Math.PI+Math.atan(2/3)));
+			angle = 4.1f;		//pi+pi/3
+		//(float)(Math.PI+Math.atan(2/3)));
 		else if(id_version == 1)
-			angle = -0.78f;	//(float)(-Math.atan(2/3)));
+			angle = -0.85f;	//-pi/3
+		//(float)(-Math.atan(2/3)));
 		else if(id_version == 2)
-			angle = -1.57f;		//(float)(-Math.PI/2));
+			angle = -1.57f;		
+		//(float)(-Math.PI/2));
 		else if(id_version == 3)
-			angle = 0.78f;		//(float)(Math.atan(2/3)));
+			angle = 0.78f;		//pi/3
+		//(float)(Math.atan(2/3)));
 		else
-			angle = 2.553f;		//(float)(Math.PI-Math.atan(2/3)));
+			angle = 2.0943f;		
+		//(float)(Math.PI-Math.atan(2/3)));
 
-		// TODO : si on est équipe rouge il faut inverser les if 
+		// TODO : si on est équipe rouge il faut inverser les if (je ne suis pas d'accord)
 		
 		if(state.robot.isTient_feu(Cote.GAUCHE))
 		{
-			state.robot.tourner(angle-0.523f);
+			state.robot.tourner(angle-0.400f);
 			if(state.robot.isFeu_tenu_rouge(Cote.GAUCHE) ^ couleur == "rouge")
 			    state.robot.poserFeuEnRetournant(Cote.GAUCHE);
 			else
 			    state.robot.poserFeuBonCote(Cote.GAUCHE);			
 		}
-		else // il faut tourner dans tout les cas, même si la version n'est pas cohérente
+		else if(state.robot.isTient_feu(Cote.DROIT)) // il faut tourner dans tout les cas, même si la version n'est pas cohérente
 		{
-			state.robot.tourner(angle+0.523f);
+			state.robot.tourner(angle+0.400f);
 			if(state.robot.isFeu_tenu_rouge(Cote.DROIT) ^ couleur == "rouge")
 			    state.robot.poserFeuEnRetournant(Cote.DROIT);
 			else
 			    state.robot.poserFeuBonCote(Cote.DROIT);
-		}		
+		}
+		else
+		{
+			state.robot.tourner(angle);
+			if(state.robot.isFeu_tenu_rouge(Cote.DROIT) ^ couleur == "rouge")
+			    state.robot.poserFeuEnRetournant(Cote.DROIT);
+			else
+			    state.robot.poserFeuBonCote(Cote.DROIT);
+		}
 		state.robot.avancer(-50);
 	}
 
@@ -144,4 +157,9 @@ public class ScriptDeposerFeu extends Script {
 		return "ScriptDeposerFeu";
 	}
 
+	@Override
+	public float probaDejaFait(int id_metaversion, GameState<?> state)
+	{
+		return 0.5f;	// non surveillé
+	}
 }

@@ -84,6 +84,8 @@ public abstract class Robot implements Service {
 	public abstract void presque_fermer_pince(Cote cote) throws SerialException;
 	public abstract void ouvrir_bas_pince(Cote cote) throws SerialException;
 	public abstract void renverserFeu(Cote cote) throws SerialException;
+    public abstract void allume_ventilo() throws SerialException;
+    public abstract void eteint_ventilo() throws SerialException;
 	
 	public void deposer_fresques() throws SerialException
 	{
@@ -143,7 +145,7 @@ public abstract class Robot implements Service {
 	protected boolean tient_feu_gauche = false;
 	protected boolean feu_tenu_gauche_rouge = false;
 	protected boolean feu_tenu_droite_rouge = false;
-	protected Vitesse vitesse;
+	protected Vitesse vitesse = Vitesse.ENTRE_SCRIPTS;
 	
 	public Robot(Read_Ini config, Log log)
 	{
