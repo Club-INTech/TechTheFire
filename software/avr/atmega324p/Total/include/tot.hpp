@@ -571,11 +571,11 @@ void torcheDroite ()
 
 	void tirerFilet ()
 	{
-		filet.goTo (300);
+		filet.goTo (0);
 	}
 	void rembobinerFilet ()
 	{
-		filet.goTo (0);
+		filet.goTo (300);
 	}
 
   
