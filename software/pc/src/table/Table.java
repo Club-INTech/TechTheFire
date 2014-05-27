@@ -52,6 +52,7 @@ public class Table implements Service {
 	 */
 	public void setFruitsNoirs(int[] fruitsNoirs)
 	{
+		//Pas bien car ça ne prend pas en compte la symétrie
         arrayTree[0] = new Tree(new Vec2(1500,700), fruitsNoirs[0]);
         arrayTree[1] = new Tree(new Vec2(800,0), fruitsNoirs[1]);
         arrayTree[2] = new Tree(new Vec2(-800,0), fruitsNoirs[2]);
@@ -253,19 +254,19 @@ public class Table implements Service {
 	{
 		return arrayFixedFire;
 	}
-	public void modifierProbaFire(int i, float proba )
+	public void setProbaFire(int i, float proba )
 	{
 		arrayFire[i].setProbaFaitParEnnemi(proba);
 	}
-	public float prendreProbaFire(int i)
+	public float setProbaFire(int i)
 	{
 		return arrayFire[i].getProbaFaitParEnnemi();
 	}
-	public void modifierProbaFixedFire(int i, float proba )
+	public void setProbaFixedFire(int i, float proba )
 	{
 		arrayFixedFire[i].setProbaFaitParEnnemi(proba);
 	}
-	public float prendreProbaFixedFire(int i)
+	public float getProbaFixedFire(int i)
 	{
 		return arrayFixedFire[i].getProbaFaitParEnnemi();
 	}
@@ -327,11 +328,11 @@ public class Table implements Service {
 		{
 			return arrayTree;
 		}
-	public void modifierProbaTree(int i, float proba )
+	public void setProbaTree(int i, float proba )
 	{
 		arrayTree[i].setProbaFaitParEnnemi(proba);
 	}
-	public float prendreProbaTree(int i)
+	public float getProbaTree(int i)
 	{
 		return arrayTree[i].getProbaFaitParEnnemi();
 	}
@@ -480,9 +481,9 @@ public class Table implements Service {
 	 * Utilisé par les tests unitaires uniquement. Vérifie que les hash sont bien mis à jour
 	 * @return
 	 */
-	public int hashTable()
+	public long hashTable()
 	{	    
-		return (((((gestionobstacles.hash()<<8 + hashFire)<<8 + hashTree)<<8))<<2+codeMammouth())<<2+codeTorches();
+		return ((((((((((gestionobstacles.hash()<<6) + hashFire)<<6) + hashTree)<<6)))<<2)+codeMammouth())<<2)+codeTorches();
 	}
 
 	/**
@@ -498,7 +499,7 @@ public class Table implements Service {
                 && rightMammothHit == other.rightMammothHit
                 && arrayTorch[0].isDisparue() == other.arrayTorch[0].isDisparue()
                 && arrayTorch[1].isDisparue() == other.arrayTorch[1].isDisparue()
-                && gestionobstacles == other.gestionobstacles;
+                && gestionobstacles.hash() == other.gestionobstacles.hash();
 	}
 	
 
@@ -523,12 +524,12 @@ public class Table implements Service {
 	}
 	//Il faudra faire gaffe à la différence entre les distance et les squaredDistance quand on les compare avec des constantes ! Achtung !!!
 	
-	public void modifierProbaFresco(int i, float proba )
+	public void setProbaFresco(int i, float proba )
 	{
 		list_fresco_pos[i].setProbaFaitParEnnemi(proba);
 	}
 	
-	public float prendreProbaFresco(int i)
+	public float getProbaFresco(int i)
 	{
 		return list_fresco_pos[i].getProbaFaitParEnnemi();
 	}

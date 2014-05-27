@@ -41,6 +41,7 @@ public class Strategie implements Service {
 	private NoteScriptMetaversion MetaScriptEnCours;
 	
 	public int TTL; //time toDatUltimateBest live
+	public ArrayList<NoteScriptMetaversion> decisionHistory;	// l'historique des décisions faites par la stratégie
 
 	// TODO initialisations des variables = première action
 	// Prochain script à exécuter si on est interrompu par l'ennemi
@@ -56,6 +57,7 @@ public class Strategie implements Service {
 		this.real_state = real_state;
 		this.log = log;
 		prochainScript = new NoteScriptVersion();
+		decisionHistory = new ArrayList<NoteScriptMetaversion>();
 		maj_config();
 	}
 
@@ -64,8 +66,13 @@ public class Strategie implements Service {
 	 */
 	public void boucle_strategie()
 	{
+		// attends le début du match
+		log.debug("Boucle Stratégie: Attente du début du match", this);
 		while(!ThreadTimer.match_demarre)
 			Sleep.sleep(20);
+
+		// l'historique des décisions doit être vide lors du lancement de la boucle.
+		decisionHistory.clear();
 
 		log.debug("Stratégie lancée", this);
 		while(!ThreadTimer.fin_match)
@@ -82,10 +89,12 @@ public class Strategie implements Service {
 						scriptEnCours = null;
 				}
 
+			// le script a écécuter ne doit pas être ul pour pouvoir l'éxécuter
 			if(scriptEnCours != null && scriptEnCours.script != null)
 			{
 				boolean dernier = (nbScriptsRestants() == 1);
 
+				// imprime l'état du jeu
 				log.debug("=============== New Script =========================", this);
 				log.debug("Position Robot : "+ real_state.robot.getPosition(), this);
 				log.debug("Mammouth Gauche feu  : "+ real_state.table.isLeftMammothHit(), this);
@@ -103,13 +112,18 @@ public class Strategie implements Service {
 				log.debug("      ==============            ===========         ", this);
 				log.debug("Stratégie fait: "+scriptEnCours+", dernier: "+dernier, this);
 				log.debug("====================================================", this);
-				// le dernier argument, retenter_si_blocage, est vrai si c'est le dernier script. Sinon, on change de script sans attendre
-				try {
+				
+				// ajoute l'action que l'on fait a l'historique de ce que l'on a déjà fait
+				decisionHistory.add(getMetaScriptEnCours());
+				
+				try 
+				{
+					// le dernier argument, retenter_si_blocage, est vrai si c'est le dernier script. Sinon, on change de script sans attendre
 					scriptEnCours.script.agit(scriptEnCours.version, real_state, dernier);
 				}
 				catch(Exception e)
 				{
-					// enregistrement de l'erreur
+					// enregistrement de l'erreur pour ne pas la refaire (ajout a la liste d'exclusion de l'arbre)
 					String nom = scriptEnCours.script.toString();
 					if(echecs.containsKey(nom))
 					{
@@ -131,17 +145,16 @@ public class Strategie implements Service {
 	}
 
 	/**
-	 * Méthode qui, à partir de la durée de freeze et de l'emplacement des ennemis, tire des conclusions.
-	 * Exemples: l'ennemi vide cet arbre, il a posé sa fresque ici, ...
-	 * Modifie aussi la variable TTL!long
+	 * Méthode qui, à partir de l'emplacement des ennemis, 
+	 * essaye de trouver ce qu'ils font
 	 */
 	public void analyse_ennemi(Vec2[] positionsfreeze, int[] duree_freeze)
 	//en fait on n'a pas besoin de la date des freezes mais de la durée des freeze
 	{
-		//
+		
 		int distance_influence = 500; //50 cm
-		int duree_standard = 3000; //3 secondes
-		int duree_blocage = 10000; //10 secondes
+		int duree_standard = 5000;
+		int duree_blocage = 15000;
 		//int larg_max = 100; //10 cm est la largeur maximale de la fresque
 		//valeur amenée à être modifiée
 		//inutile en fait
@@ -149,21 +162,37 @@ public class Strategie implements Service {
 		int i_min_tree ;
 		int i_min_fresco;
 		int i_min_fixed_fire;
+		
+		
+		// ractangle ou un freeze ennemi empèche la dépose de fruits 
+		int bacCriticalmaxX = -500;
+		int bacCriticalminX = -1000;
+		int bacCriticalminY = 1300;
+		int bacCriticalmaxY = 1700;
+		
+		
+		
+		
+		
 		for(int i = 0; i <2; i++)
 		{
 			/*
 			 * Je mets en garde contre la façon dont peut être utilisé positionsfreeze
 			 * en effet, une fois que le robot adverse a été considéré commme preneur
-			 * de feu ou de fruit, alors il faut remettre à 0 le compteurmais si on fait ça, 
+			 * de feu ou de fruit, alors il faut remettre à 0 le compteur mais si on fait ça, 
 			 * on ne se prémunit pas, entre autre, contre les freezes
 			 * 			 * 
 			 */
+			
+			// détermine les plus proches actions du robot ennemi 
 			i_min_fire = real_state.table.nearestUntakenFire(positionsfreeze[i]);
 			i_min_tree = real_state.table.nearestUntakenTree(positionsfreeze[i]);
 			i_min_fresco = real_state.table.nearestFreeFresco(positionsfreeze[i]);
 			i_min_fixed_fire = real_state.table.nearestUntakenFixedFire(positionsfreeze[i]);
+			
+			
 			//Pour déboguer
-			for(int p = 0; i <2; i++)
+			for(int p = 0; p <2; p++)
 			{
 				if(duree_freeze[p] > 5000)
 			
@@ -177,28 +206,37 @@ public class Strategie implements Service {
 				}
 			}
 			
+			
 			if (duree_freeze[i] > duree_blocage)
 			{
 				//Il y a un blocage de l'ennemi, réfléchissons un peu et agissons optimalement
 				//Pour l'instant  la stratégie est trop bonne pour qu'on en ait à faire quelque chose
-			}
-			if (real_state.table.distanceTree(positionsfreeze[i], i_min_tree) < distance_influence && duree_freeze[i] > duree_standard)
-			{
-			    real_state.table.modifierProbaTree(i_min_tree, 0.9f);
-			}
-			if(real_state.table.distanceFire(positionsfreeze[i], i_min_fire) < distance_influence && duree_freeze[i] > duree_standard)
-			{
-			    real_state.table.modifierProbaFire(i_min_fire,0.9f);
-			}
-			if(real_state.table.distanceFresco(positionsfreeze[i], i_min_fresco) < distance_influence && duree_freeze[i] > duree_standard)
-			{
-			    real_state.table.modifierProbaFresco(i_min_fresco,0.9f);
-			}
-			if(real_state.table.distanceFixedFire(positionsfreeze[i], i_min_fresco) < distance_influence && duree_freeze[i] > duree_standard)
-			{
-			    real_state.table.modifierProbaFixedFire(i_min_fixed_fire,0.9f);
+				
+				
+				if(positionsfreeze[i].x < bacCriticalmaxX && positionsfreeze[i].x > bacCriticalminX && positionsfreeze[i].y > bacCriticalminY && positionsfreeze[i].y < bacCriticalmaxY)
+				    real_state.table.setProbaFire(i_min_fire,0.9f);
+				
 			}
 			
+			
+			if (duree_freeze[i] > duree_standard)
+			{
+				// si l'ennemi a pris un arbre
+				if (real_state.table.distanceTree(positionsfreeze[i], i_min_tree) < distance_influence)
+				    real_state.table.setProbaTree(i_min_tree, 0.9f);
+
+				// si l'ennemi a pris un feu
+				if(real_state.table.distanceFire(positionsfreeze[i], i_min_fire) < distance_influence)
+				    real_state.table.setProbaFire(i_min_fire,0.9f);
+				
+				// si l'ennmei prose les fresques
+				if(real_state.table.distanceFresco(positionsfreeze[i], i_min_fresco) < distance_influence)
+				    real_state.table.setProbaFresco(i_min_fresco,0.9f);
+				
+				// si l'ennemi prend un feu fixe 
+				if(real_state.table.distanceFixedFire(positionsfreeze[i], i_min_fresco) < distance_influence)
+				    real_state.table.setProbaFixedFire(i_min_fixed_fire,0.9f);
+			}
 			
 			/*
 			 * 
@@ -210,15 +248,13 @@ public class Strategie implements Service {
 			 * 
 			 * 
 			 */
-			 
-			
 		}
+		
 		/*
 		 *On prend pas en compte le lancer de balles
 		 *car on aura pas d'information sur le lancer potentiel qu'un adversaire a fait
-		 *Et pour la funny action, il n'y a pas de stratédie nécessaire
-		 * 
-		 *  
+		 * (et pis en plus ca nous arrange bien qu'il tire ses balles) 
+		 *Et pour la funny action, il n'y a pas de stratégie nécessaire
 		 */
 		
 		
@@ -235,6 +271,9 @@ public class Strategie implements Service {
 		// Le TTL est une durée en ms sur laquelle on estime que le robot demeurera immobile
 		
 	} 
+	
+	
+	
 	public float[] meilleurVersion(int meta_id, Script script, GameState<RobotChrono> state) throws PathfindingException
 	{
 		int id = -1;
@@ -286,19 +325,6 @@ public class Strategie implements Service {
 	 */
 	private float calculeNote(int score, int duree, int id, Script script, GameState<?> state)
 	{
-		// TODO
-		/*
-		int A = 1;
-		int B = 1;
-		float prob = script.proba_reussite();
-		
-		//abandon de prob_deja_fait
-		Vec2[] position_ennemie = state.table.get_positions_ennemis();
-		float pos = (float)1.0 - (float)(Math.exp(-Math.pow((double)(script.point_entree(id).distance(position_ennemie[0])),(double)2.0)));
-		// pos est une valeur qui décroît de manière exponentielle en fonction de la distance entre le robot adverse et là où on veut aller
-		float note = (score*A*prob/duree+pos*B)*prob;*/
-		
-//		log.debug((float)(Math.exp(-Math.pow((double)(script.point_entree(id).distance(position_ennemie[0])),(double)2.0))), this);
 		if (score != 0)
 			return 1000.0f*(float)score*script.poids(state)/(float)duree;
 		else
@@ -310,7 +336,7 @@ public class Strategie implements Service {
 	 * 
 	 * @param profondeur : la profondeur d'exploration de l'arbre, 1 pour n'explorer qu'un niveau
 	 */
-	public NoteScriptMetaversion evaluate(ArrayList<NoteScriptMetaversion> errorList)	// TODO : add an argument to infuence the tree size
+	public NoteScriptMetaversion evaluate(ArrayList<NoteScriptMetaversion> errorList)
 	{
 		/*
 		 * 	Algorithme : Itterative Modified DFS
@@ -374,7 +400,7 @@ public class Strategie implements Service {
 		int TimeBeforeGiveUp	= 3000;	// Si on reste bloqué dans l'arbre, on garde un oeil sur la montre pour être sur de pouvoir retenter sa chance
 		
 		long startTime = System.currentTimeMillis();
-		int Branchcount = 0;
+//		int Branchcount = 0;
 		boolean temp;
 		boolean branchHasChild;
 		
@@ -473,7 +499,7 @@ public class Strategie implements Service {
 		else if(scope.size() == 1)
 			TTL = 60000; 
 		
-		TTL /=2;
+		//TTL /=2;
 		
 		
 		for (int i = 0; i < rootList.size(); ++i)
@@ -554,9 +580,10 @@ public class Strategie implements Service {
 							//log.debug("Ajout d'une branche avec script" + nomScript + " et metaversion : " + metaversion, this);
 							
 							mState = memorymanager.getClone(current.profondeur-1);
+							mState.table.supprimerObstaclesPerimes(mState.time_depuis_racine);
 							mState.pathfinding.setPrecision(5);
 							current.computeActionCharacteristics();
-							Branchcount++;
+//							Branchcount++; // Remarque: non utilisé
 							branchHasChild = true;
 							scope.push( new Branche(	(int)(current.TTL - current.dureeScript),	// TTL restant : celui du restant moins la durée de son action	
 														mState.time_depuis_racine >= TrueAStarTTL || current.profondeur > 1,//true,//current.profondeur >= 2,					// Utiliser le cache dès le second niveau de profondeur
@@ -585,11 +612,17 @@ public class Strategie implements Service {
 				
 			}	// fin boucle principale d'exploration
 		//log.debug("Explored "+ Branchcount + " branches in " + (System.currentTimeMillis() - startTime) + " ms", this);
-	//	log.debug("IA completed in " + (System.currentTimeMillis() - startTime) + " ms with TTL = " + TTL + "ms   rootList.size() :" + rootList.size() + "	Explored "+ Branchcount + " branches", this);
+		//log.debug("IA completed in " + (System.currentTimeMillis() - startTime) + " ms with TTL = " + TTL + "ms   rootList.size() :" + rootList.size(), this);// + "	Explored "+ Branchcount + " branches", this);
 		
 		// simu raspbe
+		/*
+		log.debug("WARING : Simu rapsbe active, strategy evaluation pausing for 1s", this);
 		Sleep.sleep(1000);
+		*/
+		 
 
+
+		// Affihcage des notes des racines
 		//for (int i = 0; i < rootList.size(); ++i)
 		//	log.debug("Note of " + rootList.get(i).script.toString() + " is " + rootList.get(i).note, this);
 		

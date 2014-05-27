@@ -89,6 +89,23 @@ class Communication
 		    serial_pc::read(angle);
 		    axSansLimites.goTo(angle);
 		  }
+		else if (strcmp(ordre,"mov")==0)
+		  {
+		    if(ax12.isMoving())
+		      {
+			serial_pc::printfln("IL BOUUUUGE !");
+		      }
+		    else
+		      {
+			serial_pc::printfln("bouge pas");
+		      }
+		  }
+		else if (strcmp(ordre,"pos")==0)
+		  {
+		    uint16_t position=0;
+		    position = ax12.getPositionDegres();
+		    serial_pc::printfln("position:%d", position);
+		  }
 	}
 
 };

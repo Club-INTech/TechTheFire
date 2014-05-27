@@ -10,6 +10,7 @@ import strategie.GameState;
 import utils.Log;
 import utils.Read_Ini;
 import exceptions.deplacements.MouvementImpossibleException;
+import exceptions.serial.SerialException;
 
 /**
  * Script pour les lances
@@ -52,10 +53,10 @@ public class ScriptLances extends Script {
 		//if(couleur == "jaune")
 		if(id == 0)
 			//return new Vec2(400,1400);
-			return new Vec2(750,1450);
+			return new Vec2(750,1250);
 		else
 			//return new Vec2(-1200,1400);
-			return new Vec2(-750,1450);
+			return new Vec2(-750,1250);
 	}
 	
 	@Override
@@ -119,12 +120,28 @@ public class ScriptLances extends Script {
 		*/
 	    state.robot.tourner_sans_symetrie((float)(Math.PI));
 		//Abadon des hooks, on fait donc tout à la main
+	    try
+        {
+            state.robot.allume_ventilo();
+            state.robot.sleep(2000);
+        } catch (SerialException e)
+        {
+            e.printStackTrace();
+        }
+	    //state.robot.sleep(1500);
 	    state.robot.tirerBalle();
-	    state.robot.sleep(800);
+	    //state.robot.sleep(2000);
 	    state.robot.tirerBalle();
-	    state.robot.sleep(800);
-	    state.robot.tirerBalle();
-	    state.robot.sleep(1500);
+	    state.robot.sleep(2000);
+        try
+        {
+            state.robot.eteint_ventilo();
+            state.robot.sleep(2000);
+            state.robot.tirerBalle();
+        } catch (SerialException e)
+        {
+            e.printStackTrace();
+        }
 		//robot.set_vitesse_translation("vitesse_mammouth");
 		//robot.avancer(600, hooks);
 			
@@ -148,4 +165,9 @@ public class ScriptLances extends Script {
 		return "ScriptLances";
 	}
 
+	@Override
+	public float probaDejaFait(int id_metaversion, GameState<?> state)
+	{
+		return 0.5f;	// on n'en sait rien (le thread analyse ennemi est pas assez développé) 
+	}
 }
