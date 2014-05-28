@@ -62,10 +62,14 @@ public class lanceur
 	    deplacements = (DeplacementsHautNiveau)container.getService("DeplacementsHautNiveau");
 	    dep = (Deplacements)container.getService("Deplacements");
 	    capteurs = (Capteurs) container.getService("Capteur");
-
+	    
 		real_state.robot.initialiser_actionneurs_deplacements();
+		
 
-		//recalerRobot();
+		// Threads
+		container.demarreTousThreads();
+
+		recalerRobot();
 		setFruitNoirPositions();
 		configDepartRapide() ;
 		
@@ -87,8 +91,6 @@ public class lanceur
 		
 		System.out.println("Le robot commence le match");
 		 
-		// Threads
-		container.demarreTousThreads();
 		
 		// fais le match avec l'IA
 		strategie.boucle_strategie();
@@ -305,11 +307,11 @@ public class lanceur
 
 		System.out.println("Robot pret pour le match, attente du retrait du jumper");
 		
-		// hack car le jumper est inopérant ce matin
-		ThreadTimer.match_demarre = true;
-/*
-			while(!capteurs.demarrage_match())
-					Sleep.sleep(100);*/
+		// hack si le jumper est inopérant
+		//ThreadTimer.match_demarre = true;
+
+		while(!capteurs.demarrage_match())
+				Sleep.sleep(100);
 	}
 	
 
@@ -331,8 +333,7 @@ public class lanceur
 	 */
 	static void faireDepartStandard()  throws Exception
 	{
-	    Script s = (Script)scriptmanager.getScript("ScriptTree");
-	    s.agit(2, real_state, true);
+
 	}
 	
 	
