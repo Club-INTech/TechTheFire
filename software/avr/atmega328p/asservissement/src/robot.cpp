@@ -300,7 +300,7 @@ void Robot::changer_orientation(float new_angle)
 
 void Robot::tourner(float angle)
 {
-	float angle_tic = (-angle - angle_origine_)/CONVERSION_TIC_RADIAN;
+	float angle_tic = (angle - angle_origine_)/CONVERSION_TIC_RADIAN;
 	rotation.consigne(angle_optimal( angle_tic, mesure_angle_ ));
 	//attendre un tour de timer avant de continuer (éventuel problème avec attribut volatile)
 // 	while(compteur.value()>0){ asm("nop"); }
