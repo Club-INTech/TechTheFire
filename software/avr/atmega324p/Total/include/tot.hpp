@@ -296,7 +296,7 @@ class Communication
 	// JUMPER DE DÉBUT DE MATCH
        	else if (strcmp(ordre, "j") == 0)
        	{
-       	    serial_pc::print(C2::read());
+       	    serial_pc::print(D7::read());
        	}
 	
 	// CAPTEURS CONTACT
@@ -571,11 +571,11 @@ void torcheDroite ()
 
 	void tirerFilet ()
 	{
-		filet.goTo (0);
+		filet.goTo (300);
 	}
 	void rembobinerFilet ()
 	{
-		filet.goTo (300);
+		filet.goTo (0);
 	}
 
   
