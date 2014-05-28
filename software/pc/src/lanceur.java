@@ -321,7 +321,7 @@ public class lanceur
 	 */
 	static void initialiserDepartStandard()  throws Exception
 	{
-		real_state.robot.avancer(300);
+		real_state.robot.avancer(150);
 	}
 
 	
@@ -333,6 +333,7 @@ public class lanceur
 	static void faireDepartStandard()  throws Exception
 	{
 
+		real_state.robot.avancer(150);
 	}
 	
 	
