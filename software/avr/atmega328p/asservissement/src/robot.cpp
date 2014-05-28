@@ -6,7 +6,7 @@ Robot::Robot() :
 			,angle_origine_(0.0)
 			,etat_rot_(true)
 			,etat_tra_(true)
-			,translation(0.45,9.0,0.0) // 0.45,11.5 pour 150 0.45 12.5 pour 170
+			,translation(0.45,12.0,0.0) // 0.45,12.5 pour 90  0.52 17.0 pour 170 0.55,27 pour 200 0.5,4.0 pour 60
 			,rotation(0.8,15.0,0.0)  //0,85, 15.0
 {
 	TWI_init();
