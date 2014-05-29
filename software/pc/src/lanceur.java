@@ -68,7 +68,7 @@ public class lanceur
 		// Threads
 		container.demarreTousThreads();
 
-		//recalerRobot();
+		recalerRobot();
 		setFruitNoirPositions();
 		configDepartRapide() ;
 		
