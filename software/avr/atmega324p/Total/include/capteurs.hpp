@@ -7,7 +7,7 @@
 #include <libintech/gpio.hpp>
 
 #define NB_SRF_AVANT            1
-#define NB_INFRAROUGE_AVANT     2
+//#define NB_INFRAROUGE_AVANT     0
 
 #define TAILLE_BUFFER   50
 
@@ -28,8 +28,8 @@ public:
 	typedef CapteurSRFMono< timer_capteur_us, D5, pcint29 > capteur_us1_type;
 	capteur_us1_type us1;
 
-	typedef CapteurSRFMono< timer_capteur_us, A0, pcint0 > capteur_us2_type;
-	capteur_us2_type us2;
+  //	typedef CapteurSRFMono< timer_capteur_us, A0, pcint0 > capteur_us2_type;
+  //	capteur_us2_type us2;
 
 private:
 	uint8_t bufferContactGauche[TAILLE_BUFFER];
