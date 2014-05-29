@@ -3,9 +3,8 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import org.junit.runner.JUnitCore;
+//import org.junit.runner.JUnitCore;
 
-//import robot.RobotChrono;
 import robot.RobotVrai;
 import robot.cartes.Capteurs;
 import robot.cartes.Deplacements;
@@ -15,9 +14,9 @@ import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
 import strategie.Strategie;
-import tests.JUnit_StrategieThreadTest;
+//import tests.JUnit_StrategieThreadTest;
 //import sun.rmi.runtime.Log;
-import threads.ThreadTimer;
+//import threads.ThreadTimer;
 import utils.Read_Ini;
 import utils.Sleep;
 import container.Container;
@@ -69,7 +68,7 @@ public class lanceur
 		// Threads
 		container.demarreTousThreads();
 
-		recalerRobot();
+		//recalerRobot();
 		setFruitNoirPositions();
 		configDepartRapide() ;
 		
