@@ -277,20 +277,11 @@ class Communication
         	B4::low();
         }
 
-	// infrarouge
-        else if (strcmp(ordre, "ir_g")==0)
-        {
-            serial_pc::print(capteurs.inf1.value());
-        }
-        else if (strcmp(ordre, "ir_d")==0)
-        {
-    	    serial_pc::print(capteurs.inf2.value());
-        }
-
 	// Ultrasons SRF05
-        else if (strcmp(ordre, "us_av")==0)
+        else if (strcmp(ordre, "us")==0)
         {
             serial_pc::print(capteurs.us1.value());
+            serial_pc::print(capteurs.us2.value());
         }
 
 	// JUMPER DE DÉBUT DE MATCH
