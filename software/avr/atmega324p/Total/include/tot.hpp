@@ -281,7 +281,7 @@ class Communication
         else if (strcmp(ordre, "us")==0)
         {
             serial_pc::print(capteurs.us1.value());
-            serial_pc::print(capteurs.us2.value());
+	    //  serial_pc::print(capteurs.us2.value());
         }
 
 	// JUMPER DE DÉBUT DE MATCH
@@ -338,7 +338,7 @@ class Communication
 	void hautGauche ()
 	{
 	  retablirGauche();
-	  	positionGauche.goTo(65);
+	  	positionGauche.goTo(60);
 		_delay_ms(250);
 		orientationGauche.goTo(130); //cet ajout a pour but de mettre la pince verticale, qu'elle prenne moins de place.
 	}
@@ -427,7 +427,7 @@ void posGauche ()
 	void hautDroite ()
 	{
 	  retablirDroite();
-	  	positionDroite.goTo(70);
+	  	positionDroite.goTo(65);
 		_delay_ms(250);
 		orientationDroite.goTo(170);
 	}
@@ -500,7 +500,7 @@ void torcheDroite ()
 
 	void rangerRateaud ()
 	{
-		rateauD.goTo (60);
+		rateauD.goTo (55);
 	}
 	void rateauBasd ()
 	{
@@ -521,7 +521,7 @@ void torcheDroite ()
 
 	void rangerRateaug ()
 	{
-		rateauG.goTo (240);
+		rateauG.goTo (245);
 	}
 	void rateauBasg ()
 	{
