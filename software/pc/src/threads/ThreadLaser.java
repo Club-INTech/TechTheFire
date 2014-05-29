@@ -68,6 +68,18 @@ class ThreadLaser extends AbstractThread {
 		// Liste des balises prises en compte
 		ArrayList<Balise> balises = laser.balises_actives();
 
+		// attente du début du match
+		while(!ThreadTimer.match_demarre)
+		{
+			if(stop_threads)
+			{
+				log.debug("Arrêt du thread laser", this);
+				return;
+			}
+			Sleep.sleep(100);
+		}
+		
+		
 		while(!ThreadTimer.fin_match)
 		{
 			long start = System.currentTimeMillis();
