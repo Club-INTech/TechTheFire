@@ -50,6 +50,8 @@ public class lanceur
 		config = (Read_Ini) container.getService("Read_Ini");
 	
 		
+		System.out.println("LANCEUR MATCH 1_v2");
+		
 		//Début des paramétrages
 		configCouleur();
 	
@@ -338,7 +340,7 @@ public class lanceur
 	 */
 	static void initialiserDepartStandard()  throws Exception
 	{
-		real_state.robot.avancer(150);
+		real_state.robot.avancer(60);
 	}
 
 	
