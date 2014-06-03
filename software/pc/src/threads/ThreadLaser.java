@@ -91,10 +91,14 @@ class ThreadLaser extends AbstractThread {
 
 					// Récupération des valeurs filtrées
 					Vec2 p_filtre = filtragelaser.position();
+					
 
 					// Vérification si l'obstacle est sur la table 
 					if(p_filtre.x > -table_x/2 && p_filtre.y > 0 && p_filtre.x < table_x/2 && p_filtre.y < table_y)
+					{
 						table.deplacer_robot_adverse(balise.id, p_filtre);
+						log.debug("Laser voit ennemi en : " + p_filtre, this);
+					}
 
 					sleep((long)(1./lasers_frequence));
 					long end = System.currentTimeMillis();
