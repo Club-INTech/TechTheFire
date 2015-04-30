@@ -262,7 +262,7 @@ public abstract class Robot implements Service {
      * @throws PathfindingException
      * @throws MouvementImpossibleException
      */
-    public void va_au_point_pathfinding(Pathfinding pathfinding, Vec2 arrivee, ArrayList<Hook> hooks, boolean insiste) throws PathfindingException, MouvementImpossibleException
+    public boolean va_au_point_pathfinding(Pathfinding pathfinding, Vec2 arrivee, ArrayList<Hook> hooks, boolean insiste) throws PathfindingException, MouvementImpossibleException
     {
         /* On demande au pathfinding simple un itinéraire
          * - si on a une exception de Pathfinding (chemin non trouvé), on utilise le A*
@@ -270,23 +270,46 @@ public abstract class Robot implements Service {
          *      - si on insiste, on reprend ça (nouveau chemin avec pathfinding simple, A* si pas de chemin trouvé)
          *      - si on n'insiste pas, on lève une exception
          */
-        
+        boolean out = false;
+        log.debug("A", this);
         ArrayList<Vec2> chemin;
         try 
         {
-            chemin = pathfinding.chemin(getPosition(), arrivee, insiste);
+        	Vec2 position_robot = getPosition();
+		    if(symetrie)
+		    	position_robot.x *= -1;
+
+            log.debug("B", this);
+            chemin = pathfinding.chemin(position_robot, arrivee, insiste);
+            for(Vec2 point: chemin)
+            	log.debug(point, this);
             suit_chemin(chemin, hooks);
+            log.debug("Robot en "+getPosition(), this);
+            out = true;
         }
         catch (MouvementImpossibleException e)
         {
+            log.debug("C", this);
             e.printStackTrace();
             if(insiste)
             {
-                chemin = pathfinding.chemin(getPosition(), arrivee, insiste);
+            	Vec2 position_robot = getPosition();
+    		    if(symetrie)
+    		    	position_robot.x *= -1;
+                log.debug("D", this);
+                chemin = pathfinding.chemin(position_robot, arrivee, insiste);
+                log.debug("E", this);
+                tourner(getOrientation()+Math.PI);
                 suit_chemin(chemin, hooks);
+                log.debug("F", this);
+                out = true;
             }
             else throw e;
         }
+        return out;
     }
 
+    public abstract void desactiver_asservissement_rotation();
+    public abstract void activer_asservissement_rotation();
+    
 }

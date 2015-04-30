@@ -30,6 +30,7 @@ import utils.Sleep;
  * @author pf
  *
  */
+
 public class DeplacementsHautNiveau implements Service
 {
 
@@ -41,6 +42,7 @@ public class DeplacementsHautNiveau implements Service
     private Vec2 position = new Vec2();  // la position tient compte de la symétrie
     private Vec2 consigne = new Vec2(); // La consigne est un attribut car elle peut être modifiée au sein d'un même mouvement.
     private boolean trajectoire_courbe = false;
+    private int abwabwa;
     
     private double orientation; // l'orientation tient compte de la symétrie
     private Deplacements deplacements;
@@ -52,6 +54,9 @@ public class DeplacementsHautNiveau implements Service
 //    private int anticipation_trajectoire_courbe = 200;
     private double angle_degagement_robot;
     private boolean insiste = false;
+    private long debut_mouvement_fini;
+    private boolean fini = true;
+    private double[] old_infos;
     
     public DeplacementsHautNiveau(Log log, Read_Ini config, Table table, Deplacements deplacements)
     {
@@ -66,19 +71,27 @@ public class DeplacementsHautNiveau implements Service
     public void recaler()
     {
         try {
+            if(symetrie)
+                setOrientation(0f);
+            else
+                setOrientation(Math.PI);
+
+            log.debug("recale X",this);
+            Sleep.sleep(2000);
             avancer(-200, null, true);
             deplacements.set_vitesse_translation(200);
             deplacements.desactiver_asservissement_rotation();
+            Sleep.sleep(1000);
             avancer(-200, null, true);
             deplacements.activer_asservissement_rotation();
             deplacements.set_vitesse_translation(Vitesse.RECALER.PWM_translation);
-
+            log.debug("I", this);
 
             position.x = 1500 - 165;
             if(symetrie)
             {
-                deplacements.set_x(-1500+165);
                 setOrientation(0f);
+                deplacements.set_x(-1500+165);
             }
             else
             {
@@ -86,20 +99,29 @@ public class DeplacementsHautNiveau implements Service
                 setOrientation(Math.PI);
             }
 
+            log.debug("III", this);
+
             Sleep.sleep(500);
-            avancer(50, null, true);
+            avancer(40, null, true);
+            log.debug("IV", this);
             tourner(-Math.PI/2, null, false);
 
+            
+        	log.debug("recale Y",this);
             avancer(-600, null, true);
             deplacements.set_vitesse_translation(200);
             deplacements.desactiver_asservissement_rotation();
+            Sleep.sleep(1000);
             avancer(-200, null, true);
             deplacements.activer_asservissement_rotation();
             deplacements.set_vitesse_translation(Vitesse.RECALER.PWM_translation);
             position.y = 2000 - 165;
             deplacements.set_y(2000 - 165);
+            
+
+        	log.debug("Done !",this);
             Sleep.sleep(500);
-            avancer(100, null, false);
+            avancer(130, null, false);
             orientation = -Math.PI/2;
             setOrientation(-Math.PI/2);
             //Normalement on se trouve à (1500 - 165 - 100 = 1225 ; 2000 - 165 - 100 = 1725)
@@ -116,17 +138,24 @@ public class DeplacementsHautNiveau implements Service
      */
     public void tourner(double angle, ArrayList<Hook> hooks, boolean mur) throws MouvementImpossibleException
     {
+        log.debug("Symétrie: "+symetrie, this);
+
         if(symetrie)
             angle = Math.PI-angle;
 
         // Tourne-t-on dans le sens trigonométrique?
         // C'est important de savoir pour se dégager.
         boolean trigo = angle > orientation;
-        
+
         try {
+            old_infos = deplacements.get_infos_x_y_orientation();
+            abwabwa = 5;
             deplacements.tourner(angle);
             while(!mouvement_fini()) // on attend la fin du mouvement
+            {
                 Sleep.sleep(sleep_boucle_acquittement);
+             //   log.debug("abwa?", this);
+            }
         } catch(BlocageException e)
         {
             try
@@ -161,10 +190,15 @@ public class DeplacementsHautNiveau implements Service
     {
         log.debug("Avancer de "+Integer.toString(distance), this);
 
+        System.out.println(position);
         update_x_y_orientation();
+        System.out.println(position);
 
         consigne.x = (int) (position.x + distance*Math.cos(orientation));
         consigne.y = (int) (position.y + distance*Math.sin(orientation));
+        System.out.println(consigne);        
+        if(symetrie)
+            consigne.x = -consigne.x;
 
         va_au_point_gestion_exception(hooks, false, distance < 0, mur);
     }
@@ -215,6 +249,8 @@ public class DeplacementsHautNiveau implements Service
             {
                 consigne = point.clone();
                 va_au_point_marche_arriere(hooks, false, false);
+                va_au_point_marche_arriere(hooks, false, false);
+                va_au_point_marche_arriere(hooks, false, false);
             }
     }
 
@@ -261,20 +297,21 @@ public class DeplacementsHautNiveau implements Service
      */
     public void va_au_point_gestion_exception(ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean marche_arriere, boolean mur) throws MouvementImpossibleException
     {
-        int nb_iterations;
+        int nb_iterations_ennemi;
+        int nb_iterations_deblocage = 2;
         if(insiste)
-            nb_iterations = nb_iterations_max;
+            nb_iterations_ennemi = nb_iterations_max;
         else
-            nb_iterations = 6; // 600 ms
+            nb_iterations_ennemi = 6; // 600 ms
         boolean recommence;
         do {
-            nb_iterations--;
             recommence = false;
             try
             {
                 va_au_point_hook_correction_detection(hooks, trajectoire_courbe, marche_arriere);
             } catch (BlocageException e)
             {
+                nb_iterations_deblocage--;
                 stopper();
                 /*
                  * En cas de blocage, on recule (si on allait tout droit) ou on avance.
@@ -282,7 +319,6 @@ public class DeplacementsHautNiveau implements Service
                 // Si on insiste, on se dégage. Sinon, c'est juste normal de prendre le mur.
                 if(!mur)
                 {
-                    nb_iterations -= 5;
                     try
                     {
                         log.warning("On n'arrive plus à avancer. On se dégage", this);
@@ -297,6 +333,14 @@ public class DeplacementsHautNiveau implements Service
                     }
                     try
                     {
+                        try
+                        {
+                            old_infos = deplacements.get_infos_x_y_orientation();
+                            abwabwa = 5;
+                        } catch (SerialException e1)
+                        {
+                            e1.printStackTrace();
+                        }
                         while(!mouvement_fini());
                     } catch (BlocageException e1)
                     {
@@ -304,15 +348,16 @@ public class DeplacementsHautNiveau implements Service
                         log.critical("On n'arrive pas à se dégager.", this);
                         throw new MouvementImpossibleException();
                     }
-                    if(nb_iterations <= 0)
+                    if(nb_iterations_deblocage <= 0)
                         throw new MouvementImpossibleException();
                 }
             } catch (CollisionException e)
             {
+                nb_iterations_ennemi--;
                 /*
                  * En cas d'ennemi, on attend (si on demande d'insiste) ou on abandonne.
                  */
-                if(nb_iterations <= 0)
+                if(nb_iterations_ennemi <= 0)
                 {
                     /* TODO: si on veut pouvoir enchaîner avec un autre chemin, il
                      * ne faut pas arrêter le robot.
@@ -347,10 +392,16 @@ public class DeplacementsHautNiveau implements Service
      */
     public void va_au_point_hook_correction_detection(ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean marche_arriere) throws BlocageException, CollisionException
     {
-        System.out.println("Consigne: "+consigne);
-        System.out.println("Position: "+position);
         boolean relancer;
         va_au_point_symetrie(trajectoire_courbe, marche_arriere, false);
+        try
+        {
+            old_infos = deplacements.get_infos_x_y_orientation();
+            abwabwa = 5;
+        } catch (SerialException e)
+        {
+            e.printStackTrace();
+        }
         do
         {
             relancer = false;
@@ -369,9 +420,7 @@ public class DeplacementsHautNiveau implements Service
             if(relancer)
             {
                 log.debug("On relance", this);
-                System.out.println("marche_arriere: "+marche_arriere+", trajectoire_courbe: "+trajectoire_courbe);
                 va_au_point_symetrie(false, marche_arriere, trajectoire_courbe);
-                System.out.println("fin");
             }
             else
                 update_x_y_orientation();
@@ -391,14 +440,12 @@ public class DeplacementsHautNiveau implements Service
     public void va_au_point_symetrie(boolean trajectoire_courbe, boolean marche_arriere, boolean correction) throws BlocageException
     {
         Vec2 delta = consigne.clone();
-        System.out.println("Consigne: "+consigne);
         if(symetrie)
             delta.x = -delta.x;
         
         long t1 = System.currentTimeMillis();
         update_x_y_orientation();
         long t2 = System.currentTimeMillis();
-        System.out.println("position: "+position);
 
         delta.Minus(position);
         double distance = delta.Length();
@@ -413,8 +460,6 @@ public class DeplacementsHautNiveau implements Service
             angle += Math.PI;
         }        
         
-        System.out.println("Avance de "+distance+", angle: "+angle);
-
         va_au_point_courbe(angle, distance, trajectoire_courbe, correction);
         
     }
@@ -436,7 +481,8 @@ public class DeplacementsHautNiveau implements Service
                 trajectoire_courbe = false;
         try {
             deplacements.tourner(angle);
-
+            old_infos = deplacements.get_infos_x_y_orientation();
+            abwabwa = 5;
             if(!trajectoire_courbe) // sans virage : la première rotation est bloquante
                 while(!mouvement_fini()) // on attend la fin du mouvement
                     Sleep.sleep(sleep_boucle_acquittement);
@@ -448,32 +494,117 @@ public class DeplacementsHautNiveau implements Service
     }
 
     /**
+     * Faux si le robot bouge encore, vrai si arrivée au bon point, exception si blocage
+     * @return
+     * @throws BlocageException
+     */
+    private boolean mouvement_fini() throws BlocageException
+    {
+    	if(true)
+    		return false;
+        boolean out = false;
+        try
+        {
+        	abwabwa--;
+            double[] new_infos = deplacements.get_infos_x_y_orientation();
+            System.out.println("mouvement_fini");
+            System.out.println("Abwabwa: "+abwabwa);
+            System.out.println("x: "+new_infos[0]);
+            System.out.println("y: "+new_infos[1]);
+            System.out.println("o: "+new_infos[2]);
+            System.out.println("consigne: "+consigne);
+            System.out.println("distance² diff: "+new Vec2((int)old_infos[0], (int)old_infos[1]).SquaredDistance(new Vec2((int)new_infos[0], (int)new_infos[1])));
+            System.out.println("angle diff: "+Math.abs(new_infos[2] - old_infos[2]));
+
+            // si les codeuses bougent
+            if(new Vec2((int)old_infos[0], (int)old_infos[1]).SquaredDistance(new Vec2((int)new_infos[0], (int)new_infos[1])) > 20)
+            {
+                out = false;
+                System.out.println("false");
+            }
+            else // si le robot est immobile
+            {
+            	// si de plus on a demandé le départ ya un ptis bout de temps
+	            if(abwabwa == 0)
+	            	// soit on est arrivé
+	            	if(new Vec2((int)new_infos[0], (int)new_infos[1]).SquaredDistance(consigne) < 10)
+		            {
+		                out = true;
+		                System.out.println("true");
+		            }
+	            	// soit on est pas arrivé (on est immobile loin de la consigne, ie on est bloqué)
+		            else
+		            {
+		                System.out.println("exception");
+		                throw new BlocageException();
+		            }
+            }
+   
+            old_infos = new_infos;
+        } catch (SerialException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return out;
+    }
+
+    /**
+     * Surcouche de mouvement_fini afin de ne pas freezer
+     * @return
+     * @throws BlocageException
+     */
+/*    private boolean mouvement_fini() throws BlocageException
+    {
+        if(nouveau_mouvement)
+            debut_mouvement_fini = System.currentTimeMillis();
+        nouveau_mouvement = false;
+        fini = mouvement_fini_routine();
+        if(!fini && ((System.currentTimeMillis() - debut_mouvement_fini) > 2000))
+        {
+            log.critical("Erreur d'acquittement. On arrête l'attente du robot.", this);
+            fini = true;
+        }
+        return fini;
+    }*/
+    
+    /**
      * Boucle d'acquittement générique. Retourne des valeurs spécifiques en cas d'arrêt anormal (blocage, capteur)
+     *  	
+     *  	false : si on roule
+     *  	true : si arrivé a destination
+     *  	exeption : si patinage
+     * 
+     * 
      * @param detection_collision
      * @param sans_lever_exception
      * @return oui si le robot est arrivé à destination, non si encore en mouvement
      * @throws BlocageException
      * @throws CollisionException
      */
-    private boolean mouvement_fini() throws BlocageException
+    private boolean mouvement_fini_routine() throws BlocageException
     {
         // récupérations des informations d'acquittement
         try {
+        	
+        	// met a jour: 	l'écart entre la position actuelle et la position sur laquelle on est asservi
+        	//				la variation de l'écart a la position sur laquelle on est asservi
+        	//				la puissance demandée par les moteurs 	
             deplacements.maj_infos_stoppage_enMouvement();
             
-            //robot bloqué ?
-            deplacements.gestion_blocage();
+            // lève une exeption de blocage si le robot patine (ie force sur ses moteurs sans bouger) 
+            deplacements.leverExeptionSiPatinage();
             
             // robot arrivé?
-            if(!deplacements.update_enMouvement())
-                return true;
+//            System.out.println("deplacements.update_enMouvement() : " + deplacements.isRobotMoving());
+            return !deplacements.isRobotMoving();
 
-        } catch (SerialException e) {
+        } 
+        catch (SerialException e) 
+        {
             e.printStackTrace();
+            return false;
         }
-
-        // robot encore en mouvement
-        return false;
     }
     
     /**
@@ -655,6 +786,32 @@ public class DeplacementsHautNiveau implements Service
     public void setInsiste(boolean insiste)
     {
         this.insiste = insiste;
+    }
+
+    public void desactiver_asservissement_rotation()
+    {
+    	try
+		{
+			deplacements.desactiver_asservissement_rotation();
+		}
+		catch (SerialException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+
+    public void activer_asservissement_rotation()
+    {
+    	try
+		{
+			deplacements.activer_asservissement_rotation();
+		}
+		catch (SerialException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
 }

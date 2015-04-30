@@ -55,22 +55,29 @@ public class Deplacements implements Service {
 	 * @param derivee_erreur_translation
 	 * @throws BlocageException 
 	 */
-	public void gestion_blocage() throws BlocageException
+	public void leverExeptionSiPatinage() throws BlocageException
 	{
 		int PWMmoteurGauche = infos_stoppage_enMouvement.get("PWMmoteurGauche");
 		int PWMmoteurDroit = infos_stoppage_enMouvement.get("PWMmoteurDroit");
 		int derivee_erreur_rotation = infos_stoppage_enMouvement.get("derivee_erreur_rotation");
 		int derivee_erreur_translation = infos_stoppage_enMouvement.get("derivee_erreur_translation");
 		
+		// on décrète que les moteurs forcent si la puissance qu'ils demandent est trop grande
 		boolean moteur_force = Math.abs(PWMmoteurGauche) > 40 || Math.abs(PWMmoteurDroit) > 40;
-		boolean bouge_pas = derivee_erreur_rotation == 0 && derivee_erreur_translation == 0;
+		
+		// on décrète que le robot est immobile si l'écart entre la position demandée et la position actuelle est constant
+		boolean bouge_pas = Math.abs(derivee_erreur_rotation) <= 10 && Math.abs(derivee_erreur_translation) <= 10;
 
+		// si on patine
 		if(bouge_pas && moteur_force)
 		{
+			// si on patinais déja auparavant, on fait remonter le patinage au code de haut niveau (via BlocageExeption)
 			if(enCoursDeBlocage)
 			{
-                // la durée de tolérance au patinage est fixée ici 
-				if(System.currentTimeMillis() - debut_timer_blocage > 200)
+                // la durée de tolérance au patinage est fixée ici (200ms)
+				// mais cette fonction n'étant appellée qu'a une fréquance de l'ordre du Hertz ( la faute a une saturation de la série)
+				// le robot mettera plus de temps a réagir ( le temps de réaction est égal au temps qui sépare 2 appels successifs de cette fonction)
+				if((System.currentTimeMillis() - debut_timer_blocage) > 200)
 				{
 					log.warning("le robot a dû s'arrêter suite à un patinage.", this);
 					try {
@@ -83,12 +90,15 @@ public class Deplacements implements Service {
 					throw new BlocageException();
 				}
 			}
+
+			// si on détecte pour la première fois le patinage, on continue de forcer
 			else
 			{
 				debut_timer_blocage = System.currentTimeMillis();
 				enCoursDeBlocage  = true;
 			}
 		}
+		// si tout va bien
 		else
 			enCoursDeBlocage = false;
 
@@ -102,17 +112,28 @@ public class Deplacements implements Service {
 	 * @param derivee_erreur_translation
 	 * @return
 	 */
-	public boolean update_enMouvement()
+	public boolean isRobotMoving()
 	{
+		// obtient les infos de l'asservissement
 		int erreur_rotation = infos_stoppage_enMouvement.get("erreur_rotation");
 		int erreur_translation = infos_stoppage_enMouvement.get("erreur_translation");
 		int derivee_erreur_rotation = infos_stoppage_enMouvement.get("derivee_erreur_rotation");
 		int derivee_erreur_translation = infos_stoppage_enMouvement.get("derivee_erreur_translation");
 		
-		boolean rotation_stoppe = Math.abs(erreur_rotation) < 105;
-		boolean translation_stoppe = Math.abs(erreur_translation) < 100;
-		boolean bouge_pas = Math.abs(derivee_erreur_rotation) < 100 && Math.abs(derivee_erreur_translation) < 100;
-
+		// ces 2 booléens checkent la précision de l'asser. Ce n'est pas le rôle de cette fonction, 
+		// et peut causer des bugs (erreurs d'aquitement) de java si l'asser est mla fait
+		/*
+		System.out.println("erreur_rotation : "+erreur_rotation);
+		System.out.println("erreur_translation : "+erreur_translation);
+		System.out.println("derivee_erreur_rotation': "+derivee_erreur_rotation);
+		System.out.println("derivee_erreur_translation': "+derivee_erreur_translation);
+		*/
+		
+		//donc, on vire !
+		// VALEURS A REVOIR
+		boolean rotation_stoppe = Math.abs(erreur_rotation) <= 30;
+		boolean translation_stoppe = Math.abs(erreur_translation) <= 30;
+		boolean bouge_pas = Math.abs(derivee_erreur_rotation) <= 20 && Math.abs(derivee_erreur_translation) <= 20;
 		return !(rotation_stoppe && translation_stoppe && bouge_pas);
 	}
 	
@@ -141,11 +162,11 @@ public class Deplacements implements Service {
 	 */
 	public void stopper() throws SerialException
 	{
-        desactiver_asservissement_translation();
-        desactiver_asservissement_rotation();
+//        desactiver_asservissement_translation();
+//        desactiver_asservissement_rotation();
 		serie.communiquer("stop", 0);
-        activer_asservissement_translation();
-        activer_asservissement_rotation();
+//        activer_asservissement_translation();
+//        activer_asservissement_rotation();
 	}
 	
 	/**
@@ -217,27 +238,32 @@ public class Deplacements implements Service {
 	public void set_vitesse_translation(int pwm_max) throws SerialException
 	{
 		double kp, kd;
-		if(pwm_max >= 170)
+		if(pwm_max >= 195)
+		{
+			kp = 0.55;
+			kd = 27.0;
+		}
+		else if(pwm_max >= 165)
+		{
+			kp = 0.52;
+			kd = 17.0;
+		}
+		else if(pwm_max >= 145)
+		{
+			kp = 0.52;
+			kd = 17.0;
+		}
+		else if(pwm_max >= 115)
+		{
+			kp = 0.45;
+			kd = 12.0;
+		}
+		else if(pwm_max >= 85)
 		{
 			kp = 0.45;
 			kd = 12.5;
 		}
-		else if(pwm_max >= 150)
-		{
-			kp = 0.45;
-			kd = 11.5;
-		}
-		else if(pwm_max >= 120)
-		{
-			kp = 0.45;
-			kd = 9.0;
-		}
-		else if(pwm_max >= 90)
-		{
-			kp = 0.45;
-			kd = 12.5;
-		}
-		else if(pwm_max >= 60)
+		else if(pwm_max >= 55)
 		{
 			kp = 0.5;
 			kd = 4.0;
@@ -261,22 +287,22 @@ public class Deplacements implements Service {
 		double kp, kd;
 		if(pwm_max > 155)
 		{
-			kp = 1.0;
-			kd = 35.0;
+			kp = 2.0;
+			kd = 50.0;
 		}
 		else if(pwm_max > 115)
 		{
 			kp = 0.85;
-			kd = 20.0;
+			kd = 25.0;
 		}
-		else if(pwm_max > 90)
+		else if(pwm_max > 85)
 		{
-			kp = 0.8;
+			kp = 1.0;
 			kd = 15.0;
 		}
 		else
 		{
-			kp = 0.6;
+			kp = 2.0;
 			kd = 14.0;
 		}
 		
@@ -298,25 +324,38 @@ public class Deplacements implements Service {
 
 	/**
 	 * Met à jour PWMmoteurGauche, PWMmoteurDroit, erreur_rotation, erreur_translation, derivee_erreur_rotation, derivee_erreur_translation
+	 * les nouvelles valeurs sont stokées dans la map
 	 */
 	public void maj_infos_stoppage_enMouvement() throws SerialException
 	{
+		// on envois "?infos" et on lis les 4 int (dans l'ordre : PWM droit, PWM gauche, erreurRotation, erreurTranslation)
 		String[] infos_string = serie.communiquer("?infos", 4);
 		int[] infos_int = new int[4];
-
 		for(int i = 0; i < 4; i++)
 			infos_int[i] = Integer.parseInt(infos_string[i]);
 		
+		// calcul des dérivées des erreurs en translation et en rotation :
+		// on fait la différence entre la valeur actuelle de l'erreur et le valeur précédemment mesurée.
+		// on divise par un dt unitaire (non mentionné dans l'expression)
 		int deriv_erreur_rot = infos_int[2] - infos_stoppage_enMouvement.get("erreur_rotation");
 		int deriv_erreur_tra = infos_int[3] - infos_stoppage_enMouvement.get("erreur_translation");
 		
+		
+		// infos_stoppage_enMouvement est une map dont les clés sont des strings et les valeurs des int
+		
+		// on stocke la puissance consommée par les moteurs
         infos_stoppage_enMouvement.put("PWMmoteurGauche", infos_int[0]);
         infos_stoppage_enMouvement.put("PWMmoteurDroit", infos_int[1]);
+        
+        // l'erreur de translation mesurée par les codeuses
         infos_stoppage_enMouvement.put("erreur_rotation", infos_int[2]);
         infos_stoppage_enMouvement.put("erreur_translation", infos_int[3]);
+        
+        // stocke les dérivées des erreurs, calculés 10 lignes plus haut
         infos_stoppage_enMouvement.put("derivee_erreur_rotation", deriv_erreur_rot);
         infos_stoppage_enMouvement.put("derivee_erreur_translation", deriv_erreur_tra);
 
+        
 	}
 
 	/**

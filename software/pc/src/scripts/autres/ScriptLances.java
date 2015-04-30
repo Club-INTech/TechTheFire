@@ -75,8 +75,9 @@ public class ScriptLances extends Script {
 
 
 	@Override
-	protected void execute(int id_version, GameState<?> state) throws MouvementImpossibleException
+	protected void execute(int id_version, GameState<?> state) throws MouvementImpossibleException, SerialException
 	{
+        super.execute(id_version, state);
 		// TODO: tester!
 		/*
 		int a1,a2,a3;
@@ -123,26 +124,25 @@ public class ScriptLances extends Script {
 	    try
         {
             state.robot.allume_ventilo();
-            state.robot.sleep(2000);
+            state.robot.sleep(1000);
         } catch (SerialException e)
         {
             e.printStackTrace();
         }
-	    //state.robot.sleep(1500);
 	    state.robot.tirerBalle();
-	    //state.robot.sleep(2000);
+	    state.robot.sleep(2000);
 	    state.robot.tirerBalle();
 	    state.robot.sleep(2000);
         try
         {
             state.robot.eteint_ventilo();
             state.robot.sleep(2000);
-            state.robot.tirerBalle();
         } catch (SerialException e)
         {
             e.printStackTrace();
         }
-		//robot.set_vitesse_translation("vitesse_mammouth");
+        state.robot.tirerBalle();
+        //robot.set_vitesse_translation("vitesse_mammouth");
 		//robot.avancer(600, hooks);
 			
 	

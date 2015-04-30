@@ -109,7 +109,7 @@ public class Laser implements Service {
 				}
 				else
 				{
-					log.warning("balise n°"+b.id+" ne répond pas.", this);
+					//log.warning("balise n°"+b.id+" ne répond pas.", this);
 				}
 			} catch (SerialException e) {
 				e.printStackTrace();

@@ -11,7 +11,7 @@
 class Communication
 {
 	public:
-	
+
 	typedef uart0 serial_pc;
 	typedef uart1 serial_ax12;
 	typedef AX<serial_ax12> Ax12;
@@ -21,15 +21,15 @@ class Communication
  	Ax12 retourneurGauche;
  	Ax12 pinceDroite; //ax12 de la pince droite
 	Ax12 orientationDroite;
-	Ax12 positionDroite; 
+	Ax12 positionDroite;
 	Ax12 retourneurDroite ;
-  	Ax12 rateauG; //ax12 du rateau gauche	
+  	Ax12 rateauG; //ax12 du rateau gauche
   	Ax12 rateauD; //ax12 du rateau droit
 	Ax12 bac; //ax12 du bac
 	Ax12 chargeur; //ax12 du chargeur
         Ax12 filet; //ax12 du lance-filet
 	Capteurs capteurs;
- 
+
 
 
 	public:
@@ -62,7 +62,7 @@ class Communication
 	}
 
 //fonction d'execution des ordres
-	
+
 	void execute ( char ordre[] )
 	{
 		if ( strcmp ( ordre , "?") == 0 )
@@ -79,11 +79,11 @@ class Communication
 		{
 			this->ouvrirBasGauche ();
 		}
-		else if ( strcmp ( ordre , "od" ) == 0 )		       
+		else if ( strcmp ( ordre , "od" ) == 0 )
 		{
 			this->ouvrirDroite ();
 		}
-		else if ( strcmp ( ordre , "obd" ) == 0 )		       
+		else if ( strcmp ( ordre , "obd" ) == 0 )
 		{
 			this->ouvrirBasDroite ();
 		}
@@ -91,17 +91,17 @@ class Communication
 		{
 			this->fermerGauche ();
 		}
-		else if ( strcmp ( ordre , "fd" ) == 0 )			
+		else if ( strcmp ( ordre , "fd" ) == 0 )
 		{
 			this->fermerDroite ();
 		}
-		else if ( strcmp ( ordre , "pfd" ) == 0 )			
+		else if ( strcmp ( ordre , "pfd" ) == 0 )
 		{
 			this->presqueFermerDroite ();
 		}
  		else if ( strcmp ( ordre , "ag" ) == 0 )  //a = angle
 		{
-			serial_pc::printfln ( "angle?" );			
+			serial_pc::printfln ( "angle?" );
 			uint16_t i;
 			serial_pc::read (i);
 			pinceGauche.goTo (i);
@@ -249,20 +249,20 @@ class Communication
 		}
 
 	//Actions chargeur
-		else if ( strcmp ( ordre , "tourne" ) == 0 )  
+		else if ( strcmp ( ordre , "to" ) == 0 )
 		{
 			this->tourner();
 		}
-		else if ( strcmp ( ordre , "reload" ) == 0 )  
+		else if ( strcmp ( ordre , "re" ) == 0 )
 		{
 			this->reload();
 		}
 		//Actions lance-filet
-		else if ( strcmp ( ordre , "tf" ) == 0 )  
+		else if ( strcmp ( ordre , "tf" ) == 0 )
 		{
 			this->tirerFilet();
 		}
-		else if ( strcmp ( ordre , "rf" ) == 0 )  
+		else if ( strcmp ( ordre , "rf" ) == 0 )
 		{
 			this->rembobinerFilet();
 		}
@@ -277,28 +277,19 @@ class Communication
         	B4::low();
         }
 
-	// infrarouge
-        else if (strcmp(ordre, "ir_g")==0)
-        {
-            serial_pc::print(capteurs.inf1.value());
-        }
-        else if (strcmp(ordre, "ir_d")==0)
-        {
-    	    serial_pc::print(capteurs.inf2.value());
-        }
-		
 	// Ultrasons SRF05
-        else if (strcmp(ordre, "us_av")==0)
+        else if (strcmp(ordre, "us")==0)
         {
             serial_pc::print(capteurs.us1.value());
+	    //  serial_pc::print(capteurs.us2.value());
         }
-	        
+
 	// JUMPER DE DÉBUT DE MATCH
        	else if (strcmp(ordre, "j") == 0)
        	{
-       	    serial_pc::print(C2::read());
+       	    serial_pc::print(D7::read());
        	}
-	
+
 	// CAPTEURS CONTACT
        	else if (strcmp(ordre, "cg") == 0)
        	{
@@ -315,8 +306,8 @@ class Communication
 	}
 
 
-//actions de la pince gauche		
-	
+//actions de la pince gauche
+
 	void ouvrirGauche ()
 	{
 		pinceGauche.goTo (60);
@@ -347,7 +338,7 @@ class Communication
 	void hautGauche ()
 	{
 	  retablirGauche();
-	  	positionGauche.goTo(65);
+	  	positionGauche.goTo(60);
 		_delay_ms(250);
 		orientationGauche.goTo(130); //cet ajout a pour but de mettre la pince verticale, qu'elle prenne moins de place.
 	}
@@ -372,7 +363,7 @@ class Communication
 
 void posGauche ()
   {
-    	serial_pc::printfln ( "angle?" );			
+    	serial_pc::printfln ( "angle?" );
         uint16_t i;
 	serial_pc::read (i);
 	positionGauche.goTo(i);
@@ -426,23 +417,23 @@ void posGauche ()
         _delay_ms(250);
         ouvrirDroite();
 	}
-		
+
     void milieuDroite ()
 	{
 		positionDroite.goTo(140);
 		orientationDroite.goTo(155);
 	}
- 
+
 	void hautDroite ()
 	{
 	  retablirDroite();
-	  	positionDroite.goTo(70);
+	  	positionDroite.goTo(65);
 		_delay_ms(250);
 		orientationDroite.goTo(170);
 	}
   void posDroite ()
   {
-    	serial_pc::printfln ( "angle?" );			
+    	serial_pc::printfln ( "angle?" );
         uint16_t i;
 	serial_pc::read (i);
 	positionDroite.goTo(i);
@@ -509,7 +500,7 @@ void torcheDroite ()
 
 	void rangerRateaud ()
 	{
-		rateauD.goTo (60);
+		rateauD.goTo (55);
 	}
 	void rateauBasd ()
 	{
@@ -518,8 +509,8 @@ void torcheDroite ()
 	void rateauBasBasd ()
 	{
 		bac.goTo (50);
-		rateauD.goTo (170);		
-	}	
+		rateauD.goTo (170);
+	}
 	void rateauHautd ()
 	{
 		rateauD.goTo (105);
@@ -530,7 +521,7 @@ void torcheDroite ()
 
 	void rangerRateaug ()
 	{
-		rateauG.goTo (240);
+		rateauG.goTo (245);
 	}
 	void rateauBasg ()
 	{
@@ -538,13 +529,13 @@ void torcheDroite ()
 	}
 	void rateauBasBasg ()
 	{
-		bac.goTo (50);	
-		rateauG.goTo (130);		
-	}	
+		bac.goTo (50);
+		rateauG.goTo (130);
+	}
 	void rateauHautg ()
 	{
 		rateauG.goTo (195);
-	}	
+	}
 
 
 //actions du chargeur
@@ -560,7 +551,7 @@ void torcheDroite ()
 		{
 			a+=60;
 		}
-		chargeur.goTo (a);	
+		chargeur.goTo (a);
 	}
 	void reload ()
 	{
@@ -571,14 +562,14 @@ void torcheDroite ()
 
 	void tirerFilet ()
 	{
-		filet.goTo (0);
+		filet.goTo (300);
 	}
 	void rembobinerFilet ()
 	{
-		filet.goTo (300);
+		filet.goTo (0);
 	}
 
-  
+
 
 };
 
